@@ -1,0 +1,3 @@
+#+TITLE: README
+
+Contains the main logic and checks that are necessary for seeing if someone has the appropriate permissions to carry out an action. Also contains the methods necessary to create tokens to be assigned to member sessions

@@ -1,0 +1,4 @@
+#+TITLE: README
+
+* CAPWATCH Service
+This service is used to import CAPWATCH files from CAP NHQ from their CAPWATCH download API and import it into the shared database

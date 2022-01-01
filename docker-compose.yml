@@ -1,0 +1,178 @@
+# docker-compose.yml: Used to define how a development environment works and is set up
+#
+# Copyright (C) 2021 Andrew Rioux
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+# 
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+version: "3.8"
+services:
+  client_proxy:
+    build:
+      context: .
+      target: development-proxy
+      dockerfile: Client/Dockerfile
+    environment:
+      - PROXY_NAME=*.localunitplanner.org
+      - PROXY_PORT=80
+      - API_SERVER_URL=http://api_server:5000
+      - ELM_REACTOR_URL=http://client_reactor:8000
+    volumes:
+      - ./Client/static:/var/www/html/static
+      - ./Client/nginx:/etc/nginx/extra-conf
+    ports:
+      - '80:80'
+    depends_on:
+      - client_reactor
+      - api_server
+    networks:
+      - dev_network
+
+  client_reactor:
+    build:
+      context: .
+      target: base
+      dockerfile: Client/Dockerfile
+    working_dir: /app
+    expose:
+      - '8000'
+    ports:
+      - '8000:8000'
+    volumes:
+      - ./Client:/app
+    command: reactor --port=8000
+    networks:
+      - dev_network
+
+  api_server:
+    image: mcr.microsoft.com/dotnet/sdk:6.0
+    ports:
+      - '5000:5000'
+    expose:
+      - '5000'
+    depends_on:
+      - db
+      - authentication_dev
+      - capwatch_dev
+      - files_dev
+      - graph_dev
+    volumes:
+      - .:/app
+    working_dir: /app
+    environment:
+      - ASPNETCORE_URLS=http://0.0.0.0:5000
+      - ASPNETCORE_ENVIRONMENT=Development
+      - SERVICE_AUTH_URL=http://authentication_dev:5000
+      - SERVICE_CAPWATCH_URL=http://capwatch_dev:5000
+      - SERVICE_FILES_URL=http://files_dev:5000
+      - SERVICE_GRAPH_URL=http://graph_dev:5000
+    command: dotnet watch run --project Apis/Main/UnitPlanner.Apis.Main.csproj < echo 'a'
+    networks:
+      - dev_network
+
+  authentication_dev:
+    image: mcr.microsoft.com/dotnet/sdk:6.0
+    expose:
+      - '5000'
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    working_dir: /app
+    environment:
+      - ASPNETCORE_URLS=http://0.0.0.0:5000
+      - ASPNETCORE_ENVIRONMENT=Development
+    command: dotnet watch run --project Services/Development/Authentication/UnitPlanner.Services.Authentication.Development.csproj < echo 'a'
+    networks:
+      - dev_network
+
+  capwatch_dev:
+    image: mcr.microsoft.com/dotnet/sdk:6.0
+    expose:
+      - '5000'
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    working_dir: /app
+    environment:
+      - ASPNETCORE_URLS=http://0.0.0.0:5000
+      - ASPNETCORE_ENVIRONMENT=Development
+    command: dotnet watch run --project Services/Development/Capwatch/UnitPlanner.Services.Capwatch.Development.csproj < echo 'a'
+    networks:
+      - dev_network
+
+  files_dev:
+    image: mcr.microsoft.com/dotnet/sdk:6.0
+    expose:
+      - '5000'
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    working_dir: /app
+    environment:
+      - ASPNETCORE_URLS=http://0.0.0.0:5000
+      - ASPNETCORE_ENVIRONMENT=Development
+    command: dotnet watch run --project Services/Development/Files/UnitPlanner.Services.Files.Development.csproj < echo 'a'
+    networks:
+      - dev_network
+
+  graph_dev:
+    image: mcr.microsoft.com/dotnet/sdk:6.0
+    expose:
+      - '5000'
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    working_dir: /app
+    environment:
+      - ASPNETCORE_URLS=http://0.0.0.0:5000
+      - ASPNETCORE_ENVIRONMENT=Development
+    command: dotnet watch run --project Services/Development/Graph/UnitPlanner.Services.Graph.Development.csproj < echo 'a'
+    networks:
+      - dev_network
+
+  db:
+    image: mysql:8.0.21
+    ports:
+      - '3306:3306'
+    environment:
+      - MYSQL_ROOT_PASSWORD=toor
+      - MYSQL_DATABASE=UnitPlannerV7
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - dev_network
+
+  dbsh:
+    image: mysql:8.0.21
+    entrypoint: mysql
+    command: --user=root --password=toor --host=db
+    secrets:
+      - mysql_root_password
+    networks:
+      - dev_network
+
+secrets:
+  mysql_root_password:
+    file: ./keys/mysql_root_password
+
+volumes:
+  db-data:
+    driver: local
+
+networks:
+  dev_network:
+    driver: bridge

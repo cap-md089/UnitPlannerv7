@@ -1,0 +1,10 @@
+#+TITLE: Main API
+
+Provides the main interface and acts as a monolith that handles all the business logic
+
+* Setup
+This service requires a database connection as well as service connections to provide external services.
+
+Specifically, this service depends on the [[../../Services/Authentication/README.org][Authentication]], [[../../Services/Capwatch/README.org][CAPWATCH]], [[../../Services/Files/README.org][Files]], and [[../../Services/Graph/README.org][Graph]] services.
+* Developing
+Simply start the ~api_server~ docker compose service, e.g. ~docker-compose up -d api_server~

@@ -1,0 +1,19 @@
+#+TITLE: Contributing to Unit Planner
+
+* Getting set to develop UnitPlanner v7
+The development process for UnitPlanner v7 has been greatly simplified when compared to EvMPlus v6. Now, it should be possible to just download the repository and have Docker installed, and get up and running using [[./docker-compose.yml][docker-compose.yml]]. Check out the architecture guide below, as well as looking at the individual READMEs to see how to get started with developing UnitPlanner.
+
+The simplest way to get set up is to run ~docker-compose up -d client_proxy~ and then browse to [[http://localhost][localhost]], and browse to src/Main.elm. Any code change made to any of the services or APIs will be automatically applied, but the client will have to be refreshed to see changes.
+
+* Application architecture
+** Apis
+*** [[./Apis/Main/README.org][Main]]
+** [[./Client/README.org][Client]]
+** Common
+*** [[./Common/Authentication/README.org][Authentication]]
+*** [[./Common/Models/README.org][Models]]
+** Services
+*** [[./Services/Authentication/README.org][Authentication]]
+*** [[./Services/Capwatch/README.org][Capwatch]]
+*** [[./Services/Files/README.org][Files]]
+*** [[./Services/Graph/README.org][Graph]]

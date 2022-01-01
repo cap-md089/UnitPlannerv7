@@ -1,0 +1,4 @@
+#+TITLE: README
+
+* Authentication Service
+This service provides a way to authenticate users and assign them their roles

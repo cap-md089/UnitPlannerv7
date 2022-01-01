@@ -1,0 +1,4 @@
+#+TITLE: README
+
+* Files Service
+This service provides an interface for saving and loading files that are meant to be user modifiable. It can use different backends such as storing to a path on the host filesystem, OneDrive, SharePoint, or Azure Blob Storage

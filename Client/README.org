@@ -1,0 +1,8 @@
+#+TITLE: Elm Clients
+
+Elm client that is served to web browsers. Different files can be used for different full page applications, such as the public facing user interface as well as private admin dashboards.
+
+* Developing
+To develop, set up the ~client_proxy~ docker compose service with ~docker-compose up -d client_proxy~
+
+Open a browser and go to [[http://localhost][localhost]], and then browse to src/Main.elm to run Main.elm. Different pages may have sandboxes set up to provide demonstrations and tests of their APIs.

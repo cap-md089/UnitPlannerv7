@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option csharp_namespace = "UnitPlanner.Services.Graph.Protos";
+
+package graphgreet;
+
+// The greeting service definition.
+service GraphGreeter {
+  // Sends a greeting
+  rpc SayHello (GraphHelloRequest) returns (GraphHelloReply);
+}
+
+// The request message containing the user's name.
+message GraphHelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings.
+message GraphHelloReply {
+  string message = 1;
+}

@@ -1,0 +1,27 @@
+#+TITLE: UnitPlanner v7
+
+The premiere event and unit management site for Civil Air Patrol units
+
+* Who is this for?
+This piece of software is for unit commanders and deputy commanders at any level who want to coordinate event management with their unit, subordinate units, and sibling units as well as gain insights simply not possible elsewhere for Civil Air Patrol.
+* What does this provide for me?
+UnitPlanner provides many things, including:
+
+** Secure information storage and transfer
+ Provide file storage, management, and association tools to help organize member data as well as their promotion requirements
+** Improved coordination and communication
+ Multiple calendars with simple yet effective Role Based Access Control to enable people to do their jobs themselves
+** Appropriate access control and delegation
+ Assign permissions manually for certain actions, or use duty positions assigned in NHQ eServices
+** Consistent, professional interface and presentation
+ An interface to match the standard interfaces of [[https://www.capmembers.com][capmembers.com]] and SiteViz
+** Easy attendance tracking and reporting
+ Need a quick overview of when every member in your squadron has last attended an event with your squadron? Or generate a report for a member to see which events they've attended over a time range for awards? Find both here
+** Make it easy for all members (organizers and participants)
+For simple events such as weekly meetings, signing up is as easy as signing in with an O365 account and clicking 'Sign Up'.
+
+To coordinate event attendance between units, organizers can share event information and attendance between events to better understand what their units or the whole event needs.
+* User guide
+Follow this link to read up on the user guide
+* Contributing
+Check out the [[./CONTRIBUTING.org][contributing guide]] for more information on how to help with development

@@ -50,11 +50,12 @@ jobs:
 
       - name: Run client test suite
         run: |
-          mkdir $PWD/.npm-global
-          npm config set prefix '$PWD/.npm-global'
+          mkdir ~/.npm-global
+          npm config set prefix '~/.npm-global'
+          PATH=~/.npm-global/bin:$PATH
           npm install --global elm-test
           cd Client
-          $PWD/.npm-global/bin/elm-test
+          elm-test
 
   integration-tests:
     runs-on: ubuntu-latest

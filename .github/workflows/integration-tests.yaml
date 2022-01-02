@@ -24,38 +24,6 @@ on:
   push:
 
 jobs:
-  unit-test-server:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: "6.0"
-
-      - name: Run server test suite
-        run: dotnet test
-
-  unit-test-client:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Setup Elm
-        uses: JorelAli/setup-elm@v1
-        with:
-          elm-version: 0.19.1
-
-      - name: Run client test suite
-        run: |
-          mkdir ~/.npm-global
-          npm config set prefix '~/.npm-global'
-          PATH=~/.npm-global/bin:$PATH
-          npm install --global elm-test
-          cd Client
-          elm-test
 
   integration-tests:
     runs-on: ubuntu-latest
@@ -63,6 +31,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Run integration tests
-        run: |
-          docker-compose run cypress_tests
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v2
+        with:
+          build: docker-compose build client_proxy client_reactor api_server authentication_dev capwatch_dev files_dev graph_dev
+          start: docker-compose up client_proxy

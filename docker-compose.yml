@@ -253,15 +253,19 @@ services:
       - client_proxy
 
   cypress_test_runner_linux:
-    image: cypress/included:9.2.0
+    image: cypress/included:9.0.0
     volumes:
       - ./e2e:/e2e
       - /tmp/.X11-unix:/tmp/.X11-unix
+      - ~/.Xauthority:/root/.Xauthority:ro
     working_dir: /e2e
     environment:
       - CYPRESS_BASE_URL=http://client_proxy
       - DISPLAY=:0
-    command: open
+      - XAUTHORITY=/root/.Xauthority
+    entrypoint: cypress
+    command: open --project .
+    user: "1000"
     networks:
       - dev_network
     depends_on:

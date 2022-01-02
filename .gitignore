@@ -461,5 +461,5 @@ Client/repl-temp-*
 
 
 # Cypress testing
-e2e/cypress/screenshots
-e2e/cypress/videos
+cypress/screenshots
+cypress/videos

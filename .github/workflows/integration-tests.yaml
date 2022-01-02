@@ -43,7 +43,7 @@ jobs:
         with:
           record: true
           build: dotnet build
-          start: scripts/gha-start-services.sh
+          start: /home/runner/work/UnitPlannerv7/UnitPlannerv7/scripts/gha-start-services.sh
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

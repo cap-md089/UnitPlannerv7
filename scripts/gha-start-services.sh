@@ -21,7 +21,7 @@ set -eux
 cd $(git rev-parse --show-toplevel)
 
 export PROXY_NAME=*.localunitplanner.org
-export PROXY_PORT=80
+export PROXY_PORT=3000
 export API_SERVER_URL=http://localhost:5000
 export ELM_REACTOR_URL=http://localhost:8000
 export PROJECT_STATIC_DIR=$PWD/Client/static

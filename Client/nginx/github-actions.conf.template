@@ -15,32 +15,34 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-server {
-    server_name ${PROXY_NAME};
+http {
+    server {
+        server_name ${PROXY_NAME};
 
-    location /static {
-        autoindex on;
-        root ${PROJECT_STATIC_DIR};
-    }
+        location /static {
+            autoindex on;
+            root ${PROJECT_STATIC_DIR};
+        }
 
-    location / {
-        proxy_pass ${ELM_REACTOR_URL};
-    }
-    
-    location /swagger {
-        proxy_pass ${API_SERVER_URL};
-    }
-    
-    location /api {
-        proxy_pass ${API_SERVER_URL};
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-        proxy_request_buffering off;
-        client_max_body_size 0;
-    }
+        location / {
+            proxy_pass ${ELM_REACTOR_URL};
+        }
+        
+        location /swagger {
+            proxy_pass ${API_SERVER_URL};
+        }
+        
+        location /api {
+            proxy_pass ${API_SERVER_URL};
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Host $host;
+            proxy_cache_bypass $http_upgrade;
+            proxy_request_buffering off;
+            client_max_body_size 0;
+        }
 
-    listen ${PROXY_PORT};
+        listen ${PROXY_PORT};
+    }
 }

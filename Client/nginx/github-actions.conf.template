@@ -15,6 +15,15 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+worker_processes    auto;
+
+error_log /var/log/nginx/error.log notice;
+pid       /var/run/nginx.pid;
+
+events {
+    worker_connections 8;
+}
+
 http {
     server {
         server_name ${PROXY_NAME};

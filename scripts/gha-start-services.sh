@@ -26,7 +26,7 @@ export API_SERVER_URL=http://localhost:5000
 export ELM_REACTOR_URL=http://localhost:8000
 export PROJECT_STATIC_DIR=$PWD/Client/static
 
-envsubst '$PROXY_NAME,$PROXY_PORT,$API_SERVER_URL,$ELM_REACTOR_URL,$PROJECT_STATIC_DIR' < $PWD/Client/nginx/github-actions.conf.template > /etc/nginx/conf.d/default.conf
+envsubst '$PROXY_NAME,$PROXY_PORT,$API_SERVER_URL,$ELM_REACTOR_URL,$PROJECT_STATIC_DIR' < $PWD/Client/nginx/github-actions.conf.template > $PWD/Client/nginx/github-actions.conf
 
 dotnet run --project Services/Development/Authentication/UnitPlanner.Services.Authentication.Development.csproj > /dev/null &
 dotnet run --project Services/Development/Capwatch/UnitPlanner.Services.Capwatch.Development.csproj > /dev/null &
@@ -38,4 +38,4 @@ cd Client
 elm reactor --port=8000 > /dev/null &
 cd $(git rev-parse --show-toplevel)
 
-nginx > /dev/null
+nginx -c $PWD/Client/nginx/github-actions.conf > /dev/null

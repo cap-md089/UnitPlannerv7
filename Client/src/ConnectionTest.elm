@@ -16,7 +16,7 @@
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-module Main exposing (..)
+module ConnectionTest exposing (..)
 
 import Browser
 import Data.WeatherForecast exposing (..)
@@ -180,10 +180,10 @@ view model =
     let
         display =
             case model.data of
-                Just (Ok vals) ->
+                Just (Ok _) ->
                     div [] [ text "done" ]
 
-                Just (Err e) ->
+                Just (Err _) ->
                     div [] [ text "error" ]
 
                 Nothing ->

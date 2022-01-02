@@ -78,6 +78,7 @@ services:
       - SERVICE_CAPWATCH_URL=http://capwatch_dev:5000
       - SERVICE_FILES_URL=http://files_dev:5000
       - SERVICE_GRAPH_URL=http://graph_dev:5000
+      - HOME=/tmp/home
     command: dotnet watch run --project Apis/Main/UnitPlanner.Apis.Main.csproj < echo 'a'
     networks:
       - dev_network
@@ -95,6 +96,7 @@ services:
     environment:
       - ASPNETCORE_URLS=http://0.0.0.0:5000
       - ASPNETCORE_ENVIRONMENT=Development
+      - HOME=/tmp/home
     command: dotnet watch run --project Services/Development/Authentication/UnitPlanner.Services.Authentication.Development.csproj < echo 'a'
     networks:
       - dev_network
@@ -112,6 +114,7 @@ services:
     environment:
       - ASPNETCORE_URLS=http://0.0.0.0:5000
       - ASPNETCORE_ENVIRONMENT=Development
+      - HOME=/tmp/home
     command: dotnet watch run --project Services/Development/Capwatch/UnitPlanner.Services.Capwatch.Development.csproj < echo 'a'
     networks:
       - dev_network
@@ -129,6 +132,7 @@ services:
     environment:
       - ASPNETCORE_URLS=http://0.0.0.0:5000
       - ASPNETCORE_ENVIRONMENT=Development
+      - HOME=/tmp/home
     command: dotnet watch run --project Services/Development/Files/UnitPlanner.Services.Files.Development.csproj < echo 'a'
     networks:
       - dev_network
@@ -146,6 +150,7 @@ services:
     environment:
       - ASPNETCORE_URLS=http://0.0.0.0:5000
       - ASPNETCORE_ENVIRONMENT=Development
+      - HOME=/tmp/home
     command: dotnet watch run --project Services/Development/Graph/UnitPlanner.Services.Graph.Development.csproj < echo 'a'
     networks:
       - dev_network
@@ -182,6 +187,85 @@ services:
     entrypoint: /usr/local/bin/elm-test
     command: --watch
     user: "1000"
+    environment:
+      - HOME=/tmp/home
+
+  watch_api_server_unit_tests:
+    image: mcr.microsoft.com/dotnet/sdk:6.0
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: dotnet watch test --project Apis/Main.Tests/UnitPlanner.Apis.Main.Tests.csproj
+    user: "1000"
+    environment:
+      - HOME=/tmp/home
+
+  watch_auth_service_unit_tests:
+    image: mcr.microsoft.com/dotnet/sdk:6.0
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: dotnet watch test --project Services/Tests/Authentication.Tests/UnitPlanner.Services.Authentication.Tests.csproj
+    user: "1000"
+    environment:
+      - HOME=/tmp/home
+
+  watch_capwatch_service_unit_tests:
+    image: mcr.microsoft.com/dotnet/sdk:6.0
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: dotnet watch test --project Services/Tests/Capwatch.Tests/UnitPlanner.Services.Capwatch.Tests.csproj
+    user: "1000"
+    environment:
+      - HOME=/tmp/home
+
+  watch_files_service_unit_tests:
+    image: mcr.microsoft.com/dotnet/sdk:6.0
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: dotnet watch test --project Services/Tests/Files.Tests/UnitPlanner.Services.Files.Tests.csproj
+    user: "1000"
+    environment:
+      - HOME=/tmp/home
+
+  watch_graph_service_unit_tests:
+    image: mcr.microsoft.com/dotnet/sdk:6.0
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: dotnet watch test --project Services/Tests/Graph.Tests/UnitPlanner.Services.Graph.Tests.csproj
+    user: "1000"
+    environment:
+      - HOME=/tmp/home
+
+  cypress_tests:
+    image: cypress/included:9.2.0
+    volumes:
+      - ./e2e:/e2e
+    working_dir: /e2e
+    environment:
+      - CYPRESS_BASE_URL=http://client_proxy
+    networks:
+      - dev_network
+    depends_on:
+      - client_proxy
+
+  cypress_test_runner_linux:
+    image: cypress/included:9.2.0
+    volumes:
+      - ./e2e:/e2e
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    working_dir: /e2e
+    environment:
+      - CYPRESS_BASE_URL=http://client_proxy
+      - DISPLAY=:0
+    command: open
+    networks:
+      - dev_network
+    depends_on:
+      - client_proxy
 
 volumes:
   db-data:

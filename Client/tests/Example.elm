@@ -1,13 +1,11 @@
 module Example exposing (..)
 
+import ConnectionTest exposing (..)
 import Expect exposing (Expectation)
 import Fuzz exposing (Fuzzer, int, list, string)
 import Html exposing (button, div, span, text)
 import Html.Attributes exposing (style)
 import Html.Events exposing (onClick)
-import Http exposing (Error)
-import Json.Decode as D
-import Main exposing (..)
 import Test exposing (..)
 
 

@@ -11,5 +11,8 @@
   "bugs": {
     "url": "https://github.com/cap-md089/UnitPlannerv7/issues"
   },
-  "homepage": "https://github.com/cap-md089/UnitPlannerv7#readme"
+  "homepage": "https://github.com/cap-md089/UnitPlannerv7#readme",
+  "dependencies": {
+    "cypress": "^9.2.0"
+  }
 }

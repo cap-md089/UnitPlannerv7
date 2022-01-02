@@ -38,4 +38,4 @@ cd Client
 elm reactor --port=8000 > /dev/null &
 cd $(git rev-parse --show-toplevel)
 
-nginx -c $PWD/Client/nginx/github-actions.conf > /dev/null
+sudo nginx -c $PWD/Client/nginx/github-actions.conf > /dev/null

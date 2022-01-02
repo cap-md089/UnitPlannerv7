@@ -32,7 +32,7 @@ services:
       - ./Client/static:/var/www/html/static
       - ./Client/nginx:/etc/nginx/extra-conf
     ports:
-      - "80:80"
+      - "3000:80"
     depends_on:
       - client_reactor
       - api_server
@@ -246,7 +246,7 @@ services:
       - ./e2e:/e2e
     working_dir: /e2e
     environment:
-      - CYPRESS_BASE_URL=http://client_proxy
+      - CYPRESS_BASE_URL=http://client_proxy:3000
     networks:
       - dev_network
     depends_on:
@@ -260,7 +260,7 @@ services:
       - ~/.Xauthority:/root/.Xauthority:ro
     working_dir: /e2e
     environment:
-      - CYPRESS_BASE_URL=http://client_proxy
+      - CYPRESS_BASE_URL=http://client_proxy:3000
       - DISPLAY=:0
       - XAUTHORITY=/root/.Xauthority
     entrypoint: cypress

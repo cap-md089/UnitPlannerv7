@@ -34,5 +34,5 @@ jobs:
       - name: Run Cypress tests
         uses: cypress-io/github-action@v2
         with:
-          build: docker-compose build client_proxy client_reactor api_server authentication_dev capwatch_dev files_dev graph_dev
+          build: docker-compose build client_proxy client_reactor api_server authentication_dev capwatch_dev files_dev graph_dev db
           start: docker-compose up client_proxy

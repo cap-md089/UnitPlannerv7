@@ -34,7 +34,10 @@ jobs:
       - name: Start system under test
         run: |
           docker-compose build client_proxy client_reactor api_server authentication_dev capwatch_dev files_dev graph_dev db
-          docker-compose up client_proxy client_reactor api_server authentication_dev capwatch_dev files_dev graph_dev db
+          docker-compose up -d client_proxy client_reactor api_server authentication_dev capwatch_dev files_dev graph_dev db
 
       - name: Run Cypress tests
         uses: cypress-io/github-action@v2
+
+      - name: Close everything down
+        run: docker-compose down

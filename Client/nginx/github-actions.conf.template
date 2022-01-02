@@ -45,4 +45,6 @@ http {
 
         listen ${PROXY_PORT};
     }
+
+    error_log logs/error.log warn;
 }

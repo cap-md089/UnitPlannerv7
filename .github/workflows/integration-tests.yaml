@@ -30,16 +30,21 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Start system under test
-        run: |
-          docker-compose build client_proxy client_reactor api_server authentication_dev capwatch_dev files_dev graph_dev db
-          docker-compose up -d client_proxy client_reactor api_server authentication_dev capwatch_dev files_dev graph_dev db
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: "6.0"
+
+      - uses: JorelAli/setup-elm@v1
+        with:
+          elm-version: 0.19.1
 
       - name: Run Cypress tests
         uses: cypress-io/github-action@v2
         continue-on-error: true
         with:
           record: true
+          build: dotnet build
+          start: scripts/run-test.sh
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

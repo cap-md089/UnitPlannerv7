@@ -24,7 +24,7 @@ builder.Services.AddGrpc();
 
 builder.WebHost.ConfigureKestrel(so =>
 {
-    so.ListenAnyIP(5000, options =>
+    so.ListenAnyIP(5010, options =>
     {
         options.Protocols = HttpProtocols.Http2;
     });

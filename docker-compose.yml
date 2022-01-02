@@ -1,22 +1,23 @@
 # docker-compose.yml: Used to define how a development environment works and is set up
 #
 # Copyright (C) 2021 Andrew Rioux
-# 
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
 # published by the Free Software Foundation, either version 3 of the
 # License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Affero General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 version: "3.8"
 services:
+  # Development services
   client_proxy:
     build:
       context: .
@@ -31,7 +32,7 @@ services:
       - ./Client/static:/var/www/html/static
       - ./Client/nginx:/etc/nginx/extra-conf
     ports:
-      - '80:80'
+      - "80:80"
     depends_on:
       - client_reactor
       - api_server
@@ -45,21 +46,22 @@ services:
       dockerfile: Client/Dockerfile
     working_dir: /app
     expose:
-      - '8000'
+      - "8000"
     ports:
-      - '8000:8000'
+      - "8000:8000"
     volumes:
       - ./Client:/app
     command: reactor --port=8000
     networks:
       - dev_network
+    user: "1000"
 
   api_server:
     image: mcr.microsoft.com/dotnet/sdk:6.0
     ports:
-      - '5000:5000'
+      - "5000:5000"
     expose:
-      - '5000'
+      - "5000"
     depends_on:
       - db
       - authentication_dev
@@ -79,11 +81,12 @@ services:
     command: dotnet watch run --project Apis/Main/UnitPlanner.Apis.Main.csproj < echo 'a'
     networks:
       - dev_network
+    user: "1000"
 
   authentication_dev:
     image: mcr.microsoft.com/dotnet/sdk:6.0
     expose:
-      - '5000'
+      - "5000"
     depends_on:
       - db
     volumes:
@@ -95,11 +98,12 @@ services:
     command: dotnet watch run --project Services/Development/Authentication/UnitPlanner.Services.Authentication.Development.csproj < echo 'a'
     networks:
       - dev_network
+    user: "1000"
 
   capwatch_dev:
     image: mcr.microsoft.com/dotnet/sdk:6.0
     expose:
-      - '5000'
+      - "5000"
     depends_on:
       - db
     volumes:
@@ -111,11 +115,12 @@ services:
     command: dotnet watch run --project Services/Development/Capwatch/UnitPlanner.Services.Capwatch.Development.csproj < echo 'a'
     networks:
       - dev_network
+    user: "1000"
 
   files_dev:
     image: mcr.microsoft.com/dotnet/sdk:6.0
     expose:
-      - '5000'
+      - "5000"
     depends_on:
       - db
     volumes:
@@ -127,11 +132,12 @@ services:
     command: dotnet watch run --project Services/Development/Files/UnitPlanner.Services.Files.Development.csproj < echo 'a'
     networks:
       - dev_network
+    user: "1000"
 
   graph_dev:
     image: mcr.microsoft.com/dotnet/sdk:6.0
     expose:
-      - '5000'
+      - "5000"
     depends_on:
       - db
     volumes:
@@ -143,11 +149,12 @@ services:
     command: dotnet watch run --project Services/Development/Graph/UnitPlanner.Services.Graph.Development.csproj < echo 'a'
     networks:
       - dev_network
+    user: "1000"
 
   db:
     image: mysql:8.0.21
     ports:
-      - '3306:3306'
+      - "3306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=toor
       - MYSQL_DATABASE=UnitPlannerV7
@@ -160,14 +167,21 @@ services:
     image: mysql:8.0.21
     entrypoint: mysql
     command: --user=root --password=toor --host=db
-    secrets:
-      - mysql_root_password
     networks:
       - dev_network
 
-secrets:
-  mysql_root_password:
-    file: ./keys/mysql_root_password
+  # Test services
+  watch_client_unit_tests:
+    build:
+      context: .
+      target: base
+      dockerfile: Client/Dockerfile
+    working_dir: /app
+    volumes:
+      - ./Client:/app
+    entrypoint: /usr/local/bin/elm-test
+    command: --watch
+    user: "1000"
 
 volumes:
   db-data:

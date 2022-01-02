@@ -1,0 +1,65 @@
+# build-and-test.yaml: Describes the GitHub action that
+#
+# Copyright (C) 2021 Andrew Rioux
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+name: Build and Test
+
+on:
+  pull_request:
+    branches:
+      - master
+
+  push:
+
+jobs:
+  unit-test-server:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: "6.0"
+
+      - name: Run server test suite
+        run: dotnet test
+
+  unit-test-client:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Elm
+        uses: JorelAli/setup-elm@v1
+        with:
+          elm-version: 0.19.1
+
+      - name: Run client test suite
+        steps: |
+          mkdir $PWD/.npm-global
+          npm config set prefix '$PWD/.npm-global'
+          npm install --global elm-test
+          cd Client
+          $PWD/.npm-global/bin/elm-test
+
+  integration-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run integration tests

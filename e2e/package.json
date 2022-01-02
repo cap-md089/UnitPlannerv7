@@ -1,0 +1,15 @@
+{
+  "name": "e2e",
+  "version": "1.0.0",
+  "description": "End to end tests for UnitPlanner v7",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cap-md089/UnitPlannerv7.git"
+  },
+  "author": "Andrew Rioux",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/cap-md089/UnitPlannerv7/issues"
+  },
+  "homepage": "https://github.com/cap-md089/UnitPlannerv7#readme"
+}

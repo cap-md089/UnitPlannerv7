@@ -157,10 +157,10 @@ services:
     environment:
       - ASPNETCORE_URLS=http://0.0.0.0:5000
       - ASPNETCORE_ENVIRONMENT=Development
-      - SERVICE_AUTH_URL=http://authentication_dev:5000
-      - SERVICE_CAPWATCH_URL=http://capwatch_dev:5000
-      - SERVICE_FILES_URL=http://files_dev:5000
-      - SERVICE_GRAPH_URL=http://graph_dev:5000
+      - SERVICE_AUTH_URL=http://authentication_dev:5010
+      - SERVICE_CAPWATCH_URL=http://capwatch_dev:5020
+      - SERVICE_FILES_URL=http://files_dev:5030
+      - SERVICE_GRAPH_URL=http://graph_dev:5040
       - HOME=/tmp/home
     command: dotnet watch --project Apis/Main/UnitPlanner.Apis.Main.csproj run -c Release < echo 'a'
     networks:

@@ -18,6 +18,11 @@
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using UnitPlanner.Services.Authentication.Development.Services;
 
+foreach (var arg in args)
+{
+    Console.WriteLine(arg);
+}
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddGrpc();

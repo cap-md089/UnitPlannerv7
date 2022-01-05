@@ -15,6 +15,11 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using Microsoft.EntityFrameworkCore;
+
+using UnitPlanner.Apis.Main.Data;
+using UnitPlanner.Apis.Main.Models;
+using UnitPlanner.Apis.Main.Services;
 using UnitPlanner.Services.Authentication.Protos;
 using UnitPlanner.Services.Capwatch.Protos;
 using UnitPlanner.Services.Files.Protos;
@@ -25,26 +30,42 @@ AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddGrpcClient<AuthGreeter.AuthGreeterClient>(o =>
-{
-    o.Address = new Uri(Environment.GetEnvironmentVariable("SERVICE_AUTH_URL")!);
-});
+    o.Address = new Uri(Environment.GetEnvironmentVariable("SERVICE_AUTH_URL")!));
 builder.Services.AddGrpcClient<CapwatchGreeter.CapwatchGreeterClient>(o =>
-{
-    o.Address = new Uri(Environment.GetEnvironmentVariable("SERVICE_CAPWATCH_URL")!);
-});
+    o.Address = new Uri(Environment.GetEnvironmentVariable("SERVICE_CAPWATCH_URL")!));
 builder.Services.AddGrpcClient<FilesGreeter.FilesGreeterClient>(o =>
-{
-    o.Address = new Uri(Environment.GetEnvironmentVariable("SERVICE_FILES_URL")!);
-});
+    o.Address = new Uri(Environment.GetEnvironmentVariable("SERVICE_FILES_URL")!));
 builder.Services.AddGrpcClient<GraphGreeter.GraphGreeterClient>(o =>
-{
-    o.Address = new Uri(Environment.GetEnvironmentVariable("SERVICE_GRAPH_URL")!);
-});
+    o.Address = new Uri(Environment.GetEnvironmentVariable("SERVICE_GRAPH_URL")!));
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddDbContext<UnitPlannerDbContext>(options =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("MainDB");
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+});
+builder.Services.AddTransient<IUnitsService, UnitsService>();
+builder.Services.AddTransient<IEventsService, EventsService>();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<UnitPlannerDbContext>();
+        context.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred creating the DB.");
+
+        throw;
+    }
+}
 
 if (app.Environment.IsDevelopment())
 {

@@ -20,22 +20,33 @@ set -eux
 
 cd $(git rev-parse --show-toplevel)
 
+sudo systemctl start mysql.service
+mkdir Client/out
+
 export PROXY_NAME=*.localunitplanner.org
 export PROXY_PORT=3000
 export API_SERVER_URL=http://localhost:5000
 export ELM_REACTOR_URL=http://localhost:8000
 export PROJECT_STATIC_DIR=$PWD/Client/static
+export HTML_FILE_LOCATION=$PWD/Client/static/webmasterdashboard.html
+export E2E_TEST_SEED_SERVICE=http://localhost:4090
+export SERVICE_AUTH_URL=http://localhost:5010
+export SERVICE_CAPWATCH_URL=http://localhost:5020
+export SERVICE_FILES_URL=http://localhost:5030
+export SERVICE_GRAPH_URL=http://localhost:5040
+export ConnectionStrings__MainDB=server=127.0.0.1;uid=root;password=root;database=test
 
-envsubst '$PROXY_NAME,$PROXY_PORT,$API_SERVER_URL,$ELM_REACTOR_URL,$PROJECT_STATIC_DIR' < $PWD/Client/nginx/github-actions.conf.template > $PWD/Client/nginx/github-actions.conf
+envsubst '$PROXY_NAME,$PROXY_PORT,$API_SERVER_URL,$ELM_REACTOR_URL,$PROJECT_STATIC_DIR,$HTML_FILE_LOCATION' < $PWD/Client/nginx/github-actions.conf.template > $PWD/Client/nginx/github-actions.conf
 
 dotnet run --project Services/Development/Authentication/UnitPlanner.Services.Authentication.Development.csproj > /dev/null &
 dotnet run --project Services/Development/Capwatch/UnitPlanner.Services.Capwatch.Development.csproj > /dev/null &
 dotnet run --project Services/Development/Files/UnitPlanner.Services.Files.Development.csproj > /dev/null &
 dotnet run --project Services/Development/Graph/UnitPlanner.Services.Graph.Development.csproj > /dev/null &
+dotnet run --project Apis/Main.IntegrationTests/UnitPlanner.Apis.Main.IntegrationTests.csproj > /dev/null &
 dotnet run --project Apis/Main/UnitPlanner.Apis.Main.csproj > /dev/null &
 
 cd Client
-elm reactor --port=8000 > /dev/null &
+elm make --optimize --output=static/out/WebmasterDashboard.js
 cd $(git rev-parse --show-toplevel)
 
 sudo nginx -c $PWD/Client/nginx/github-actions.conf > /dev/null

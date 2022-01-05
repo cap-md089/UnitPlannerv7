@@ -18,19 +18,19 @@
 
 FROM node:16-alpine AS base
 
-RUN apk add curl && \
+RUN apk add curl jq && \
     curl -L -o elm.gz https://github.com/elm/compiler/releases/download/0.19.1/binary-for-linux-64-bit.gz && \
     gunzip elm.gz && \
     chmod +x elm && \
     mv elm /usr/bin && \
     apk del curl && \
-    npm i -g elm-test elm-format
+    npm i -g elm-test elm-format elm-live
 
-ENTRYPOINT [ "/usr/bin/elm" ]
+ENTRYPOINT [ "/usr/local/bin/elm-live" ]
 
 FROM nginx AS development-proxy
 
-CMD bash -c "envsubst '\$PROXY_NAME,\$PROXY_PORT,\$API_SERVER_URL,\$ELM_REACTOR_URL' < /etc/nginx/extra-conf/development.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+CMD bash -c "envsubst '\$PROXY_NAME,\$PROXY_PORT,\$API_SERVER_URL,\$ELM_REACTOR_URL,\$E2E_TEST_SEED_SERVICE' < /etc/nginx/extra-conf/development.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
 
 FROM base AS build
 
@@ -38,12 +38,18 @@ WORKDIR /app
 
 COPY Client /app
 
-RUN elm make -o /app/index.html Client/src/Main.elm
+RUN elm make --optimize --output=/app/WebmasterDashboard.js Client/src/WebmasterDashboard.elm
+RUN elm make --optimize --output=/app/Main.js Client/src/Main.elm
 
 FROM nginx AS production
 
 COPY Client/static /var/www/html/static
-COPY Client/nginx/production.conf.template /etc/nginx/extra-conf/production.conf.template
-COPY --from=build /app/index.html /var/www/html/index.html
+COPY Client/nginx/production.conf /etc/nginx/conf.d/default.conf
 
-CMD bash -c "envsubst '\$PROXY_NAME,\$PROXY_PORT,\$API_SERVER_URL,\$ELM_REACTOR_URL' < /etc/nginx/extra-conf/production.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+COPY --from=build /app/WebmasterDashboard.js /var/www/html/out/WebmasterDashboard.js
+COPY --from=build /app/Main.js /var/www/html/out/Main.js
+
+COPY Client/static/webmasterdashboard.html /var/www/html/webmasterdashboard.html
+COPY Client/static/main.html /var/www/html/main.html
+
+CMD nginx -g 'daemon off;'

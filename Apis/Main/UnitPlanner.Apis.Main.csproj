@@ -8,6 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.1">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.1">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.40.0" />
   </ItemGroup>
@@ -20,10 +30,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="Controllers\ConnectionTestController.cs" />
-    <Compile Include="Controllers\WeatherForecastController.cs" />
+    <Compile Include="Controllers\*.cs" />
+    <Compile Include="Data\*.cs" />
+    <Compile Include="Models\*.cs" />
+    <Compile Include="Services\*.cs" />
+    <Compile Include="Migrations\*.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="WeatherForecast.cs" />
   </ItemGroup>
 
 </Project>

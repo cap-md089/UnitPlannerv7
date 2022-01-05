@@ -27,19 +27,67 @@ services:
       - PROXY_NAME=*.localunitplanner.org
       - PROXY_PORT=80
       - API_SERVER_URL=http://api_server:5000
-      - ELM_REACTOR_URL=http://client_reactor:8000
+      - ELM_REACTOR_URL=http://client_live:8000
+      - E2E_TEST_SEED_SERVICE=http://integration_tests_seed_service:4090
+    volumes:
+      - ./Client/static:/var/www/html/static
+      - ./Client/nginx:/etc/nginx/extra-conf
+    ports:
+      - "80:80"
+    depends_on:
+      - client_live
+      - api_server
+      - integration_tests_seed_service
+    networks:
+      - dev_network
+
+  webmaster_dashboard_proxy:
+    build:
+      context: .
+      target: development-proxy
+      dockerfile: Client/Dockerfile
+    environment:
+      - PROXY_NAME=*.localunitplanner.org
+      - PROXY_PORT=80
+      - API_SERVER_URL=http://api_server:5000
+      - ELM_REACTOR_URL=http://webmaster_dashboard_live:8000
+      - E2E_TEST_SEED_SERVICE=http://integration_tests_seed_service:4090
     volumes:
       - ./Client/static:/var/www/html/static
       - ./Client/nginx:/etc/nginx/extra-conf
     ports:
       - "3000:80"
     depends_on:
-      - client_reactor
+      - webmaster_dashboard_live
       - api_server
+      - integration_tests_seed_service
     networks:
       - dev_network
 
-  client_reactor:
+  reactor_proxy:
+    build:
+      context: .
+      target: development-proxy
+      dockerfile: Client/Dockerfile
+    environment:
+      - PROXY_NAME=*.localunitplanner.org
+      - PROXY_PORT=80
+      - API_SERVER_URL=http://api_server:5000
+      - ELM_REACTOR_URL=http://client_reactor:8000
+      - E2E_TEST_SEED_SERVICE=http://integration_tests_seed_service:4090
+    volumes:
+      - ./Client/static:/var/www/html/static
+      - ./Client/nginx:/etc/nginx/extra-conf
+    ports:
+      - "2999:80"
+    depends_on:
+      - client_reactor
+      - api_server
+      - integration_tests_seed_service
+    networks:
+      - dev_network
+
+  client_live:
     build:
       context: .
       target: base
@@ -51,6 +99,41 @@ services:
       - "8000:8000"
     volumes:
       - ./Client:/app
+    command: src/Main.elm --host=0.0.0.0 --pushstate -- --debug
+    networks:
+      - dev_network
+    user: "1000"
+
+  webmaster_dashboard_live:
+    build:
+      context: .
+      target: base
+      dockerfile: Client/Dockerfile
+    working_dir: /app
+    expose:
+      - "8000"
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./Client:/app
+    command: src/WebmasterDashboard.elm --host=0.0.0.0 --pushstate -- --debug
+    networks:
+      - dev_network
+    user: "1000"
+
+  client_reactor:
+    build:
+      context: .
+      target: base
+      dockerfile: Client/Dockerfile
+    working_dir: /app
+    expose:
+      - "8000"
+    ports:
+      - "7999:8000"
+    volumes:
+      - ./Client:/app
+    entrypoint: /usr/bin/elm
     command: reactor --port=8000
     networks:
       - dev_network
@@ -87,7 +170,7 @@ services:
   authentication_dev:
     image: mcr.microsoft.com/dotnet/sdk:6.0
     expose:
-      - "5000"
+      - "5010"
     depends_on:
       - db
     volumes:
@@ -104,7 +187,7 @@ services:
   capwatch_dev:
     image: mcr.microsoft.com/dotnet/sdk:6.0
     expose:
-      - "5000"
+      - "5020"
     depends_on:
       - db
     volumes:
@@ -121,7 +204,7 @@ services:
   files_dev:
     image: mcr.microsoft.com/dotnet/sdk:6.0
     expose:
-      - "5000"
+      - "5030"
     depends_on:
       - db
     volumes:
@@ -138,7 +221,7 @@ services:
   graph_dev:
     image: mcr.microsoft.com/dotnet/sdk:6.0
     expose:
-      - "5000"
+      - "5040"
     depends_on:
       - db
     volumes:
@@ -153,7 +236,7 @@ services:
     user: "1000"
 
   db:
-    image: mysql:8.0.21
+    image: mysql:8.0.26
     ports:
       - "3306:3306"
     environment:
@@ -165,12 +248,21 @@ services:
       - dev_network
 
   dbsh:
-    image: mysql:8.0.21
+    image: mysql:8.0.26
     entrypoint: mysql
     command: --user=root --password=toor --host=db
     networks:
       - dev_network
-
+  
+  dev_shell:
+    build: .
+    working_dir: /app
+    volumes:
+      - .:/app
+    networks:
+      - dev_network
+    user: "1000"
+    
   # Test services
   watch_client_unit_tests:
     build:
@@ -236,7 +328,25 @@ services:
     environment:
       - HOME=/tmp/home
 
-  cypress_tests:
+  # Integration/end to end test services
+  integration_tests_seed_service:
+    image: mcr.microsoft.com/dotnet/sdk:6.0
+    expose:
+      - "4090"
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    working_dir: /app
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - HOME=/tmp/home
+    command: dotnet run --project Apis/Main.IntegrationTests/UnitPlanner.Apis.Main.IntegrationTests.csproj < echo 'a'
+    networks:
+      - dev_network
+    user: "1000"
+
+  cypress_tests_client:
     image: cypress/included:9.2.0
     volumes:
       - .:/e2e
@@ -247,10 +357,42 @@ services:
       - dev_network
     depends_on:
       - client_proxy
+      - integration_tests_seed_service
     user: "1000"
+    command: --spec cypress/integration/main/*.spec.js
 
-  cypress_test_runner_linux:
-    image: cypress/included:9.0.0
+  cypress_tests_webmaster_dashboard:
+    image: cypress/included:9.2.0
+    volumes:
+      - .:/e2e
+    working_dir: /e2e
+    environment:
+      - CYPRESS_BASE_URL=http://webmaster_dashboard_proxy
+    networks:
+      - dev_network
+    depends_on:
+      - webmaster_dashboard_proxy
+      - integration_tests_seed_service
+    user: "1000"
+    command: --spec cypress/integration/webmaster_dashboard/*.spec.js
+
+  cypress_tests_reactor:
+    image: cypress/included:9.2.0
+    volumes:
+      - .:/e2e
+    working_dir: /e2e
+    environment:
+      - CYPRESS_BASE_URL=http://reactor_proxy
+    networks:
+      - dev_network
+    depends_on:
+      - client_proxy
+      - integration_tests_seed_service
+    user: "1000"
+    command: --spec cypress/integration/reactor/*.spec.js
+
+  cypress_test_runner_client_linux:
+    image: cypress/included:9.2.0
     volumes:
       - .:/e2e
       - /tmp/.X11-unix:/tmp/.X11-unix
@@ -267,6 +409,47 @@ services:
       - dev_network
     depends_on:
       - client_proxy
+      - integration_tests_seed_service
+
+  cypress_test_runner_webmaster_dashboard_linux:
+    image: cypress/included:9.2.0
+    volumes:
+      - .:/e2e
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ~/.Xauthority:/root/.Xauthority:ro
+    working_dir: /e2e
+    environment:
+      - CYPRESS_BASE_URL=http://webmaster_dashboard_proxy
+      - DISPLAY=:0
+      - XAUTHORITY=/root/.Xauthority
+    entrypoint: cypress
+    command: open --project .
+    user: "1000"
+    networks:
+      - dev_network
+    depends_on:
+      - webmaster_dashboard_proxy
+      - integration_tests_seed_service
+
+  cypress_test_runner_reactor_linux:
+    image: cypress/included:9.2.0
+    volumes:
+      - .:/e2e
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ~/.Xauthority:/root/.Xauthority:ro
+    working_dir: /e2e
+    environment:
+      - CYPRESS_BASE_URL=http://reactor_proxy
+      - DISPLAY=:0
+      - XAUTHORITY=/root/.Xauthority
+    entrypoint: cypress
+    command: open --project .
+    user: "1000"
+    networks:
+      - dev_network
+    depends_on:
+      - reactor_proxy
+      - integration_tests_seed_service
 
 volumes:
   db-data:

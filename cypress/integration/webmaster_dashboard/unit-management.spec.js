@@ -1,6 +1,6 @@
-// WeatherForecast.cs: A data structure used as an example to test comms
-// 
-// Copyright (C) 2021 Andrew Rioux
+// unit-management.spec.js: Integration tests for creating and managing units
+//
+// Copyright (C) 2022 Andrew Rioux
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -15,13 +15,26 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace UnitPlanner.Apis.Main;
+describe('unit management', () => {
+    it('should create a new unit', () => {
+        cy.request('POST', '/api/seed/clear');
 
-public class WeatherForecast
-{
-    public DateTime Date { get; set; }
+        cy.visit('/');
 
-    public int TemperatureC { get; set; }
+        cy.contains('New unit').click();
 
-    public string? Summary { get; set; }
-}
+        cy.wait(300);
+
+        const newUnitId = 'md089';
+
+        cy.get('#new-unit-form-id-input')
+            .should('be.visible')
+            .type(newUnitId);
+
+        cy.contains('Submit').click();
+
+        cy.visit('/');
+
+        cy.contains(newUnitId);
+    });
+});

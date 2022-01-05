@@ -1,4 +1,4 @@
-# development.conf.template: Template to proxy API requests and static files
+# github-actions-reactor.conf.template: Template to proxy API requests and static files
 #
 # Copyright (C) 2021 Andrew Rioux
 # 

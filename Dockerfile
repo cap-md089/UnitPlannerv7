@@ -1,5 +1,4 @@
-#!/bin/sh
-# run-tests.sh: helper script to run all the tests in this repository
+# Dockerfile: Used to provide common tools and installation targets
 #
 # Copyright (C) 2022 Andrew Rioux
 # 
@@ -16,10 +15,15 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-cd $(git rev-parse --show-toplevel)
+FROM mcr.microsoft.com/dotnet/sdk:6.0
 
-docker-compose run --entrypoint=/usr/local/bin/elm-test watch_client_unit_tests
+RUN useradd dev && \
+    mkdir -p /home/dev && \
+    chown -R dev /home/dev
+USER dev
 
-docker run --volume=$PWD:/app --workdir=/app --user=1000 --env=HOME=/tmp/home mcr.microsoft.com/dotnet/sdk:6.0 dotnet test
+RUN dotnet tool install --global dotnet-ef
 
-docker-compose run cypress_tests
+ENV PATH=$PATH:/home/dev/.dotnet/tools
+
+CMD [ "/bin/bash" ]

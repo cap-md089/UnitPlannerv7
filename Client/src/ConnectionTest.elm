@@ -1,4 +1,4 @@
--- Main.elm: Acts as the main page for the user facing website
+-- ConnectionTest.elm: Provides a good integration test to make sure services are able to connect
 --
 -- Copyright (C) 2021 Andrew Rioux
 --
@@ -19,7 +19,6 @@
 module ConnectionTest exposing (..)
 
 import Browser
-import Data.WeatherForecast exposing (..)
 import Html exposing (Html, button, div, node, span, text)
 import Html.Attributes exposing (attribute, style)
 import Html.Events exposing (onClick)
@@ -47,8 +46,7 @@ main =
 
 
 type alias Model =
-    { data : Maybe (Result Error (List WeatherForecast))
-    , authenticationGood : Maybe Bool
+    { authenticationGood : Maybe Bool
     , capwatchGood : Maybe Bool
     , filesGood : Maybe Bool
     , graphGood : Maybe Bool
@@ -57,31 +55,20 @@ type alias Model =
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( { data = Maybe.Nothing
-      , authenticationGood = Maybe.Nothing
+    ( { authenticationGood = Maybe.Nothing
       , capwatchGood = Maybe.Nothing
       , filesGood = Maybe.Nothing
       , graphGood = Maybe.Nothing
       }
-    , getWeatherForecast ReceivedWeatherForecast
+    , Cmd.none
     )
-
-
-getWeatherForecast : (Result Error (List WeatherForecast) -> msg) -> Cmd msg
-getWeatherForecast msg =
-    Http.get
-        { url = "/api/WeatherForecast"
-        , expect = Http.expectJson msg (D.list weatherForecastDecoder)
-        }
-
 
 
 -- UPDATE
 
 
 type Msg
-    = ReceivedWeatherForecast (Result Http.Error (List WeatherForecast))
-    | SendTestAuthenticationMsg
+    = SendTestAuthenticationMsg
     | SendTestCapwatchMsg
     | SendTestFilesMsg
     | SendTestGraphMsg
@@ -94,9 +81,6 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        ReceivedWeatherForecast res ->
-            ( { model | data = Maybe.Just res }, Cmd.none )
-
         SendTestAuthenticationMsg ->
             ( model, testAuthenticationMsg )
 
@@ -178,17 +162,6 @@ subscriptions _ =
 view : Model -> Browser.Document Msg
 view model =
     let
-        display =
-            case model.data of
-                Just (Ok _) ->
-                    div [] [ text "done" ]
-
-                Just (Err _) ->
-                    div [] [ text "error" ]
-
-                Nothing ->
-                    div [] [ text "loading" ]
-
         pageStyle =
             node "link"
                 [ attribute "rel" "stylesheet"
@@ -199,7 +172,6 @@ view model =
     { title = "page"
     , body =
         [ pageStyle
-        , display
         , testButton SendTestAuthenticationMsg model.authenticationGood
         , testButton SendTestCapwatchMsg model.capwatchGood
         , testButton SendTestFilesMsg model.filesGood

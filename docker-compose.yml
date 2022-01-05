@@ -162,7 +162,7 @@ services:
       - SERVICE_FILES_URL=http://files_dev:5000
       - SERVICE_GRAPH_URL=http://graph_dev:5000
       - HOME=/tmp/home
-    command: dotnet watch run --project Apis/Main/UnitPlanner.Apis.Main.csproj < echo 'a'
+    command: dotnet watch --project Apis/Main/UnitPlanner.Apis.Main.csproj run -c Release < echo 'a'
     networks:
       - dev_network
     user: "1000"
@@ -179,7 +179,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - HOME=/tmp/home
-    command: dotnet watch run --project Services/Development/Authentication/UnitPlanner.Services.Authentication.Development.csproj < echo 'a'
+    command: dotnet watch --project Services/Development/Authentication/UnitPlanner.Services.Authentication.Development.csproj run -c Release < echo 'a'
     networks:
       - dev_network
     user: "1000"
@@ -196,7 +196,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - HOME=/tmp/home
-    command: dotnet watch run --project Services/Development/Capwatch/UnitPlanner.Services.Capwatch.Development.csproj < echo 'a'
+    command: dotnet watch --project Services/Development/Capwatch/UnitPlanner.Services.Capwatch.Development.csproj run -c Release < echo 'a'
     networks:
       - dev_network
     user: "1000"
@@ -213,7 +213,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - HOME=/tmp/home
-    command: dotnet watch run --project Services/Development/Files/UnitPlanner.Services.Files.Development.csproj < echo 'a'
+    command: dotnet watch --project Services/Development/Files/UnitPlanner.Services.Files.Development.csproj run -c Release < echo 'a'
     networks:
       - dev_network
     user: "1000"
@@ -230,7 +230,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - HOME=/tmp/home
-    command: dotnet watch run --project Services/Development/Graph/UnitPlanner.Services.Graph.Development.csproj < echo 'a'
+    command: dotnet watch --project Services/Development/Graph/UnitPlanner.Services.Graph.Development.csproj run -c Release < echo 'a'
     networks:
       - dev_network
     user: "1000"

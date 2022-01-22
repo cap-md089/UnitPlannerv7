@@ -1,5 +1,3 @@
-// UnitController.cs: Interface for creating, enumerating, and managing units
-//
 // Copyright (C) 2022 Andrew Rioux
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -15,27 +13,28 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using Microsoft.AspNetCore.Mvc;
-using UnitPlanner.Apis.Main.Models;
-using UnitPlanner.Apis.Main.Services;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
-namespace UnitPlanner.Apis.Main.Controllers;
+namespace UnitPlanner.Apis.Main.Models;
 
-[ApiController]
-[Route("/api/{unitId}")]
-public class UnitController : ControllerBase
+[Table("CAPGroups")]
+public class CAPGroup : Account
 {
-    private readonly IUnitsService _unitsService;
+    public override string Type => "CAPGroup";
 
-    public UnitController(IUnitsService unitsService) =>
-        (_unitsService) = (unitsService);
+    public string WingId { get; set; } = null!;
+    [JsonIgnore]
+    public CAPWing Wing { get; set; } = null!;
 
-    [HttpPost]
-    public Task<Unit> CreateNew(string unitId) =>
-        _unitsService.CreateNewUnit(unitId);
+    public ICollection<CAPSquadron> Squadrons { get; set; } = null!;
 
-    [HttpGet]
-    [Route("/api")]
-    public Task<IEnumerable<Unit>> GetUnits() =>
-        _unitsService.GetUnits();
+    public ICollection<CAPActivity> Activities { get; set; } = null!;
+
+    public ICollection<AccountOrganizationMapping> Organizations { get; set; } = null!;
+
+    public override string ToString()
+    {
+        return $"Group; part of {WingId}";
+    }
 }

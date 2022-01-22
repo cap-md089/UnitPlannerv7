@@ -45,7 +45,7 @@ builder.Services.AddDbContext<UnitPlannerDbContext>(options =>
     var connectionString = builder.Configuration.GetConnectionString("MainDB");
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
-builder.Services.AddTransient<IUnitsService, UnitsService>();
+builder.Services.AddTransient<IAccountsService, AccountsService>();
 builder.Services.AddTransient<IEventsService, EventsService>();
 
 var app = builder.Build();

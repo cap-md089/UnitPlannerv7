@@ -43,23 +43,23 @@ public class ConnectionTestController : ControllerBase
         {
             switch (clientId)
             {
-                case 0 :
+                case 0:
                     await _authClient.SayHelloAsync(new AuthHelloRequest());
                     return true;
-                
-                case 1 :
+
+                case 1:
                     await _capwatchClient.SayHelloAsync(new CapwatchHelloRequest());
                     return true;
-                
-                case 2 :
+
+                case 2:
                     await _filesClient.SayHelloAsync(new FilesHelloRequest());
                     return true;
-                
-                case 3 :
+
+                case 3:
                     await _graphClient.SayHelloAsync(new GraphHelloRequest());
                     return true;
             }
-            
+
             return false;
         }
         catch

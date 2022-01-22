@@ -29,29 +29,31 @@ namespace UnitPlanner.Apis.Main.Tests;
 public class UnitService : DbBasedTest<UnitPlannerDbContext>
 {
     public UnitService()
-        : base ()
+        : base()
     {
-        using var context = new UnitPlannerDbContext(ContextOptions);
-
-        context.Database.EnsureDeleted();
-        context.Database.EnsureCreated();
     }
 
     [Fact]
-    public void Can_create_new_unit()
+    public void Can_create_new_squadron()
     {
         using var context = new UnitPlannerDbContext(ContextOptions);
 
         Clear(context);
 
-        Assert.Equal(0, context.Units.Count());
+        var wing = new CAPWing() { Id = "md001" };
+        var group = new CAPGroup() { Id = "md043" };
 
-        var service = new UnitsService(context);
+        context.Accounts.Add(wing);
+        context.Accounts.Add(group);
 
-        var result = service.CreateNewUnit("md089").Result;
+        Assert.Equal(2, context.Accounts.Count());
+
+        var service = new AccountsService(context);
+
+        var result = service.CreateNewSquadron(wing, group, "md089", new List<Models.NHQ.Organization>()).Result;
 
         Assert.Equal("md089", result.Id);
-        Assert.Equal(1, context.Units.Count());
+        Assert.Equal(1, context.Accounts.Count());
     }
 
     [Fact]
@@ -61,12 +63,12 @@ public class UnitService : DbBasedTest<UnitPlannerDbContext>
 
         Clear(context);
 
-        context.Units.Add(new Models.Unit() { Id = "md001" });
-        context.Units.Add(new Models.Unit() { Id = "md089" });
-        context.Units.Add(new Models.Unit() { Id = "md890" });
+        context.Accounts.Add(new CAPSquadron() { Id = "md001" });
+        context.Accounts.Add(new CAPSquadron() { Id = "md089" });
+        context.Accounts.Add(new CAPSquadron() { Id = "md890" });
         context.SaveChanges();
 
-        var service = new UnitsService(context);
+        var service = new AccountsService(context);
 
         var result = service.GetUnits().Result;
 
@@ -80,12 +82,12 @@ public class UnitService : DbBasedTest<UnitPlannerDbContext>
 
         Clear(context);
 
-        context.Units.Add(new Models.Unit() { Id = "md001" });
+        context.Accounts.Add(new CAPSquadron() { Id = "md001" });
         context.SaveChanges();
 
-        var service = new UnitsService(context);
+        var service = new AccountsService(context);
 
-        var result = service.GetUnit("md001").Result;
+        Account? result = service.GetUnit("md001").Result.Case as Account;
 
         Assert.Equal("md001", result?.Id);
     }

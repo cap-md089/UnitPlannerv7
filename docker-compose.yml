@@ -153,6 +153,7 @@ services:
       - graph_dev
     volumes:
       - .:/app
+      - '~:/home'
     working_dir: /app
     environment:
       - ASPNETCORE_URLS=http://0.0.0.0:5000
@@ -161,7 +162,7 @@ services:
       - SERVICE_CAPWATCH_URL=http://capwatch_dev:5020
       - SERVICE_FILES_URL=http://files_dev:5030
       - SERVICE_GRAPH_URL=http://graph_dev:5040
-      - HOME=/tmp/home
+      - HOME=/home
     command: dotnet watch --project Apis/Main/UnitPlanner.Apis.Main.csproj run -c Release < echo 'a'
     networks:
       - dev_network
@@ -175,10 +176,11 @@ services:
       - db
     volumes:
       - .:/app
+      - '~:/home'
     working_dir: /app
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - HOME=/tmp/home
+      - HOME=/home
     command: dotnet watch --project Services/Development/Authentication/UnitPlanner.Services.Authentication.Development.csproj run -c Release < echo 'a'
     networks:
       - dev_network
@@ -192,10 +194,11 @@ services:
       - db
     volumes:
       - .:/app
+      - '~:/home'
     working_dir: /app
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - HOME=/tmp/home
+      - HOME=/home
     command: dotnet watch --project Services/Development/Capwatch/UnitPlanner.Services.Capwatch.Development.csproj run -c Release < echo 'a'
     networks:
       - dev_network
@@ -209,10 +212,11 @@ services:
       - db
     volumes:
       - .:/app
+      - '~:/home'
     working_dir: /app
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - HOME=/tmp/home
+      - HOME=/home
     command: dotnet watch --project Services/Development/Files/UnitPlanner.Services.Files.Development.csproj run -c Release < echo 'a'
     networks:
       - dev_network
@@ -226,10 +230,11 @@ services:
       - db
     volumes:
       - .:/app
+      - '~:/home'
     working_dir: /app
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - HOME=/tmp/home
+      - HOME=/home
     command: dotnet watch --project Services/Development/Graph/UnitPlanner.Services.Graph.Development.csproj run -c Release < echo 'a'
     networks:
       - dev_network
@@ -241,7 +246,7 @@ services:
       - "3306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=toor
-      - MYSQL_DATABASE=UnitPlannerV7
+      - MYSQL_DATABASE=UnitPlannerv7
     volumes:
       - db-data:/var/lib/mysql
     networks:
@@ -259,6 +264,9 @@ services:
     working_dir: /app
     volumes:
       - .:/app
+      - '~:/home/host_dev'
+    environment:
+      - HOME=/home/host_dev
     networks:
       - dev_network
     user: "1000"
@@ -396,12 +404,12 @@ services:
     volumes:
       - .:/e2e
       - /tmp/.X11-unix:/tmp/.X11-unix
-      - ~/.Xauthority:/root/.Xauthority:ro
+      - ~/.Xauthority:/home/node/.Xauthority:ro
     working_dir: /e2e
     environment:
       - CYPRESS_BASE_URL=http://client_proxy
       - DISPLAY=:0
-      - XAUTHORITY=/root/.Xauthority
+      - XAUTHORITY=/home/node/.Xauthority
     entrypoint: cypress
     command: open --project .
     user: "1000"
@@ -416,12 +424,12 @@ services:
     volumes:
       - .:/e2e
       - /tmp/.X11-unix:/tmp/.X11-unix
-      - ~/.Xauthority:/root/.Xauthority:ro
+      - ~/.Xauthority:/home/node/.Xauthority:ro
     working_dir: /e2e
     environment:
       - CYPRESS_BASE_URL=http://webmaster_dashboard_proxy
       - DISPLAY=:0
-      - XAUTHORITY=/root/.Xauthority
+      - XAUTHORITY=/home/node/.Xauthority
     entrypoint: cypress
     command: open --project .
     user: "1000"
@@ -436,12 +444,12 @@ services:
     volumes:
       - .:/e2e
       - /tmp/.X11-unix:/tmp/.X11-unix
-      - ~/.Xauthority:/root/.Xauthority:ro
+      - ~/.Xauthority:/home/node/.Xauthority:ro
     working_dir: /e2e
     environment:
       - CYPRESS_BASE_URL=http://reactor_proxy
       - DISPLAY=:0
-      - XAUTHORITY=/root/.Xauthority
+      - XAUTHORITY=/home/node/.Xauthority
     entrypoint: cypress
     command: open --project .
     user: "1000"

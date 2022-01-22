@@ -1,5 +1,3 @@
-// Unit.cs: Represents a unit and the squadrons under them
-//
 // Copyright (C) 2022 Andrew Rioux
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -15,13 +13,34 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#nullable disable
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace UnitPlanner.Apis.Main.Models;
 
-public class Unit
+public abstract class Notification
 {
-    public string Id { get; set; }
+    public Guid Id { get; set; }
 
-    public ICollection<CalendarEvent> Events { get; set; }
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public DateTime Created { get; set; }
+
+    public bool Read { get; set; }
+
+    public NotificationData NotificationData { get; set; } = null!;
+}
+
+public class AdminNotification : Notification
+{
+    public Account Account { get; set; } = null!;
+}
+
+public class MemberNotification : Notification
+{
+    public Member Member { get; set; } = null!;
+}
+
+[Table("NotificationData")]
+public class NotificationData
+{
+    public Guid Id { get; set; }
 }

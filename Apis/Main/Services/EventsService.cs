@@ -23,20 +23,30 @@ namespace UnitPlanner.Apis.Main.Services;
 
 public interface IEventsService
 {
-    Task<CalendarEvent?> GetEvent(Unit unit, int id);
+    Task<CalendarEvent?> GetEvent(Account unit, Guid id);
 }
 
 public class EventsService : IEventsService
 {
     private readonly UnitPlannerDbContext _context;
-    private readonly IUnitsService _unitsService;
+    private readonly IAccountsService _unitsService;
 
-    public EventsService(UnitPlannerDbContext context, IUnitsService unitsService) =>
+    public EventsService(UnitPlannerDbContext context, IAccountsService unitsService) =>
         (_context, _unitsService) = (context, unitsService);
 
-    public Task<CalendarEvent?> GetEvent(Unit unit, int id) =>
-        _context.Entry(unit)
-            .Collection(u => u.Events)
+    public async Task<CalendarEvent?> GetEvent(Account unit, Guid id) =>
+        (await _context.Entry(unit)
+            .Collection(u => u.Calendars)
+            .Query()
+            .Include(c => c.Events)
+            .Where(c => c.Events.Any(e => e.Id == id))
+            .FirstOrDefaultAsync())?
+            .Events
+            .FirstOrDefault(e => e.Id == id);
+
+    public Task<CalendarEvent?> GetEvent(Calendar calendar, Guid id) =>
+        _context.Entry(calendar)
+            .Collection(c => c.Events)
             .Query()
             .Where(e => e.Id == id)
             .FirstOrDefaultAsync();

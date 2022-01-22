@@ -10756,8 +10756,12 @@ var $author$project$WebmasterDashboard$MainPageUpdate = function (a) {
 };
 var $author$project$WebmasterDashboard$NoPage = {$: 'NoPage'};
 var $author$project$WebmasterDashboard$Pages$MainPage$CloseNewUnitForm = {$: 'CloseNewUnitForm'};
+var $author$project$WebmasterDashboard$Pages$MainPage$CloseNewUnitResults = {$: 'CloseNewUnitResults'};
 var $author$project$WebmasterDashboard$Pages$MainPage$LoadedUnits = function (a) {
 	return {$: 'LoadedUnits', a: a};
+};
+var $author$project$WebmasterDashboard$Pages$MainPage$NewSquadron = function (a) {
+	return {$: 'NewSquadron', a: a};
 };
 var $author$project$WebmasterDashboard$Pages$MainPage$UnitEditModalUpdate = function (a) {
 	return {$: 'UnitEditModalUpdate', a: a};
@@ -10796,6 +10800,81 @@ var $author$project$Components$Modal$createModal = F2(
 				openState: $author$project$Components$Modal$Closed
 			});
 	});
+var $author$project$Data$Unit$CAPActivity = function (a) {
+	return {$: 'CAPActivity', a: a};
+};
+var $author$project$Data$Unit$CAPGroup = function (a) {
+	return {$: 'CAPGroup', a: a};
+};
+var $author$project$Data$Unit$CAPSquadron = function (a) {
+	return {$: 'CAPSquadron', a: a};
+};
+var $author$project$Data$Unit$CAPWing = function (a) {
+	return {$: 'CAPWing', a: a};
+};
+var $author$project$WebmasterDashboard$Pages$MainPage$UnitRequestResult = F4(
+	function (activityAccounts, wingAccounts, groupAccounts, squadronAccounts) {
+		return {activityAccounts: activityAccounts, groupAccounts: groupAccounts, squadronAccounts: squadronAccounts, wingAccounts: wingAccounts};
+	});
+var $author$project$Data$Unit$CAPActivityBody = F2(
+	function (id, hostId) {
+		return {hostId: hostId, id: id};
+	});
+var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom = $elm$json$Json$Decode$map2($elm$core$Basics$apR);
+var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required = F3(
+	function (key, valDecoder, decoder) {
+		return A2(
+			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
+			A2($elm$json$Json$Decode$field, key, valDecoder),
+			decoder);
+	});
+var $author$project$Data$Unit$capActivityDecoder = A3(
+	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+	'hostId',
+	$elm$json$Json$Decode$string,
+	A3(
+		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+		'id',
+		$elm$json$Json$Decode$string,
+		$elm$json$Json$Decode$succeed($author$project$Data$Unit$CAPActivityBody)));
+var $author$project$Data$Unit$CAPGroupBody = F2(
+	function (id, wingId) {
+		return {id: id, wingId: wingId};
+	});
+var $author$project$Data$Unit$capGroupDecoder = A3(
+	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+	'wingId',
+	$elm$json$Json$Decode$string,
+	A3(
+		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+		'id',
+		$elm$json$Json$Decode$string,
+		$elm$json$Json$Decode$succeed($author$project$Data$Unit$CAPGroupBody)));
+var $author$project$Data$Unit$CAPSquadronBody = F3(
+	function (id, wingId, groupId) {
+		return {groupId: groupId, id: id, wingId: wingId};
+	});
+var $author$project$Data$Unit$capSquadronDecoder = A3(
+	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+	'groupId',
+	$elm$json$Json$Decode$string,
+	A3(
+		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+		'wingId',
+		$elm$json$Json$Decode$string,
+		A3(
+			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+			'id',
+			$elm$json$Json$Decode$string,
+			$elm$json$Json$Decode$succeed($author$project$Data$Unit$CAPSquadronBody))));
+var $author$project$Data$Unit$CAPWingBody = function (id) {
+	return {id: id};
+};
+var $author$project$Data$Unit$capWingDecoder = A3(
+	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+	'id',
+	$elm$json$Json$Decode$string,
+	$elm$json$Json$Decode$succeed($author$project$Data$Unit$CAPWingBody));
 var $elm$http$Http$BadStatus_ = F2(
 	function (a, b) {
 		return {$: 'BadStatus_', a: a, b: b};
@@ -11044,38 +11123,52 @@ var $elm$http$Http$get = function (r) {
 	return $elm$http$Http$request(
 		{body: $elm$http$Http$emptyBody, expect: r.expect, headers: _List_Nil, method: 'GET', timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: r.url});
 };
-var $author$project$Data$Unit$Unit = function (id) {
-	return {id: id};
-};
-var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom = $elm$json$Json$Decode$map2($elm$core$Basics$apR);
-var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required = F3(
-	function (key, valDecoder, decoder) {
-		return A2(
-			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
-			A2($elm$json$Json$Decode$field, key, valDecoder),
-			decoder);
-	});
-var $author$project$Data$Unit$unitDecoder = A3(
-	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-	'id',
-	$elm$json$Json$Decode$string,
-	$elm$json$Json$Decode$succeed($author$project$Data$Unit$Unit));
 var $author$project$WebmasterDashboard$Pages$MainPage$getUnits = function (msg) {
+	var resultDecoder = A3(
+		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+		'squadronAccounts',
+		$elm$json$Json$Decode$list($author$project$Data$Unit$capSquadronDecoder),
+		A3(
+			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+			'groupAccounts',
+			$elm$json$Json$Decode$list($author$project$Data$Unit$capGroupDecoder),
+			A3(
+				$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+				'wingAccounts',
+				$elm$json$Json$Decode$list($author$project$Data$Unit$capWingDecoder),
+				A3(
+					$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+					'activityAccounts',
+					$elm$json$Json$Decode$list($author$project$Data$Unit$capActivityDecoder),
+					$elm$json$Json$Decode$succeed($author$project$WebmasterDashboard$Pages$MainPage$UnitRequestResult)))));
+	var msgDecoder = A2(
+		$elm$json$Json$Decode$map,
+		function (res) {
+			return _Utils_ap(
+				A2($elm$core$List$map, $author$project$Data$Unit$CAPActivity, res.activityAccounts),
+				_Utils_ap(
+					A2($elm$core$List$map, $author$project$Data$Unit$CAPWing, res.wingAccounts),
+					_Utils_ap(
+						A2($elm$core$List$map, $author$project$Data$Unit$CAPGroup, res.groupAccounts),
+						A2($elm$core$List$map, $author$project$Data$Unit$CAPSquadron, res.squadronAccounts))));
+		},
+		resultDecoder);
 	return $elm$http$Http$get(
 		{
-			expect: A2(
-				$elm$http$Http$expectJson,
-				msg,
-				$elm$json$Json$Decode$list($author$project$Data$Unit$unitDecoder)),
-			url: '/api'
+			expect: A2($elm$http$Http$expectJson, msg, msgDecoder),
+			url: '/api/unit'
 		});
 };
 var $author$project$WebmasterDashboard$Pages$MainPage$init = _Utils_Tuple2(
 	{
 		newUnitEditModal: A2($author$project$Components$Modal$createModal, $author$project$WebmasterDashboard$Pages$MainPage$CloseNewUnitForm, $author$project$WebmasterDashboard$Pages$MainPage$UnitEditModalUpdate),
-		newUnitForm: {id: ''},
+		newUnitForm: {
+			id: '',
+			unitSpecifics: $author$project$WebmasterDashboard$Pages$MainPage$NewSquadron(
+				{groupSelection: $elm$core$Maybe$Nothing, wingSelection: $elm$core$Maybe$Nothing})
+		},
 		newUnitResult: $elm$core$Maybe$Nothing,
-		newUnitResultsModal: A2($author$project$Components$Modal$createModal, $author$project$WebmasterDashboard$Pages$MainPage$CloseNewUnitForm, $author$project$WebmasterDashboard$Pages$MainPage$UnitResultModalUpdate),
+		newUnitResultsModal: A2($author$project$Components$Modal$createModal, $author$project$WebmasterDashboard$Pages$MainPage$CloseNewUnitResults, $author$project$WebmasterDashboard$Pages$MainPage$UnitResultModalUpdate),
 		sendCreateUnitCmd: false,
 		units: $elm$core$Maybe$Nothing
 	},
@@ -11537,34 +11630,101 @@ var $elm$url$Url$toString = function (url) {
 var $author$project$WebmasterDashboard$Pages$MainPage$FinishCreatingUnit = function (a) {
 	return {$: 'FinishCreatingUnit', a: a};
 };
-var $elm$http$Http$expectBytesResponse = F2(
-	function (toMsg, toResult) {
-		return A3(
-			_Http_expect,
-			'arraybuffer',
-			_Http_toDataView,
-			A2($elm$core$Basics$composeR, toResult, toMsg));
-	});
-var $elm$http$Http$expectWhatever = function (toMsg) {
+var $elm$json$Json$Decode$andThen = _Json_andThen;
+var $elm$json$Json$Decode$fail = _Json_fail;
+var $author$project$Data$Unit$decideOnDecoder = function (t) {
+	switch (t) {
+		case 'CAPActivity':
+			return A2($elm$json$Json$Decode$map, $author$project$Data$Unit$CAPActivity, $author$project$Data$Unit$capActivityDecoder);
+		case 'CAPWing':
+			return A2($elm$json$Json$Decode$map, $author$project$Data$Unit$CAPWing, $author$project$Data$Unit$capWingDecoder);
+		case 'CAPGroup':
+			return A2($elm$json$Json$Decode$map, $author$project$Data$Unit$CAPGroup, $author$project$Data$Unit$capGroupDecoder);
+		case 'CAPSquadron':
+			return A2($elm$json$Json$Decode$map, $author$project$Data$Unit$CAPSquadron, $author$project$Data$Unit$capSquadronDecoder);
+		default:
+			return $elm$json$Json$Decode$fail('Unknown account type: ' + t);
+	}
+};
+var $author$project$Data$Unit$accountDecoder = A2(
+	$elm$json$Json$Decode$andThen,
+	$author$project$Data$Unit$decideOnDecoder,
+	A2($elm$json$Json$Decode$field, 'type', $elm$json$Json$Decode$string));
+var $elm$json$Json$Encode$int = _Json_wrap;
+var $elm$http$Http$jsonBody = function (value) {
 	return A2(
-		$elm$http$Http$expectBytesResponse,
-		toMsg,
-		$elm$http$Http$resolve(
-			function (_v0) {
-				return $elm$core$Result$Ok(_Utils_Tuple0);
-			}));
+		_Http_pair,
+		'application/json',
+		A2($elm$json$Json$Encode$encode, 0, value));
 };
 var $elm$http$Http$post = function (r) {
 	return $elm$http$Http$request(
 		{body: r.body, expect: r.expect, headers: _List_Nil, method: 'POST', timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: r.url});
 };
-var $author$project$WebmasterDashboard$Pages$MainPage$createUnit = F2(
+var $author$project$WebmasterDashboard$Pages$MainPage$createGroup = F2(
 	function (unit, msg) {
 		return $elm$http$Http$post(
 			{
-				body: $elm$http$Http$emptyBody,
-				expect: $elm$http$Http$expectWhatever(msg),
-				url: '/api/' + unit.id
+				body: $elm$http$Http$jsonBody(
+					$elm$json$Json$Encode$object(
+						_List_fromArray(
+							[
+								_Utils_Tuple2(
+								'unitId',
+								$elm$json$Json$Encode$string(unit.unitId)),
+								_Utils_Tuple2(
+								'wingId',
+								$elm$json$Json$Encode$string(unit.wingId)),
+								_Utils_Tuple2(
+								'orgIds',
+								A2($elm$json$Json$Encode$list, $elm$json$Json$Encode$int, _List_Nil))
+							]))),
+				expect: A2($elm$http$Http$expectJson, msg, $author$project$Data$Unit$accountDecoder),
+				url: '/api/unit/group'
+			});
+	});
+var $author$project$WebmasterDashboard$Pages$MainPage$createSquadron = F2(
+	function (unit, msg) {
+		return $elm$http$Http$post(
+			{
+				body: $elm$http$Http$jsonBody(
+					$elm$json$Json$Encode$object(
+						_List_fromArray(
+							[
+								_Utils_Tuple2(
+								'unitId',
+								$elm$json$Json$Encode$string(unit.unitId)),
+								_Utils_Tuple2(
+								'wingId',
+								$elm$json$Json$Encode$string(unit.wingId)),
+								_Utils_Tuple2(
+								'groupId',
+								$elm$json$Json$Encode$string(unit.groupId)),
+								_Utils_Tuple2(
+								'orgIds',
+								A2($elm$json$Json$Encode$list, $elm$json$Json$Encode$int, _List_Nil))
+							]))),
+				expect: A2($elm$http$Http$expectJson, msg, $author$project$Data$Unit$accountDecoder),
+				url: '/api/unit/squadron'
+			});
+	});
+var $author$project$WebmasterDashboard$Pages$MainPage$createWing = F2(
+	function (unit, msg) {
+		return $elm$http$Http$post(
+			{
+				body: $elm$http$Http$jsonBody(
+					$elm$json$Json$Encode$object(
+						_List_fromArray(
+							[
+								_Utils_Tuple2(
+								'unitId',
+								$elm$json$Json$Encode$string(unit.unitId)),
+								_Utils_Tuple2(
+								'orgIds',
+								A2($elm$json$Json$Encode$list, $elm$json$Json$Encode$int, _List_Nil))
+							]))),
+				expect: A2($elm$http$Http$expectJson, msg, $author$project$Data$Unit$accountDecoder),
+				url: '/api/unit/wing'
 			});
 	});
 var $elm$core$Maybe$map = F2(
@@ -11747,7 +11907,11 @@ var $author$project$WebmasterDashboard$Pages$MainPage$update = F2(
 						model,
 						{
 							newUnitEditModal: $author$project$Components$Modal$startOpeningModal(model.newUnitEditModal),
-							newUnitForm: {id: ''}
+							newUnitForm: {
+								id: '',
+								unitSpecifics: $author$project$WebmasterDashboard$Pages$MainPage$NewSquadron(
+									{groupSelection: $elm$core$Maybe$Nothing, wingSelection: $elm$core$Maybe$Nothing})
+							}
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 'UpdateNewUnitForm':
@@ -11770,17 +11934,44 @@ var $author$project$WebmasterDashboard$Pages$MainPage$update = F2(
 				return A3($author$project$Components$Modal$update, handlers, modalUpdate, model.newUnitEditModal);
 			case 'CreateUnit':
 				var form = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{
-							newUnitEditModal: $author$project$Components$Modal$startClosingModal(model.newUnitEditModal),
-							newUnitResult: $elm$core$Maybe$Nothing
-						}),
-					A2($author$project$WebmasterDashboard$Pages$MainPage$createUnit, form, $author$project$WebmasterDashboard$Pages$MainPage$FinishCreatingUnit));
+				switch (form.$) {
+					case 'NewWingR':
+						var wingForm = form.a;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{
+									newUnitEditModal: $author$project$Components$Modal$startClosingModal(model.newUnitEditModal),
+									newUnitResult: $elm$core$Maybe$Nothing
+								}),
+							A2($author$project$WebmasterDashboard$Pages$MainPage$createWing, wingForm, $author$project$WebmasterDashboard$Pages$MainPage$FinishCreatingUnit));
+					case 'NewGroupR':
+						var groupForm = form.a;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{
+									newUnitEditModal: $author$project$Components$Modal$startClosingModal(model.newUnitEditModal),
+									newUnitResult: $elm$core$Maybe$Nothing
+								}),
+							A2($author$project$WebmasterDashboard$Pages$MainPage$createGroup, groupForm, $author$project$WebmasterDashboard$Pages$MainPage$FinishCreatingUnit));
+					default:
+						var squadronForm = form.a;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{
+									newUnitEditModal: $author$project$Components$Modal$startClosingModal(model.newUnitEditModal),
+									newUnitResult: $elm$core$Maybe$Nothing
+								}),
+							A2($author$project$WebmasterDashboard$Pages$MainPage$createSquadron, squadronForm, $author$project$WebmasterDashboard$Pages$MainPage$FinishCreatingUnit));
+				}
+			case 'DisabledCreateUnit':
+				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 			case 'FinishCreatingUnit':
 				var res = msg.a;
 				if (res.$ === 'Ok') {
+					var acc = res.a;
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
@@ -11789,8 +11980,7 @@ var $author$project$WebmasterDashboard$Pages$MainPage$update = F2(
 								units: A2(
 									$elm$core$Maybe$map,
 									$elm$core$Result$map(
-										$elm$core$List$cons(
-											{id: model.newUnitForm.id})),
+										$elm$core$List$cons(acc)),
 									model.units)
 							}),
 						$elm$core$Platform$Cmd$none);
@@ -17852,8 +18042,34 @@ var $author$project$Components$Modal$view = F2(
 var $author$project$WebmasterDashboard$Pages$MainPage$CreateUnit = function (a) {
 	return {$: 'CreateUnit', a: a};
 };
+var $author$project$WebmasterDashboard$Pages$MainPage$DisabledCreateUnit = {$: 'DisabledCreateUnit'};
+var $author$project$WebmasterDashboard$Pages$MainPage$NewGroup = function (a) {
+	return {$: 'NewGroup', a: a};
+};
+var $author$project$WebmasterDashboard$Pages$MainPage$NewWing = function (a) {
+	return {$: 'NewWing', a: a};
+};
+var $author$project$WebmasterDashboard$Pages$MainPage$SelectGroup = {$: 'SelectGroup'};
+var $author$project$WebmasterDashboard$Pages$MainPage$SelectSquadron = {$: 'SelectSquadron'};
+var $author$project$WebmasterDashboard$Pages$MainPage$SelectWing = {$: 'SelectWing'};
 var $author$project$WebmasterDashboard$Pages$MainPage$UpdateNewUnitForm = function (a) {
 	return {$: 'UpdateNewUnitForm', a: a};
+};
+var $author$project$Data$Unit$accountID = function (account) {
+	switch (account.$) {
+		case 'CAPActivity':
+			var body = account.a;
+			return body.id;
+		case 'CAPWing':
+			var body = account.a;
+			return body.id;
+		case 'CAPGroup':
+			var body = account.a;
+			return body.id;
+		default:
+			var body = account.a;
+			return body.id;
+	}
 };
 var $mdgriffith$elm_ui$Internal$Model$Right = {$: 'Right'};
 var $mdgriffith$elm_ui$Element$alignRight = $mdgriffith$elm_ui$Internal$Model$AlignX($mdgriffith$elm_ui$Internal$Model$Right);
@@ -17902,8 +18118,6 @@ var $mdgriffith$elm_ui$Element$Input$focusDefault = function (attrs) {
 	return A2($elm$core$List$any, $mdgriffith$elm_ui$Element$Input$hasFocusStyle, attrs) ? $mdgriffith$elm_ui$Internal$Model$NoAttribute : $mdgriffith$elm_ui$Internal$Model$htmlClass('focusable');
 };
 var $mdgriffith$elm_ui$Element$Events$onClick = A2($elm$core$Basics$composeL, $mdgriffith$elm_ui$Internal$Model$Attr, $elm$html$Html$Events$onClick);
-var $elm$json$Json$Decode$andThen = _Json_andThen;
-var $elm$json$Json$Decode$fail = _Json_fail;
 var $elm$virtual_dom$VirtualDom$MayPreventDefault = function (a) {
 	return {$: 'MayPreventDefault', a: a};
 };
@@ -18036,21 +18250,59 @@ var $author$project$Components$Button$commonButton = function (attrs) {
 	return $mdgriffith$elm_ui$Element$Input$button(
 		_Utils_ap(commonAttrs, attrs));
 };
+var $author$project$Components$Button$disabledButton = function (attrs) {
+	var commonAttrs = _List_fromArray(
+		[
+			$mdgriffith$elm_ui$Element$padding(10),
+			$mdgriffith$elm_ui$Element$Border$rounded(5),
+			$mdgriffith$elm_ui$Element$Background$color(
+			A3($mdgriffith$elm_ui$Element$rgb255, 120, 120, 120)),
+			$mdgriffith$elm_ui$Element$Font$color(
+			A3($mdgriffith$elm_ui$Element$rgb255, 255, 255, 255)),
+			$mdgriffith$elm_ui$Element$htmlAttribute(
+			$elm$html$Html$Attributes$class('button'))
+		]);
+	return $mdgriffith$elm_ui$Element$Input$button(
+		_Utils_ap(commonAttrs, attrs));
+};
 var $elm$html$Html$form = _VirtualDom_node('form');
 var $elm$html$Html$Attributes$form = _VirtualDom_attribute('form');
+var $elm$core$List$head = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return $elm$core$Maybe$Just(x);
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
 var $mdgriffith$elm_ui$Internal$Model$unstyled = A2($elm$core$Basics$composeL, $mdgriffith$elm_ui$Internal$Model$Unstyled, $elm$core$Basics$always);
 var $mdgriffith$elm_ui$Element$html = $mdgriffith$elm_ui$Internal$Model$unstyled;
+var $mdgriffith$elm_ui$Element$Input$Above = {$: 'Above'};
 var $mdgriffith$elm_ui$Element$Input$Label = F3(
 	function (a, b, c) {
 		return {$: 'Label', a: a, b: b, c: c};
 	});
-var $mdgriffith$elm_ui$Element$Input$OnLeft = {$: 'OnLeft'};
-var $mdgriffith$elm_ui$Element$Input$labelLeft = $mdgriffith$elm_ui$Element$Input$Label($mdgriffith$elm_ui$Element$Input$OnLeft);
+var $mdgriffith$elm_ui$Element$Input$labelAbove = $mdgriffith$elm_ui$Element$Input$Label($mdgriffith$elm_ui$Element$Input$Above);
 var $mdgriffith$elm_ui$Internal$Model$NoStaticStyleSheet = {$: 'NoStaticStyleSheet'};
 var $mdgriffith$elm_ui$Internal$Model$RenderModeOption = function (a) {
 	return {$: 'RenderModeOption', a: a};
 };
 var $mdgriffith$elm_ui$Element$noStaticStyleSheet = $mdgriffith$elm_ui$Internal$Model$RenderModeOption($mdgriffith$elm_ui$Internal$Model$NoStaticStyleSheet);
+var $mdgriffith$elm_ui$Element$Input$Option = F2(
+	function (a, b) {
+		return {$: 'Option', a: a, b: b};
+	});
+var $mdgriffith$elm_ui$Internal$Model$Left = {$: 'Left'};
+var $mdgriffith$elm_ui$Element$alignLeft = $mdgriffith$elm_ui$Internal$Model$AlignX($mdgriffith$elm_ui$Internal$Model$Left);
+var $mdgriffith$elm_ui$Internal$Model$Px = function (a) {
+	return {$: 'Px', a: a};
+};
+var $mdgriffith$elm_ui$Element$px = $mdgriffith$elm_ui$Internal$Model$Px;
+var $mdgriffith$elm_ui$Element$rgb = F3(
+	function (r, g, b) {
+		return A4($mdgriffith$elm_ui$Internal$Model$Rgba, r, g, b, 1);
+	});
 var $mdgriffith$elm_ui$Internal$Model$AsRow = {$: 'AsRow'};
 var $mdgriffith$elm_ui$Internal$Model$asRow = $mdgriffith$elm_ui$Internal$Model$AsRow;
 var $mdgriffith$elm_ui$Element$row = F2(
@@ -18090,13 +18342,99 @@ var $mdgriffith$elm_ui$Element$spacing = function (x) {
 			x,
 			x));
 };
-var $mdgriffith$elm_ui$Element$text = function (content) {
-	return $mdgriffith$elm_ui$Internal$Model$Text(content);
+var $mdgriffith$elm_ui$Element$Input$white = A3($mdgriffith$elm_ui$Element$rgb, 1, 1, 1);
+var $mdgriffith$elm_ui$Internal$Model$BorderWidth = F5(
+	function (a, b, c, d, e) {
+		return {$: 'BorderWidth', a: a, b: b, c: c, d: d, e: e};
+	});
+var $mdgriffith$elm_ui$Element$Border$width = function (v) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$borderWidth,
+		A5(
+			$mdgriffith$elm_ui$Internal$Model$BorderWidth,
+			'b-' + $elm$core$String$fromInt(v),
+			v,
+			v,
+			v,
+			v));
 };
-var $mdgriffith$elm_ui$Element$Input$TextInputNode = function (a) {
-	return {$: 'TextInputNode', a: a};
-};
-var $mdgriffith$elm_ui$Element$Input$TextArea = {$: 'TextArea'};
+var $mdgriffith$elm_ui$Element$Input$defaultRadioOption = F2(
+	function (optionLabel, status) {
+		return A2(
+			$mdgriffith$elm_ui$Element$row,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$spacing(10),
+					$mdgriffith$elm_ui$Element$alignLeft,
+					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink)
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$mdgriffith$elm_ui$Element$el,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$width(
+							$mdgriffith$elm_ui$Element$px(14)),
+							$mdgriffith$elm_ui$Element$height(
+							$mdgriffith$elm_ui$Element$px(14)),
+							$mdgriffith$elm_ui$Element$Background$color($mdgriffith$elm_ui$Element$Input$white),
+							$mdgriffith$elm_ui$Element$Border$rounded(7),
+							function () {
+							if (status.$ === 'Selected') {
+								return $mdgriffith$elm_ui$Internal$Model$htmlClass('focusable');
+							} else {
+								return $mdgriffith$elm_ui$Internal$Model$NoAttribute;
+							}
+						}(),
+							$mdgriffith$elm_ui$Element$Border$width(
+							function () {
+								switch (status.$) {
+									case 'Idle':
+										return 1;
+									case 'Focused':
+										return 1;
+									default:
+										return 5;
+								}
+							}()),
+							$mdgriffith$elm_ui$Element$Border$color(
+							function () {
+								switch (status.$) {
+									case 'Idle':
+										return A3($mdgriffith$elm_ui$Element$rgb, 208 / 255, 208 / 255, 208 / 255);
+									case 'Focused':
+										return A3($mdgriffith$elm_ui$Element$rgb, 208 / 255, 208 / 255, 208 / 255);
+									default:
+										return A3($mdgriffith$elm_ui$Element$rgb, 59 / 255, 153 / 255, 252 / 255);
+								}
+							}())
+						]),
+					$mdgriffith$elm_ui$Element$none),
+					A2(
+					$mdgriffith$elm_ui$Element$el,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+							$mdgriffith$elm_ui$Internal$Model$htmlClass('unfocusable')
+						]),
+					optionLabel)
+				]));
+	});
+var $mdgriffith$elm_ui$Element$Input$option = F2(
+	function (val, txt) {
+		return A2(
+			$mdgriffith$elm_ui$Element$Input$Option,
+			val,
+			$mdgriffith$elm_ui$Element$Input$defaultRadioOption(txt));
+	});
+var $mdgriffith$elm_ui$Element$Input$Column = {$: 'Column'};
+var $mdgriffith$elm_ui$Element$Input$AfterFound = {$: 'AfterFound'};
+var $mdgriffith$elm_ui$Element$Input$BeforeFound = {$: 'BeforeFound'};
+var $mdgriffith$elm_ui$Element$Input$Idle = {$: 'Idle'};
+var $mdgriffith$elm_ui$Element$Input$NotFound = {$: 'NotFound'};
+var $mdgriffith$elm_ui$Element$Input$Selected = {$: 'Selected'};
 var $mdgriffith$elm_ui$Internal$Model$LivePolite = {$: 'LivePolite'};
 var $mdgriffith$elm_ui$Element$Region$announce = $mdgriffith$elm_ui$Internal$Model$Describe($mdgriffith$elm_ui$Internal$Model$LivePolite);
 var $mdgriffith$elm_ui$Element$Input$applyLabel = F3(
@@ -18176,6 +18514,327 @@ var $mdgriffith$elm_ui$Element$Input$applyLabel = F3(
 		}
 	});
 var $elm$html$Html$Attributes$attribute = $elm$virtual_dom$VirtualDom$attribute;
+var $mdgriffith$elm_ui$Element$Input$column = F2(
+	function (attributes, children) {
+		return A4(
+			$mdgriffith$elm_ui$Internal$Model$element,
+			$mdgriffith$elm_ui$Internal$Model$asColumn,
+			$mdgriffith$elm_ui$Internal$Model$div,
+			A2(
+				$elm$core$List$cons,
+				$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
+				A2(
+					$elm$core$List$cons,
+					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+					attributes)),
+			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
+	});
+var $mdgriffith$elm_ui$Element$Input$downArrow = 'ArrowDown';
+var $mdgriffith$elm_ui$Internal$Model$filter = function (attrs) {
+	return A3(
+		$elm$core$List$foldr,
+		F2(
+			function (x, _v0) {
+				var found = _v0.a;
+				var has = _v0.b;
+				switch (x.$) {
+					case 'NoAttribute':
+						return _Utils_Tuple2(found, has);
+					case 'Class':
+						var key = x.a;
+						return _Utils_Tuple2(
+							A2($elm$core$List$cons, x, found),
+							has);
+					case 'Attr':
+						var attr = x.a;
+						return _Utils_Tuple2(
+							A2($elm$core$List$cons, x, found),
+							has);
+					case 'StyleClass':
+						var style = x.b;
+						return _Utils_Tuple2(
+							A2($elm$core$List$cons, x, found),
+							has);
+					case 'Width':
+						var width = x.a;
+						return A2($elm$core$Set$member, 'width', has) ? _Utils_Tuple2(found, has) : _Utils_Tuple2(
+							A2($elm$core$List$cons, x, found),
+							A2($elm$core$Set$insert, 'width', has));
+					case 'Height':
+						var height = x.a;
+						return A2($elm$core$Set$member, 'height', has) ? _Utils_Tuple2(found, has) : _Utils_Tuple2(
+							A2($elm$core$List$cons, x, found),
+							A2($elm$core$Set$insert, 'height', has));
+					case 'Describe':
+						var description = x.a;
+						return A2($elm$core$Set$member, 'described', has) ? _Utils_Tuple2(found, has) : _Utils_Tuple2(
+							A2($elm$core$List$cons, x, found),
+							A2($elm$core$Set$insert, 'described', has));
+					case 'Nearby':
+						var location = x.a;
+						var elem = x.b;
+						return _Utils_Tuple2(
+							A2($elm$core$List$cons, x, found),
+							has);
+					case 'AlignX':
+						return A2($elm$core$Set$member, 'align-x', has) ? _Utils_Tuple2(found, has) : _Utils_Tuple2(
+							A2($elm$core$List$cons, x, found),
+							A2($elm$core$Set$insert, 'align-x', has));
+					case 'AlignY':
+						return A2($elm$core$Set$member, 'align-y', has) ? _Utils_Tuple2(found, has) : _Utils_Tuple2(
+							A2($elm$core$List$cons, x, found),
+							A2($elm$core$Set$insert, 'align-y', has));
+					default:
+						return A2($elm$core$Set$member, 'transform', has) ? _Utils_Tuple2(found, has) : _Utils_Tuple2(
+							A2($elm$core$List$cons, x, found),
+							A2($elm$core$Set$insert, 'transform', has));
+				}
+			}),
+		_Utils_Tuple2(_List_Nil, $elm$core$Set$empty),
+		attrs).a;
+};
+var $mdgriffith$elm_ui$Internal$Model$get = F2(
+	function (attrs, isAttr) {
+		return A3(
+			$elm$core$List$foldr,
+			F2(
+				function (x, found) {
+					return isAttr(x) ? A2($elm$core$List$cons, x, found) : found;
+				}),
+			_List_Nil,
+			$mdgriffith$elm_ui$Internal$Model$filter(attrs));
+	});
+var $mdgriffith$elm_ui$Internal$Model$Label = function (a) {
+	return {$: 'Label', a: a};
+};
+var $mdgriffith$elm_ui$Element$Input$hiddenLabelAttribute = function (label) {
+	if (label.$ === 'HiddenLabel') {
+		var textLabel = label.a;
+		return $mdgriffith$elm_ui$Internal$Model$Describe(
+			$mdgriffith$elm_ui$Internal$Model$Label(textLabel));
+	} else {
+		return $mdgriffith$elm_ui$Internal$Model$NoAttribute;
+	}
+};
+var $mdgriffith$elm_ui$Element$Input$leftArrow = 'ArrowLeft';
+var $mdgriffith$elm_ui$Element$Input$rightArrow = 'ArrowRight';
+var $mdgriffith$elm_ui$Element$Input$row = F2(
+	function (attributes, children) {
+		return A4(
+			$mdgriffith$elm_ui$Internal$Model$element,
+			$mdgriffith$elm_ui$Internal$Model$asRow,
+			$mdgriffith$elm_ui$Internal$Model$div,
+			A2(
+				$elm$core$List$cons,
+				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+				attributes),
+			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
+	});
+var $mdgriffith$elm_ui$Element$Input$tabindex = A2($elm$core$Basics$composeL, $mdgriffith$elm_ui$Internal$Model$Attr, $elm$html$Html$Attributes$tabindex);
+var $mdgriffith$elm_ui$Element$Input$upArrow = 'ArrowUp';
+var $mdgriffith$elm_ui$Element$Input$radioHelper = F3(
+	function (orientation, attrs, input) {
+		var track = F2(
+			function (opt, _v14) {
+				var found = _v14.a;
+				var prev = _v14.b;
+				var nxt = _v14.c;
+				var val = opt.a;
+				switch (found.$) {
+					case 'NotFound':
+						return _Utils_eq(
+							$elm$core$Maybe$Just(val),
+							input.selected) ? _Utils_Tuple3($mdgriffith$elm_ui$Element$Input$BeforeFound, prev, nxt) : _Utils_Tuple3(found, val, nxt);
+					case 'BeforeFound':
+						return _Utils_Tuple3($mdgriffith$elm_ui$Element$Input$AfterFound, prev, val);
+					default:
+						return _Utils_Tuple3(found, prev, nxt);
+				}
+			});
+		var renderOption = function (_v11) {
+			var val = _v11.a;
+			var view = _v11.b;
+			var status = _Utils_eq(
+				$elm$core$Maybe$Just(val),
+				input.selected) ? $mdgriffith$elm_ui$Element$Input$Selected : $mdgriffith$elm_ui$Element$Input$Idle;
+			return A2(
+				$mdgriffith$elm_ui$Element$el,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$pointer,
+						function () {
+						if (orientation.$ === 'Row') {
+							return $mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink);
+						} else {
+							return $mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill);
+						}
+					}(),
+						$mdgriffith$elm_ui$Element$Events$onClick(
+						input.onChange(val)),
+						function () {
+						if (status.$ === 'Selected') {
+							return $mdgriffith$elm_ui$Internal$Model$Attr(
+								A2($elm$html$Html$Attributes$attribute, 'aria-checked', 'true'));
+						} else {
+							return $mdgriffith$elm_ui$Internal$Model$Attr(
+								A2($elm$html$Html$Attributes$attribute, 'aria-checked', 'false'));
+						}
+					}(),
+						$mdgriffith$elm_ui$Internal$Model$Attr(
+						A2($elm$html$Html$Attributes$attribute, 'role', 'radio'))
+					]),
+				view(status));
+		};
+		var prevNext = function () {
+			var _v5 = input.options;
+			if (!_v5.b) {
+				return $elm$core$Maybe$Nothing;
+			} else {
+				var _v6 = _v5.a;
+				var val = _v6.a;
+				return function (_v7) {
+					var found = _v7.a;
+					var b = _v7.b;
+					var a = _v7.c;
+					switch (found.$) {
+						case 'NotFound':
+							return $elm$core$Maybe$Just(
+								_Utils_Tuple2(b, val));
+						case 'BeforeFound':
+							return $elm$core$Maybe$Just(
+								_Utils_Tuple2(b, val));
+						default:
+							return $elm$core$Maybe$Just(
+								_Utils_Tuple2(b, a));
+					}
+				}(
+					A3(
+						$elm$core$List$foldl,
+						track,
+						_Utils_Tuple3($mdgriffith$elm_ui$Element$Input$NotFound, val, val),
+						input.options));
+			}
+		}();
+		var optionArea = function () {
+			if (orientation.$ === 'Row') {
+				return A2(
+					$mdgriffith$elm_ui$Element$Input$row,
+					A2(
+						$elm$core$List$cons,
+						$mdgriffith$elm_ui$Element$Input$hiddenLabelAttribute(input.label),
+						attrs),
+					A2($elm$core$List$map, renderOption, input.options));
+			} else {
+				return A2(
+					$mdgriffith$elm_ui$Element$Input$column,
+					A2(
+						$elm$core$List$cons,
+						$mdgriffith$elm_ui$Element$Input$hiddenLabelAttribute(input.label),
+						attrs),
+					A2($elm$core$List$map, renderOption, input.options));
+			}
+		}();
+		var events = A2(
+			$mdgriffith$elm_ui$Internal$Model$get,
+			attrs,
+			function (attr) {
+				_v3$3:
+				while (true) {
+					switch (attr.$) {
+						case 'Width':
+							if (attr.a.$ === 'Fill') {
+								return true;
+							} else {
+								break _v3$3;
+							}
+						case 'Height':
+							if (attr.a.$ === 'Fill') {
+								return true;
+							} else {
+								break _v3$3;
+							}
+						case 'Attr':
+							return true;
+						default:
+							break _v3$3;
+					}
+				}
+				return false;
+			});
+		return A3(
+			$mdgriffith$elm_ui$Element$Input$applyLabel,
+			_Utils_ap(
+				A2(
+					$elm$core$List$filterMap,
+					$elm$core$Basics$identity,
+					_List_fromArray(
+						[
+							$elm$core$Maybe$Just($mdgriffith$elm_ui$Element$alignLeft),
+							$elm$core$Maybe$Just(
+							$mdgriffith$elm_ui$Element$Input$tabindex(0)),
+							$elm$core$Maybe$Just(
+							$mdgriffith$elm_ui$Internal$Model$htmlClass('focus')),
+							$elm$core$Maybe$Just($mdgriffith$elm_ui$Element$Region$announce),
+							$elm$core$Maybe$Just(
+							$mdgriffith$elm_ui$Internal$Model$Attr(
+								A2($elm$html$Html$Attributes$attribute, 'role', 'radiogroup'))),
+							function () {
+							if (prevNext.$ === 'Nothing') {
+								return $elm$core$Maybe$Nothing;
+							} else {
+								var _v1 = prevNext.a;
+								var prev = _v1.a;
+								var next = _v1.b;
+								return $elm$core$Maybe$Just(
+									$mdgriffith$elm_ui$Element$Input$onKeyLookup(
+										function (code) {
+											if (_Utils_eq(code, $mdgriffith$elm_ui$Element$Input$leftArrow)) {
+												return $elm$core$Maybe$Just(
+													input.onChange(prev));
+											} else {
+												if (_Utils_eq(code, $mdgriffith$elm_ui$Element$Input$upArrow)) {
+													return $elm$core$Maybe$Just(
+														input.onChange(prev));
+												} else {
+													if (_Utils_eq(code, $mdgriffith$elm_ui$Element$Input$rightArrow)) {
+														return $elm$core$Maybe$Just(
+															input.onChange(next));
+													} else {
+														if (_Utils_eq(code, $mdgriffith$elm_ui$Element$Input$downArrow)) {
+															return $elm$core$Maybe$Just(
+																input.onChange(next));
+														} else {
+															if (_Utils_eq(code, $mdgriffith$elm_ui$Element$Input$space)) {
+																var _v2 = input.selected;
+																if (_v2.$ === 'Nothing') {
+																	return $elm$core$Maybe$Just(
+																		input.onChange(prev));
+																} else {
+																	return $elm$core$Maybe$Nothing;
+																}
+															} else {
+																return $elm$core$Maybe$Nothing;
+															}
+														}
+													}
+												}
+											}
+										}));
+							}
+						}()
+						])),
+				events),
+			input.label,
+			optionArea);
+	});
+var $mdgriffith$elm_ui$Element$Input$radio = $mdgriffith$elm_ui$Element$Input$radioHelper($mdgriffith$elm_ui$Element$Input$Column);
+var $mdgriffith$elm_ui$Element$text = function (content) {
+	return $mdgriffith$elm_ui$Internal$Model$Text(content);
+};
+var $mdgriffith$elm_ui$Element$Input$TextInputNode = function (a) {
+	return {$: 'TextInputNode', a: a};
+};
+var $mdgriffith$elm_ui$Element$Input$TextArea = {$: 'TextArea'};
 var $mdgriffith$elm_ui$Element$Input$autofill = A2(
 	$elm$core$Basics$composeL,
 	$mdgriffith$elm_ui$Internal$Model$Attr,
@@ -18221,10 +18880,6 @@ var $mdgriffith$elm_ui$Element$Input$calcMoveToCompensateForPadding = function (
 };
 var $mdgriffith$elm_ui$Internal$Flag$overflow = $mdgriffith$elm_ui$Internal$Flag$flag(20);
 var $mdgriffith$elm_ui$Element$clip = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$overflow, $mdgriffith$elm_ui$Internal$Style$classes.clip);
-var $mdgriffith$elm_ui$Element$rgb = F3(
-	function (r, g, b) {
-		return A4($mdgriffith$elm_ui$Internal$Model$Rgba, r, g, b, 1);
-	});
 var $mdgriffith$elm_ui$Element$Input$darkGrey = A3($mdgriffith$elm_ui$Element$rgb, 186 / 255, 189 / 255, 182 / 255);
 var $mdgriffith$elm_ui$Element$paddingXY = F2(
 	function (x, y) {
@@ -18256,23 +18911,6 @@ var $mdgriffith$elm_ui$Element$paddingXY = F2(
 		}
 	});
 var $mdgriffith$elm_ui$Element$Input$defaultTextPadding = A2($mdgriffith$elm_ui$Element$paddingXY, 12, 12);
-var $mdgriffith$elm_ui$Element$Input$white = A3($mdgriffith$elm_ui$Element$rgb, 1, 1, 1);
-var $mdgriffith$elm_ui$Internal$Model$BorderWidth = F5(
-	function (a, b, c, d, e) {
-		return {$: 'BorderWidth', a: a, b: b, c: c, d: d, e: e};
-	});
-var $mdgriffith$elm_ui$Element$Border$width = function (v) {
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$borderWidth,
-		A5(
-			$mdgriffith$elm_ui$Internal$Model$BorderWidth,
-			'b-' + $elm$core$String$fromInt(v),
-			v,
-			v,
-			v,
-			v));
-};
 var $mdgriffith$elm_ui$Element$Input$defaultTextBoxStyle = _List_fromArray(
 	[
 		$mdgriffith$elm_ui$Element$Input$defaultTextPadding,
@@ -18290,27 +18928,6 @@ var $mdgriffith$elm_ui$Element$Input$getHeight = function (attr) {
 		return $elm$core$Maybe$Just(h);
 	} else {
 		return $elm$core$Maybe$Nothing;
-	}
-};
-var $elm$core$List$head = function (list) {
-	if (list.b) {
-		var x = list.a;
-		var xs = list.b;
-		return $elm$core$Maybe$Just(x);
-	} else {
-		return $elm$core$Maybe$Nothing;
-	}
-};
-var $mdgriffith$elm_ui$Internal$Model$Label = function (a) {
-	return {$: 'Label', a: a};
-};
-var $mdgriffith$elm_ui$Element$Input$hiddenLabelAttribute = function (label) {
-	if (label.$ === 'HiddenLabel') {
-		var textLabel = label.a;
-		return $mdgriffith$elm_ui$Internal$Model$Describe(
-			$mdgriffith$elm_ui$Internal$Model$Label(textLabel));
-	} else {
-		return $mdgriffith$elm_ui$Internal$Model$NoAttribute;
 	}
 };
 var $mdgriffith$elm_ui$Element$Input$isConstrained = function (len) {
@@ -18940,6 +19557,84 @@ var $mdgriffith$elm_ui$Element$Input$text = $mdgriffith$elm_ui$Element$Input$tex
 		spellchecked: false,
 		type_: $mdgriffith$elm_ui$Element$Input$TextInputNode('text')
 	});
+var $author$project$WebmasterDashboard$Pages$MainPage$NewGroupR = function (a) {
+	return {$: 'NewGroupR', a: a};
+};
+var $author$project$WebmasterDashboard$Pages$MainPage$NewGroupRequest = F2(
+	function (unitId, wingId) {
+		return {unitId: unitId, wingId: wingId};
+	});
+var $author$project$WebmasterDashboard$Pages$MainPage$NewSquadronR = function (a) {
+	return {$: 'NewSquadronR', a: a};
+};
+var $author$project$WebmasterDashboard$Pages$MainPage$NewSquadronRequest = F3(
+	function (unitId, wingId, groupId) {
+		return {groupId: groupId, unitId: unitId, wingId: wingId};
+	});
+var $author$project$WebmasterDashboard$Pages$MainPage$NewWingR = function (a) {
+	return {$: 'NewWingR', a: a};
+};
+var $author$project$WebmasterDashboard$Pages$MainPage$NewWingRequest = function (unitId) {
+	return {unitId: unitId};
+};
+var $elm$core$Maybe$map2 = F3(
+	function (func, ma, mb) {
+		if (ma.$ === 'Nothing') {
+			return $elm$core$Maybe$Nothing;
+		} else {
+			var a = ma.a;
+			if (mb.$ === 'Nothing') {
+				return $elm$core$Maybe$Nothing;
+			} else {
+				var b = mb.a;
+				return $elm$core$Maybe$Just(
+					A2(func, a, b));
+			}
+		}
+	});
+var $elm$core$Maybe$map3 = F4(
+	function (func, ma, mb, mc) {
+		if (ma.$ === 'Nothing') {
+			return $elm$core$Maybe$Nothing;
+		} else {
+			var a = ma.a;
+			if (mb.$ === 'Nothing') {
+				return $elm$core$Maybe$Nothing;
+			} else {
+				var b = mb.a;
+				if (mc.$ === 'Nothing') {
+					return $elm$core$Maybe$Nothing;
+				} else {
+					var c = mc.a;
+					return $elm$core$Maybe$Just(
+						A3(func, a, b, c));
+				}
+			}
+		}
+	});
+var $author$project$WebmasterDashboard$Pages$MainPage$validateForm = F2(
+	function (unitId, f) {
+		var unitIdMaybe = $elm$core$String$isEmpty(unitId) ? $elm$core$Maybe$Nothing : $elm$core$Maybe$Just(unitId);
+		switch (f.$) {
+			case 'NewWing':
+				return A2(
+					$elm$core$Maybe$map,
+					$author$project$WebmasterDashboard$Pages$MainPage$NewWingR,
+					A2($elm$core$Maybe$map, $author$project$WebmasterDashboard$Pages$MainPage$NewWingRequest, unitIdMaybe));
+			case 'NewGroup':
+				var groupForm = f.a;
+				return A2(
+					$elm$core$Maybe$map,
+					$author$project$WebmasterDashboard$Pages$MainPage$NewGroupR,
+					A3($elm$core$Maybe$map2, $author$project$WebmasterDashboard$Pages$MainPage$NewGroupRequest, unitIdMaybe, groupForm.wingSelection));
+			default:
+				var squadronForm = f.a;
+				return A2(
+					$elm$core$Maybe$map,
+					$author$project$WebmasterDashboard$Pages$MainPage$NewSquadronR,
+					A4($elm$core$Maybe$map3, $author$project$WebmasterDashboard$Pages$MainPage$NewSquadronRequest, unitIdMaybe, squadronForm.wingSelection, squadronForm.groupSelection));
+		}
+	});
 var $mdgriffith$elm_ui$Element$Border$widthXY = F2(
 	function (x, y) {
 		return A2(
@@ -18971,16 +19666,407 @@ var $mdgriffith$elm_ui$Element$Border$widthEach = function (_v0) {
 };
 var $author$project$WebmasterDashboard$Pages$MainPage$viewUnitEditForm = function (model) {
 	var form = model.newUnitForm;
+	var initNewForm = function (selection) {
+		switch (selection.$) {
+			case 'SelectSquadron':
+				return $author$project$WebmasterDashboard$Pages$MainPage$UpdateNewUnitForm(
+					_Utils_update(
+						form,
+						{
+							unitSpecifics: $author$project$WebmasterDashboard$Pages$MainPage$NewSquadron(
+								{groupSelection: $elm$core$Maybe$Nothing, wingSelection: $elm$core$Maybe$Nothing})
+						}));
+			case 'SelectGroup':
+				return $author$project$WebmasterDashboard$Pages$MainPage$UpdateNewUnitForm(
+					_Utils_update(
+						form,
+						{
+							unitSpecifics: $author$project$WebmasterDashboard$Pages$MainPage$NewGroup(
+								{wingSelection: $elm$core$Maybe$Nothing})
+						}));
+			default:
+				return $author$project$WebmasterDashboard$Pages$MainPage$UpdateNewUnitForm(
+					_Utils_update(
+						form,
+						{
+							unitSpecifics: $author$project$WebmasterDashboard$Pages$MainPage$NewWing(
+								{})
+						}));
+		}
+	};
+	var formStart = _List_fromArray(
+		[
+			A2(
+			$mdgriffith$elm_ui$Element$el,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$Border$widthEach(
+					{bottom: 1, left: 0, right: 0, top: 0}),
+					$mdgriffith$elm_ui$Element$Border$color($author$project$WebmasterDashboard$Theme$borderBottomColor),
+					$mdgriffith$elm_ui$Element$padding(5),
+					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+					$mdgriffith$elm_ui$Element$Font$center
+				]),
+			$mdgriffith$elm_ui$Element$text('Create new unit')),
+			A2(
+			$mdgriffith$elm_ui$Element$Input$text,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$htmlAttribute(
+					$elm$html$Html$Attributes$id('new-unit-form-id-input'))
+				]),
+			{
+				label: A2(
+					$mdgriffith$elm_ui$Element$Input$labelAbove,
+					_List_Nil,
+					$mdgriffith$elm_ui$Element$text('New ID')),
+				onChange: function (id) {
+					return $author$project$WebmasterDashboard$Pages$MainPage$UpdateNewUnitForm(
+						_Utils_update(
+							form,
+							{id: id}));
+				},
+				placeholder: $elm$core$Maybe$Nothing,
+				text: form.id
+			}),
+			A2(
+			$mdgriffith$elm_ui$Element$Input$radio,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$htmlAttribute(
+					$elm$html$Html$Attributes$id('new-unit-form-radio-select'))
+				]),
+			{
+				label: A2(
+					$mdgriffith$elm_ui$Element$Input$labelAbove,
+					_List_Nil,
+					$mdgriffith$elm_ui$Element$text('Select unit type')),
+				onChange: initNewForm,
+				options: _List_fromArray(
+					[
+						A2(
+						$mdgriffith$elm_ui$Element$Input$option,
+						$author$project$WebmasterDashboard$Pages$MainPage$SelectSquadron,
+						$mdgriffith$elm_ui$Element$text('Squadron')),
+						A2(
+						$mdgriffith$elm_ui$Element$Input$option,
+						$author$project$WebmasterDashboard$Pages$MainPage$SelectGroup,
+						$mdgriffith$elm_ui$Element$text('Group')),
+						A2(
+						$mdgriffith$elm_ui$Element$Input$option,
+						$author$project$WebmasterDashboard$Pages$MainPage$SelectWing,
+						$mdgriffith$elm_ui$Element$text('Wing'))
+					]),
+				selected: $elm$core$Maybe$Just(
+					function () {
+						var _v11 = form.unitSpecifics;
+						switch (_v11.$) {
+							case 'NewSquadron':
+								return $author$project$WebmasterDashboard$Pages$MainPage$SelectSquadron;
+							case 'NewGroup':
+								return $author$project$WebmasterDashboard$Pages$MainPage$SelectGroup;
+							default:
+								return $author$project$WebmasterDashboard$Pages$MainPage$SelectWing;
+						}
+					}())
+			})
+		]);
+	var validatedForm = A2(
+		$elm$core$Maybe$map,
+		$author$project$WebmasterDashboard$Pages$MainPage$CreateUnit,
+		A2($author$project$WebmasterDashboard$Pages$MainPage$validateForm, form.id, form.unitSpecifics));
+	var submitButton = function () {
+		if (validatedForm.$ === 'Just') {
+			var msg = validatedForm.a;
+			return A2(
+				$author$project$Components$Button$commonButton,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$htmlAttribute(
+						$elm$html$Html$Attributes$form('newUnitForm')),
+						$mdgriffith$elm_ui$Element$htmlAttribute(
+						$elm$html$Html$Attributes$class('new-unit-form-submit-button'))
+					]),
+				{
+					label: $mdgriffith$elm_ui$Element$text('Submit'),
+					onPress: $elm$core$Maybe$Just(msg)
+				});
+		} else {
+			return A2(
+				$author$project$Components$Button$disabledButton,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$htmlAttribute(
+						$elm$html$Html$Attributes$form('newUnitForm')),
+						$mdgriffith$elm_ui$Element$htmlAttribute(
+						$elm$html$Html$Attributes$class('new-unit-form-submit-button'))
+					]),
+				{
+					label: $mdgriffith$elm_ui$Element$text('Submit'),
+					onPress: $elm$core$Maybe$Just($author$project$WebmasterDashboard$Pages$MainPage$DisabledCreateUnit)
+				});
+		}
+	}();
+	var formEnd = _List_fromArray(
+		[
+			A2(
+			$mdgriffith$elm_ui$Element$row,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$alignRight,
+					$mdgriffith$elm_ui$Element$spacing(10)
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$author$project$Components$Button$commonButton,
+					_List_Nil,
+					{
+						label: $mdgriffith$elm_ui$Element$text('Cancel'),
+						onPress: $elm$core$Maybe$Just($author$project$WebmasterDashboard$Pages$MainPage$CloseNewUnitForm)
+					}),
+					submitButton
+				]))
+		]);
+	var filterWing = function (unit) {
+		if (unit.$ === 'CAPWing') {
+			var body = unit.a;
+			return $elm$core$Maybe$Just(body);
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	};
+	var filterGroup = F2(
+		function (wingId, unit) {
+			if (unit.$ === 'CAPGroup') {
+				var body = unit.a;
+				return _Utils_eq(body.wingId, wingId) ? $elm$core$Maybe$Just(body) : $elm$core$Maybe$Nothing;
+			} else {
+				return $elm$core$Maybe$Nothing;
+			}
+		});
+	var formMiddle = function () {
+		var _v0 = form.unitSpecifics;
+		switch (_v0.$) {
+			case 'NewWing':
+				return _List_Nil;
+			case 'NewGroup':
+				var groupForm = _v0.a;
+				return _List_fromArray(
+					[
+						A2(
+						$mdgriffith$elm_ui$Element$Input$radio,
+						_List_fromArray(
+							[
+								$mdgriffith$elm_ui$Element$spacing(5)
+							]),
+						{
+							label: A2(
+								$mdgriffith$elm_ui$Element$Input$labelAbove,
+								_List_Nil,
+								$mdgriffith$elm_ui$Element$text('Select wing')),
+							onChange: function (newWingId) {
+								return $author$project$WebmasterDashboard$Pages$MainPage$UpdateNewUnitForm(
+									_Utils_update(
+										form,
+										{
+											unitSpecifics: $author$project$WebmasterDashboard$Pages$MainPage$NewGroup(
+												_Utils_update(
+													groupForm,
+													{
+														wingSelection: $elm$core$Maybe$Just(newWingId)
+													}))
+										}));
+							},
+							options: function () {
+								var _v1 = model.units;
+								if ((_v1.$ === 'Just') && (_v1.a.$ === 'Ok')) {
+									var units = _v1.a.a;
+									return A2(
+										$elm$core$List$map,
+										function (unit) {
+											return A2(
+												$mdgriffith$elm_ui$Element$Input$option,
+												unit.id,
+												$mdgriffith$elm_ui$Element$text(unit.id));
+										},
+										A2($elm$core$List$filterMap, filterWing, units));
+								} else {
+									return _List_Nil;
+								}
+							}(),
+							selected: function () {
+								var _v2 = _Utils_Tuple2(model.units, groupForm.wingSelection);
+								if (((_v2.a.$ === 'Just') && (_v2.a.a.$ === 'Ok')) && (_v2.b.$ === 'Just')) {
+									var units = _v2.a.a.a;
+									var wingId = _v2.b.a;
+									return A2(
+										$elm$core$Maybe$map,
+										$author$project$Data$Unit$accountID,
+										$elm$core$List$head(
+											A2(
+												$elm$core$List$filter,
+												function (unit) {
+													return _Utils_eq(
+														$author$project$Data$Unit$accountID(unit),
+														wingId);
+												},
+												units)));
+								} else {
+									return $elm$core$Maybe$Nothing;
+								}
+							}()
+						})
+					]);
+			default:
+				var squadronForm = _v0.a;
+				var wingSelection = _List_fromArray(
+					[
+						A2(
+						$mdgriffith$elm_ui$Element$Input$radio,
+						_List_Nil,
+						{
+							label: A2(
+								$mdgriffith$elm_ui$Element$Input$labelAbove,
+								_List_Nil,
+								$mdgriffith$elm_ui$Element$text('Select wing')),
+							onChange: function (newWingId) {
+								return $author$project$WebmasterDashboard$Pages$MainPage$UpdateNewUnitForm(
+									_Utils_update(
+										form,
+										{
+											unitSpecifics: $author$project$WebmasterDashboard$Pages$MainPage$NewSquadron(
+												_Utils_update(
+													squadronForm,
+													{
+														wingSelection: $elm$core$Maybe$Just(newWingId)
+													}))
+										}));
+							},
+							options: function () {
+								var _v6 = model.units;
+								if ((_v6.$ === 'Just') && (_v6.a.$ === 'Ok')) {
+									var units = _v6.a.a;
+									return A2(
+										$elm$core$List$map,
+										function (unit) {
+											return A2(
+												$mdgriffith$elm_ui$Element$Input$option,
+												unit.id,
+												$mdgriffith$elm_ui$Element$text(unit.id));
+										},
+										A2($elm$core$List$filterMap, filterWing, units));
+								} else {
+									return _List_Nil;
+								}
+							}(),
+							selected: function () {
+								var _v7 = _Utils_Tuple2(model.units, squadronForm.wingSelection);
+								if (((_v7.a.$ === 'Just') && (_v7.a.a.$ === 'Ok')) && (_v7.b.$ === 'Just')) {
+									var units = _v7.a.a.a;
+									var wingId = _v7.b.a;
+									return A2(
+										$elm$core$Maybe$map,
+										$author$project$Data$Unit$accountID,
+										$elm$core$List$head(
+											A2(
+												$elm$core$List$filter,
+												function (unit) {
+													return _Utils_eq(
+														$author$project$Data$Unit$accountID(unit),
+														wingId);
+												},
+												units)));
+								} else {
+									return $elm$core$Maybe$Nothing;
+								}
+							}()
+						})
+					]);
+				var groupSelection = function () {
+					var _v3 = squadronForm.wingSelection;
+					if (_v3.$ === 'Nothing') {
+						return _List_Nil;
+					} else {
+						var wingId = _v3.a;
+						return _List_fromArray(
+							[
+								A2(
+								$mdgriffith$elm_ui$Element$Input$radio,
+								_List_Nil,
+								{
+									label: A2(
+										$mdgriffith$elm_ui$Element$Input$labelAbove,
+										_List_Nil,
+										$mdgriffith$elm_ui$Element$text('Select group')),
+									onChange: function (newWingId) {
+										return $author$project$WebmasterDashboard$Pages$MainPage$UpdateNewUnitForm(
+											_Utils_update(
+												form,
+												{
+													unitSpecifics: $author$project$WebmasterDashboard$Pages$MainPage$NewSquadron(
+														_Utils_update(
+															squadronForm,
+															{
+																groupSelection: $elm$core$Maybe$Just(newWingId)
+															}))
+												}));
+									},
+									options: function () {
+										var _v4 = model.units;
+										if ((_v4.$ === 'Just') && (_v4.a.$ === 'Ok')) {
+											var units = _v4.a.a;
+											return A2(
+												$elm$core$List$map,
+												function (unit) {
+													return A2(
+														$mdgriffith$elm_ui$Element$Input$option,
+														unit.id,
+														$mdgriffith$elm_ui$Element$text(unit.id));
+												},
+												A2(
+													$elm$core$List$filterMap,
+													filterGroup(wingId),
+													units));
+										} else {
+											return _List_Nil;
+										}
+									}(),
+									selected: function () {
+										var _v5 = _Utils_Tuple2(model.units, squadronForm.groupSelection);
+										if (((_v5.a.$ === 'Just') && (_v5.a.a.$ === 'Ok')) && (_v5.b.$ === 'Just')) {
+											var units = _v5.a.a.a;
+											var groupId = _v5.b.a;
+											return A2(
+												$elm$core$Maybe$map,
+												$author$project$Data$Unit$accountID,
+												$elm$core$List$head(
+													A2(
+														$elm$core$List$filter,
+														function (unit) {
+															return _Utils_eq(
+																$author$project$Data$Unit$accountID(unit),
+																groupId);
+														},
+														units)));
+										} else {
+											return $elm$core$Maybe$Nothing;
+										}
+									}()
+								})
+							]);
+					}
+				}();
+				return _Utils_ap(wingSelection, groupSelection);
+		}
+	}();
 	return $mdgriffith$elm_ui$Element$html(
 		A2(
 			$elm$html$Html$form,
 			_List_fromArray(
 				[
 					$elm$html$Html$Attributes$id('newUnitForm'),
-					A2(
-					$author$project$Components$Events$onEventNoBubble,
-					'submit',
-					$author$project$WebmasterDashboard$Pages$MainPage$CreateUnit(form))
+					A2($author$project$Components$Events$onEventNoBubble, 'submit', $author$project$WebmasterDashboard$Pages$MainPage$DisabledCreateUnit)
 				]),
 			_List_fromArray(
 				[
@@ -18999,73 +20085,9 @@ var $author$project$WebmasterDashboard$Pages$MainPage$viewUnitEditForm = functio
 								$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
 								$mdgriffith$elm_ui$Element$spacing(20)
 							]),
-						_List_fromArray(
-							[
-								A2(
-								$mdgriffith$elm_ui$Element$el,
-								_List_fromArray(
-									[
-										$mdgriffith$elm_ui$Element$Border$widthEach(
-										{bottom: 1, left: 0, right: 0, top: 0}),
-										$mdgriffith$elm_ui$Element$Border$color($author$project$WebmasterDashboard$Theme$borderBottomColor),
-										$mdgriffith$elm_ui$Element$padding(5),
-										$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-										$mdgriffith$elm_ui$Element$Font$center
-									]),
-								$mdgriffith$elm_ui$Element$text('Create new unit')),
-								A2(
-								$mdgriffith$elm_ui$Element$Input$text,
-								_List_fromArray(
-									[
-										$mdgriffith$elm_ui$Element$htmlAttribute(
-										$elm$html$Html$Attributes$id('new-unit-form-id-input'))
-									]),
-								{
-									label: A2(
-										$mdgriffith$elm_ui$Element$Input$labelLeft,
-										_List_Nil,
-										$mdgriffith$elm_ui$Element$text('New ID')),
-									onChange: function (id) {
-										return $author$project$WebmasterDashboard$Pages$MainPage$UpdateNewUnitForm(
-											_Utils_update(
-												form,
-												{id: id}));
-									},
-									placeholder: $elm$core$Maybe$Nothing,
-									text: form.id
-								}),
-								A2(
-								$mdgriffith$elm_ui$Element$row,
-								_List_fromArray(
-									[
-										$mdgriffith$elm_ui$Element$alignRight,
-										$mdgriffith$elm_ui$Element$spacing(10)
-									]),
-								_List_fromArray(
-									[
-										A2(
-										$author$project$Components$Button$commonButton,
-										_List_Nil,
-										{
-											label: $mdgriffith$elm_ui$Element$text('Cancel'),
-											onPress: $elm$core$Maybe$Just($author$project$WebmasterDashboard$Pages$MainPage$CloseNewUnitForm)
-										}),
-										A2(
-										$author$project$Components$Button$commonButton,
-										_List_fromArray(
-											[
-												$mdgriffith$elm_ui$Element$htmlAttribute(
-												$elm$html$Html$Attributes$form('newUnitForm')),
-												$mdgriffith$elm_ui$Element$htmlAttribute(
-												$elm$html$Html$Attributes$class('new-unit-form-submit-button'))
-											]),
-										{
-											label: $mdgriffith$elm_ui$Element$text('Submit'),
-											onPress: $elm$core$Maybe$Just(
-												$author$project$WebmasterDashboard$Pages$MainPage$CreateUnit(form))
-										})
-									]))
-							])))
+						_Utils_ap(
+							formStart,
+							_Utils_ap(formMiddle, formEnd))))
 				])));
 };
 var $author$project$WebmasterDashboard$Pages$MainPage$viewUnitResultsModal = function (_v0) {
@@ -22711,7 +23733,8 @@ var $author$project$WebmasterDashboard$Pages$MainPage$viewUnitsWidget = function
 					$mdgriffith$elm_ui$Element$padding(10),
 					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
 				]),
-			$mdgriffith$elm_ui$Element$text(unit.id));
+			$mdgriffith$elm_ui$Element$text(
+				$author$project$Data$Unit$accountID(unit)));
 	};
 	var renderedUnits = A2($elm$core$List$map, unitRender, units);
 	return A2(
@@ -22920,7 +23943,7 @@ var $author$project$WebmasterDashboard$view = function (model) {
 var $author$project$WebmasterDashboard$main = $elm$browser$Browser$application(
 	{init: $author$project$WebmasterDashboard$init, onUrlChange: $author$project$WebmasterDashboard$UrlChanged, onUrlRequest: $author$project$WebmasterDashboard$LinkClicked, subscriptions: $author$project$WebmasterDashboard$subscriptions, update: $author$project$WebmasterDashboard$update, view: $author$project$WebmasterDashboard$view});
 _Platform_export({'WebmasterDashboard':{'init':$author$project$WebmasterDashboard$main(
-	$elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.1"},"types":{"message":"WebmasterDashboard.Msg","aliases":{"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"},"WebmasterDashboard.Pages.MainPage.NewUnitForm":{"args":[],"type":"{ id : String.String }"},"Data.Unit.Unit":{"args":[],"type":"{ id : String.String }"}},"unions":{"WebmasterDashboard.Msg":{"args":[],"tags":{"LinkClicked":["Browser.UrlRequest"],"UrlChanged":["Url.Url"],"MainPageUpdate":["WebmasterDashboard.Pages.MainPage.Msg"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"WebmasterDashboard.Pages.MainPage.Msg":{"args":[],"tags":{"Ignore":[],"LoadedUnits":["Result.Result Http.Error (List.List Data.Unit.Unit)"],"CloseNewUnitForm":[],"OpenNewUnitForm":[],"UpdateNewUnitForm":["WebmasterDashboard.Pages.MainPage.NewUnitForm"],"UnitEditModalUpdate":["Components.Modal.ModalMsg"],"CreateUnit":["WebmasterDashboard.Pages.MainPage.NewUnitForm"],"FinishCreatingUnit":["Result.Result Http.Error ()"],"CloseNewUnitResults":[],"UnitResultModalUpdate":["Components.Modal.ModalMsg"]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Basics.Int"],"BadBody":["String.String"]}},"List.List":{"args":["a"],"tags":{}},"Components.Modal.ModalMsg":{"args":[],"tags":{"AnimationUpdate":["Components.Animation.AnimationMsg"],"Ignore":[]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"Components.Animation.AnimationMsg":{"args":[],"tags":{"Step":["Basics.Float"]}},"Basics.Float":{"args":[],"tags":{"Float":[]}}}}})}});}(this));
+	$elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.1"},"types":{"message":"WebmasterDashboard.Msg","aliases":{"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"},"WebmasterDashboard.Pages.MainPage.NewUnitForm":{"args":[],"type":"{ id : String.String, unitSpecifics : WebmasterDashboard.Pages.MainPage.SpecificNewUnitForm }"},"Data.Unit.CAPActivityBody":{"args":[],"type":"{ id : String.String, hostId : String.String }"},"Data.Unit.CAPGroupBody":{"args":[],"type":"{ id : String.String, wingId : String.String }"},"Data.Unit.CAPSquadronBody":{"args":[],"type":"{ id : String.String, wingId : String.String, groupId : String.String }"},"Data.Unit.CAPWingBody":{"args":[],"type":"{ id : String.String }"},"WebmasterDashboard.Pages.MainPage.NewGroupForm":{"args":[],"type":"{ wingSelection : Maybe.Maybe String.String }"},"WebmasterDashboard.Pages.MainPage.NewGroupRequest":{"args":[],"type":"{ unitId : String.String, wingId : String.String }"},"WebmasterDashboard.Pages.MainPage.NewSquadronForm":{"args":[],"type":"{ wingSelection : Maybe.Maybe String.String, groupSelection : Maybe.Maybe String.String }"},"WebmasterDashboard.Pages.MainPage.NewSquadronRequest":{"args":[],"type":"{ unitId : String.String, wingId : String.String, groupId : String.String }"},"WebmasterDashboard.Pages.MainPage.NewWingForm":{"args":[],"type":"{}"},"WebmasterDashboard.Pages.MainPage.NewWingRequest":{"args":[],"type":"{ unitId : String.String }"}},"unions":{"WebmasterDashboard.Msg":{"args":[],"tags":{"LinkClicked":["Browser.UrlRequest"],"UrlChanged":["Url.Url"],"MainPageUpdate":["WebmasterDashboard.Pages.MainPage.Msg"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"WebmasterDashboard.Pages.MainPage.Msg":{"args":[],"tags":{"Ignore":[],"LoadedUnits":["Result.Result Http.Error (List.List Data.Unit.Account)"],"CloseNewUnitForm":[],"OpenNewUnitForm":[],"UpdateNewUnitForm":["WebmasterDashboard.Pages.MainPage.NewUnitForm"],"UnitEditModalUpdate":["Components.Modal.ModalMsg"],"CreateUnit":["WebmasterDashboard.Pages.MainPage.NewUnitRequest"],"DisabledCreateUnit":[],"FinishCreatingUnit":["Result.Result Http.Error Data.Unit.Account"],"CloseNewUnitResults":[],"UnitResultModalUpdate":["Components.Modal.ModalMsg"]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}},"Data.Unit.Account":{"args":[],"tags":{"CAPActivity":["Data.Unit.CAPActivityBody"],"CAPWing":["Data.Unit.CAPWingBody"],"CAPGroup":["Data.Unit.CAPGroupBody"],"CAPSquadron":["Data.Unit.CAPSquadronBody"]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Basics.Int"],"BadBody":["String.String"]}},"List.List":{"args":["a"],"tags":{}},"Components.Modal.ModalMsg":{"args":[],"tags":{"AnimationUpdate":["Components.Animation.AnimationMsg"],"Ignore":[]}},"WebmasterDashboard.Pages.MainPage.NewUnitRequest":{"args":[],"tags":{"NewWingR":["WebmasterDashboard.Pages.MainPage.NewWingRequest"],"NewGroupR":["WebmasterDashboard.Pages.MainPage.NewGroupRequest"],"NewSquadronR":["WebmasterDashboard.Pages.MainPage.NewSquadronRequest"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"WebmasterDashboard.Pages.MainPage.SpecificNewUnitForm":{"args":[],"tags":{"NewWing":["WebmasterDashboard.Pages.MainPage.NewWingForm"],"NewGroup":["WebmasterDashboard.Pages.MainPage.NewGroupForm"],"NewSquadron":["WebmasterDashboard.Pages.MainPage.NewSquadronForm"]}},"Components.Animation.AnimationMsg":{"args":[],"tags":{"Step":["Basics.Float"]}},"Basics.Float":{"args":[],"tags":{"Float":[]}}}}})}});}(this));
 
   var app = Elm.WebmasterDashboard.init({ node: document.getElementById("elm") });
 }

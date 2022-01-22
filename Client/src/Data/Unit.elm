@@ -15,26 +15,129 @@
 -- You should have received a copy of the GNU Affero General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-module Data.Unit exposing (..)
+module Data.Unit exposing (Account(..), CAPActivityBody, CAPWingBody, CAPGroupBody, CAPSquadronBody, accountID, accountDecoder, accountEncoder, capActivityDecoder, capWingDecoder, capGroupDecoder, capSquadronDecoder)
 
-import Json.Decode as D exposing (Decoder, string)
+import Json.Decode as D exposing (Decoder)
 import Json.Decode.Pipeline exposing (required)
 import Json.Encode as E
 
+type alias CAPActivityBody =
+    { id : String
+    , hostId : String
+    }
 
-type alias Unit =
+type alias CAPWingBody =
     { id : String
     }
 
+type alias CAPGroupBody =
+    { id : String
+    , wingId : String
+    }
 
-unitDecoder : Decoder Unit
-unitDecoder =
-    D.succeed Unit
-        |> required "id" string
+type alias CAPSquadronBody =
+    { id : String
+    , wingId : String
+    , groupId : String
+    }
+
+type Account
+    = CAPActivity CAPActivityBody
+    | CAPWing CAPWingBody
+    | CAPGroup CAPGroupBody
+    | CAPSquadron CAPSquadronBody
+
+accountID : Account -> String
+accountID account =
+    case account of
+        CAPActivity body ->
+            body.id
+
+        CAPWing body ->
+            body.id
+
+        CAPGroup body ->
+            body.id
+
+        CAPSquadron body ->
+            body.id
+
+capActivityDecoder : Decoder CAPActivityBody
+capActivityDecoder =
+    D.succeed CAPActivityBody
+        |> required "id" D.string
+        |> required "hostId" D.string
+
+capWingDecoder : Decoder CAPWingBody
+capWingDecoder = 
+    D.succeed CAPWingBody
+        |> required "id" D.string
+
+capGroupDecoder : Decoder CAPGroupBody
+capGroupDecoder =
+    D.succeed CAPGroupBody
+        |> required "id" D.string
+        |> required "wingId" D.string
+
+capSquadronDecoder : Decoder CAPSquadronBody
+capSquadronDecoder =
+    D.succeed CAPSquadronBody
+        |> required "id" D.string
+        |> required "wingId" D.string
+        |> required "groupId" D.string
+
+decideOnDecoder : String -> Decoder Account
+decideOnDecoder t =
+    case t of
+        "CAPActivity" ->
+            capActivityDecoder
+                |> D.map CAPActivity
+
+        "CAPWing" ->
+            capWingDecoder
+                |> D.map CAPWing
+
+        "CAPGroup" ->
+            capGroupDecoder
+                |> D.map CAPGroup
+
+        "CAPSquadron" ->
+            capSquadronDecoder
+                |> D.map CAPSquadron
+
+        _ ->
+            D.fail <|
+                "Unknown account type: " ++ t
 
 
-unitEncoder : Unit -> E.Value
-unitEncoder unit =
-    E.object
-        [ ( "id", E.string unit.id )
-        ]
+accountDecoder : Decoder Account
+accountDecoder =
+    D.field "type" D.string
+        |> D.andThen decideOnDecoder
+
+accountEncoder : Account -> E.Value
+accountEncoder unit =
+    case unit of
+        CAPActivity body ->
+            E.object
+                [ ("id", E.string body.id)
+                , ("hostId", E.string body.hostId)
+                ]
+
+        CAPWing body ->
+            E.object
+                [ ("id", E.string body.id)
+                ]
+
+        CAPGroup body ->
+            E.object
+                [ ("id", E.string body.id)
+                , ("wingId", E.string body.wingId)
+                ]
+
+        CAPSquadron body ->
+            E.object
+                [ ("id", E.string body.id)
+                , ("wingId", E.string body.wingId)
+                , ("groupId", E.string body.groupId)
+                ]

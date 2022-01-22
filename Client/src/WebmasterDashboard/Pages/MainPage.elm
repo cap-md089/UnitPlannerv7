@@ -18,10 +18,9 @@
 
 module WebmasterDashboard.Pages.MainPage exposing (..)
 
-import Components.Button exposing (commonButton)
-import Components.Events exposing (onEventNoBubble)
+import Components.Button exposing (commonButton, disabledButton)
 import Components.Modal as Modal exposing (Modal, ModalMsg, createModal, startClosingModal, startOpeningModal)
-import Data.Unit exposing (Unit, unitDecoder)
+import Data.Unit exposing (Account, accountDecoder)
 import Element exposing (..)
 import Element.Border as Border
 import Element.Font as Font
@@ -31,65 +30,198 @@ import Html as H
 import Html.Attributes as A
 import Http
 import Json.Decode as D
+import Json.Decode.Pipeline as P
+import Json.Encode as E
 import Url exposing (Protocol(..))
 import WebmasterDashboard.Theme exposing (borderBottomColor, standardLoaderEl)
+import Components.Events exposing (onEventNoBubble)
+import Data.Unit exposing (accountID)
+import Data.Unit exposing (Account(..))
+import Data.Unit exposing (CAPActivityBody)
+import Data.Unit exposing (CAPWingBody)
+import Data.Unit exposing (CAPGroupBody)
+import Data.Unit exposing (CAPSquadronBody)
+import Data.Unit exposing (capActivityDecoder)
+import Data.Unit exposing (capWingDecoder)
+import Data.Unit exposing (capGroupDecoder)
+import Data.Unit exposing (capSquadronDecoder)
 
+
+type alias NewSquadronForm =
+    { wingSelection : Maybe String
+    , groupSelection : Maybe String
+    }
+
+type alias NewSquadronRequest =
+    { unitId : String
+    , wingId : String
+    , groupId : String
+    }
+
+type alias NewGroupForm =
+    { wingSelection : Maybe String
+    }
+
+type alias NewGroupRequest =
+    { unitId : String
+    , wingId : String
+    }
+
+type alias NewWingForm =
+    {
+    }
+
+type alias NewWingRequest =
+    { unitId : String
+    }
+
+type SpecificNewUnitForm
+    = NewWing NewWingForm
+    | NewGroup NewGroupForm
+    | NewSquadron NewSquadronForm
+
+type NewUnitRequest
+    = NewWingR NewWingRequest
+    | NewGroupR NewGroupRequest
+    | NewSquadronR NewSquadronRequest
+
+validateForm : String -> SpecificNewUnitForm -> Maybe NewUnitRequest
+validateForm unitId f =
+    let
+        unitIdMaybe =
+            if String.isEmpty unitId
+                then Nothing
+                else Just unitId
+    in
+    case f of
+        NewWing _ ->
+            unitIdMaybe
+                |> Maybe.map NewWingRequest
+                |> Maybe.map NewWingR
+
+        NewGroup groupForm ->
+            Maybe.map2 NewGroupRequest unitIdMaybe groupForm.wingSelection
+                |> Maybe.map NewGroupR
+
+        NewSquadron squadronForm ->
+            Maybe.map3 NewSquadronRequest unitIdMaybe squadronForm.wingSelection squadronForm.groupSelection
+                |> Maybe.map NewSquadronR
 
 type alias NewUnitForm =
     { id : String
+    , unitSpecifics : SpecificNewUnitForm
     }
 
+type alias UnitRequestResult =
+    { activityAccounts : List CAPActivityBody
+    , wingAccounts : List CAPWingBody
+    , groupAccounts : List CAPGroupBody
+    , squadronAccounts : List CAPSquadronBody
+    }
 
 type alias Model =
-    { units : Maybe (Result Http.Error (List Unit))
+    { units : Maybe (Result Http.Error (List Account))
     , newUnitForm : NewUnitForm
     , newUnitEditModal : Modal Msg
     , sendCreateUnitCmd : Bool
-    , newUnitResult : Maybe (Result Http.Error ())
+    , newUnitResult : Maybe (Result Http.Error Account)
     , newUnitResultsModal : Modal Msg
     }
 
 
 type Msg
     = Ignore
-    | LoadedUnits (Result Http.Error (List Unit))
+    | LoadedUnits (Result Http.Error (List Account))
     | CloseNewUnitForm
     | OpenNewUnitForm
     | UpdateNewUnitForm NewUnitForm
     | UnitEditModalUpdate ModalMsg
-    | CreateUnit NewUnitForm
-    | FinishCreatingUnit (Result Http.Error ())
+    | CreateUnit NewUnitRequest
+    | DisabledCreateUnit
+    | FinishCreatingUnit (Result Http.Error Account)
     | CloseNewUnitResults
     | UnitResultModalUpdate ModalMsg
-
 
 init : ( Model, Cmd Msg )
 init =
     ( { units = Nothing
-      , newUnitForm = { id = "" }
+      , newUnitForm =
+        { id = ""
+        , unitSpecifics = NewSquadron <|
+            { wingSelection = Nothing
+            , groupSelection = Nothing
+            }
+        }
       , newUnitEditModal = createModal CloseNewUnitForm UnitEditModalUpdate
       , sendCreateUnitCmd = False
       , newUnitResult = Nothing
-      , newUnitResultsModal = createModal CloseNewUnitForm UnitResultModalUpdate
+      , newUnitResultsModal = createModal CloseNewUnitResults UnitResultModalUpdate
       }
     , getUnits LoadedUnits
     )
 
 
-getUnits : (Result Http.Error (List Unit) -> msg) -> Cmd msg
+getUnits : (Result Http.Error (List Account) -> msg) -> Cmd msg
 getUnits msg =
+    let
+        resultDecoder =
+            D.succeed UnitRequestResult
+                |> P.required "activityAccounts" (D.list capActivityDecoder)
+                |> P.required "wingAccounts" (D.list capWingDecoder)
+                |> P.required "groupAccounts" (D.list capGroupDecoder)
+                |> P.required "squadronAccounts" (D.list capSquadronDecoder)
+
+        msgDecoder =
+            resultDecoder
+                |> D.map (\res ->
+                    List.map CAPActivity res.activityAccounts ++
+                    List.map CAPWing res.wingAccounts ++
+                    List.map CAPGroup res.groupAccounts ++
+                    List.map CAPSquadron res.squadronAccounts) 
+    in
     Http.get
-        { url = "/api"
-        , expect = Http.expectJson msg (D.list unitDecoder)
+        { url = "/api/unit"
+        , expect = Http.expectJson msg msgDecoder
+        }
+
+createWing : NewWingRequest -> (Result Http.Error Account -> msg) -> Cmd msg
+createWing unit msg =
+    Http.post
+        { url = "/api/unit/wing"
+        , expect = Http.expectJson msg accountDecoder
+        , body = Http.jsonBody <|
+            E.object
+                [ ("unitId", E.string unit.unitId)
+                , ("orgIds", E.list E.int [])
+                ]
+        }
+
+createGroup : NewGroupRequest -> (Result Http.Error Account -> msg) -> Cmd msg
+createGroup unit msg =
+    Http.post
+        { url = "/api/unit/group"
+        , expect = Http.expectJson msg accountDecoder
+        , body = Http.jsonBody <|
+            E.object
+                [ ("unitId", E.string unit.unitId)
+                , ("wingId", E.string unit.wingId)
+                , ("orgIds", E.list E.int [])
+                ]
         }
 
 
-createUnit : NewUnitForm -> (Result Http.Error () -> msg) -> Cmd msg
-createUnit unit msg =
+createSquadron : NewSquadronRequest -> (Result Http.Error Account -> msg) -> Cmd msg
+createSquadron unit msg =
     Http.post
-        { url = "/api/" ++ unit.id
-        , expect = Http.expectWhatever msg
-        , body = Http.emptyBody
+        { url = "/api/unit/squadron"
+        , expect = Http.expectJson msg accountDecoder
+        , body = Http.jsonBody <|
+            E.object
+                [ ("unitId", E.string unit.unitId)
+                , ("wingId", E.string unit.wingId)
+                , ("groupId", E.string unit.groupId)
+                , ("orgIds", E.list E.int [])
+                ]
         }
 
 
@@ -106,7 +238,7 @@ update msg model =
             ( { model | newUnitEditModal = startClosingModal model.newUnitEditModal }, Cmd.none )
 
         OpenNewUnitForm ->
-            ( { model | newUnitForm = { id = "" }, newUnitEditModal = startOpeningModal model.newUnitEditModal }, Cmd.none )
+            ( { model | newUnitForm = { id = "", unitSpecifics = NewSquadron { wingSelection = Nothing, groupSelection = Nothing } }, newUnitEditModal = startOpeningModal model.newUnitEditModal }, Cmd.none )
 
         UpdateNewUnitForm newForm ->
             ( { model | newUnitForm = newForm }, Cmd.none )
@@ -125,14 +257,25 @@ update msg model =
             Modal.update handlers modalUpdate model.newUnitEditModal
 
         CreateUnit form ->
-            ( { model | newUnitEditModal = Modal.startClosingModal model.newUnitEditModal, newUnitResult = Nothing }, createUnit form FinishCreatingUnit )
+            case form of
+                NewWingR wingForm ->
+                    ( { model | newUnitEditModal = Modal.startClosingModal model.newUnitEditModal, newUnitResult = Nothing }, createWing wingForm FinishCreatingUnit )
+
+                NewGroupR groupForm ->
+                    ( { model | newUnitEditModal = Modal.startClosingModal model.newUnitEditModal, newUnitResult = Nothing }, createGroup groupForm FinishCreatingUnit )
+
+                NewSquadronR squadronForm ->
+                    ( { model | newUnitEditModal = Modal.startClosingModal model.newUnitEditModal, newUnitResult = Nothing }, createSquadron squadronForm FinishCreatingUnit )
+
+        DisabledCreateUnit ->
+            ( model, Cmd.none )
 
         FinishCreatingUnit res ->
             case res of
-                Ok _ ->
+                Ok acc ->
                     ( { model
                         | newUnitResult = Just res
-                        , units = Maybe.map (Result.map ((::) { id = model.newUnitForm.id })) model.units
+                        , units = Maybe.map (Result.map ((::) acc)) model.units
                       }
                     , Cmd.none
                     )
@@ -182,7 +325,7 @@ widgetAttrs =
     ]
 
 
-viewUnitsWidget : List Unit -> Element Msg
+viewUnitsWidget : List Account -> Element Msg
 viewUnitsWidget units =
     let
         unitRender unit =
@@ -198,7 +341,7 @@ viewUnitsWidget units =
                 , width fill
                 ]
             <|
-                text unit.id
+                (text <| accountID unit)
 
         renderedUnits =
             List.map unitRender units
@@ -255,17 +398,226 @@ view model =
             []
         ]
 
+type NewUnitFormSelect
+    = SelectWing
+    | SelectGroup
+    | SelectSquadron
 
 viewUnitEditForm : Model -> Element Msg
 viewUnitEditForm model =
     let
         form =
             model.newUnitForm
+
+        initNewForm selection =
+            case selection of
+                SelectSquadron ->
+                    UpdateNewUnitForm { form | unitSpecifics = NewSquadron { wingSelection = Nothing, groupSelection = Nothing } }
+
+                SelectGroup ->
+                    UpdateNewUnitForm { form | unitSpecifics = NewGroup { wingSelection = Nothing } }
+
+                SelectWing ->
+                    UpdateNewUnitForm { form | unitSpecifics = NewWing {} }
+
+        validatedForm =
+            validateForm form.id form.unitSpecifics
+                |> Maybe.map CreateUnit
+
+        submitButton =
+            case validatedForm of
+                Just msg ->
+                    commonButton
+                        [ htmlAttribute <| A.form "newUnitForm"
+                        , htmlAttribute <| A.class "new-unit-form-submit-button"
+                        ]
+                        { label = text "Submit"
+                        , onPress = Just msg
+                        }
+
+
+                Nothing ->
+                    disabledButton
+                        [ htmlAttribute <| A.form "newUnitForm"
+                        , htmlAttribute <| A.class "new-unit-form-submit-button"
+                        ]
+                        { label = text "Submit"
+                        , onPress = Just DisabledCreateUnit
+                        }
+
+        formStart = 
+            [ el
+                [ Border.widthEach
+                    { left = 0
+                    , right = 0
+                    , bottom = 1
+                    , top = 0
+                    }
+                , Border.color <| borderBottomColor
+                , padding 5
+                , width fill
+                , Font.center
+                ]
+                (text "Create new unit")
+            , Input.text
+                [ htmlAttribute <| A.id "new-unit-form-id-input"
+                ]
+                { text = form.id
+                , placeholder = Nothing
+                , onChange = \id -> UpdateNewUnitForm { form | id = id }
+                , label = Input.labelAbove [] (text "New ID")
+                }
+            , Input.radio
+                [ htmlAttribute <| A.id "new-unit-form-radio-select"
+                ]
+                { selected = Just <|
+                    case form.unitSpecifics of
+                        NewSquadron _ ->
+                            SelectSquadron
+
+                        NewGroup _ ->
+                            SelectGroup
+                        
+                        NewWing _ ->
+                            SelectWing
+                , label = Input.labelAbove [] (text "Select unit type")
+                , options = [ Input.option SelectSquadron (text "Squadron")
+                            , Input.option SelectGroup (text "Group")
+                            , Input.option SelectWing (text "Wing")
+                            ]
+                , onChange = initNewForm
+                }
+            ]
+
+        filterWing unit =
+            case unit of
+                CAPWing body ->
+                    Just body
+
+                _ ->
+                    Nothing
+
+        filterGroup wingId unit =
+            case unit of
+                CAPGroup body ->
+                    if body.wingId == wingId then
+                        Just body
+                    else
+                        Nothing
+                
+                _ ->
+                    Nothing
+
+        formMiddle =
+            case form.unitSpecifics of
+                NewWing _ ->
+                    []
+
+                NewGroup groupForm ->
+                    [ Input.radio
+                        [ spacing <| 5 ]
+                        { selected = case (model.units, groupForm.wingSelection) of
+                            (Just (Ok units), Just wingId) ->
+                                units
+                                    |> List.filter (\unit -> accountID (unit) == wingId)
+                                    |> List.head
+                                    |> Maybe.map accountID
+
+                            (_, _) ->
+                                Nothing
+                        , label = Input.labelAbove [] (text "Select wing")
+                        , options = case model.units of
+                            Just (Ok units) ->
+                                units
+                                    |> List.filterMap filterWing
+                                    |> List.map (\unit -> Input.option unit.id (text unit.id))
+
+                            _ ->
+                                []
+                        , onChange = \newWingId -> UpdateNewUnitForm <|
+                            { form | unitSpecifics = NewGroup <| { groupForm | wingSelection = Just newWingId } }
+                        }
+                    ]
+
+                NewSquadron squadronForm ->
+                    let
+                        wingSelection =
+                            [ Input.radio []
+                                { selected = case (model.units, squadronForm.wingSelection) of
+                                    (Just (Ok units), Just wingId) ->
+                                        units
+                                            |> List.filter (\unit -> accountID (unit) == wingId)
+                                            |> List.head
+                                            |> Maybe.map accountID
+
+                                    (_, _) ->
+                                        Nothing
+                                , label = Input.labelAbove [] (text "Select wing")
+                                , options = case model.units of
+                                    Just (Ok units) ->
+                                        units
+                                            |> List.filterMap filterWing
+                                            |> List.map (\unit -> Input.option unit.id (text unit.id))
+
+                                    _ ->
+                                        []
+                                , onChange = \newWingId -> UpdateNewUnitForm <|
+                                    { form | unitSpecifics = NewSquadron <| { squadronForm | wingSelection = Just newWingId } }
+                                }
+                            ]
+                        
+                        groupSelection =
+                            case squadronForm.wingSelection of
+                                Nothing ->
+                                    []
+
+                                Just wingId ->
+                                    [ Input.radio []
+                                        { selected = case (model.units, squadronForm.groupSelection) of
+                                            (Just (Ok units), Just groupId) ->
+                                                units
+                                                    |> List.filter (\unit -> accountID (unit) == groupId)
+                                                    |> List.head
+                                                    |> Maybe.map accountID
+
+                                            (_, _) ->
+                                                Nothing
+                                        , label = Input.labelAbove [] (text "Select group")
+                                        , options = case model.units of
+                                            Just (Ok units) ->
+                                                units
+                                                    |> List.filterMap (filterGroup wingId)
+                                                    |> List.map (\unit -> Input.option unit.id (text unit.id))
+
+                                            _ ->
+                                                []
+                                        , onChange = \newWingId -> UpdateNewUnitForm <|
+                                            { form | unitSpecifics = NewSquadron <| { squadronForm | groupSelection = Just newWingId } }
+                                        }
+
+                                    ]
+
+                    in
+                    wingSelection ++ groupSelection
+
+        formEnd =
+            [ row
+                [ alignRight
+                , spacing 10
+                ]
+                [ commonButton
+                    [ ]
+                    { label = text "Cancel"
+                    , onPress = Just CloseNewUnitForm
+                    }
+                , submitButton
+                ]
+            ]
     in
     html <|
         H.form
             [ A.id "newUnitForm"
-            , onEventNoBubble "submit" <| CreateUnit form
+            , onEventNoBubble "submit" DisabledCreateUnit
             ]
         <|
             [ layoutWith
@@ -277,45 +629,7 @@ viewUnitEditForm model =
                     , width fill
                     , spacing 20
                     ]
-                    [ el
-                        [ Border.widthEach
-                            { left = 0
-                            , right = 0
-                            , bottom = 1
-                            , top = 0
-                            }
-                        , Border.color <| borderBottomColor
-                        , padding 5
-                        , width fill
-                        , Font.center
-                        ]
-                        (text "Create new unit")
-                    , Input.text
-                        [ htmlAttribute <| A.id "new-unit-form-id-input"
-                        ]
-                        { text = form.id
-                        , placeholder = Nothing
-                        , onChange = \id -> UpdateNewUnitForm { form | id = id }
-                        , label = Input.labelLeft [] (text "New ID")
-                        }
-                    , row
-                        [ alignRight
-                        , spacing 10
-                        ]
-                        [ commonButton
-                            [ ]
-                            { label = text "Cancel"
-                            , onPress = Just CloseNewUnitForm
-                            }
-                        , commonButton
-                            [ htmlAttribute <| A.form "newUnitForm"
-                            , htmlAttribute <| A.class "new-unit-form-submit-button"
-                            ]
-                            { label = text "Submit"
-                            , onPress = Just <| CreateUnit form
-                            }
-                        ]
-                    ]
+                    (formStart ++ formMiddle ++ formEnd)
             ]
 
 

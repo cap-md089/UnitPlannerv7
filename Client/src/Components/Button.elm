@@ -39,6 +39,19 @@ commonButton attrs =
     in
     button <| commonAttrs ++ attrs
 
+disabledButton : List (Attribute msg) -> { label : Element msg, onPress : Maybe msg } -> Element msg
+disabledButton attrs =
+    let
+        commonAttrs =
+            [ padding 10
+            , Border.rounded 5
+            , Background.color <| rgb255 120 120 120
+            , Font.color <| rgb255 255 255 255
+            , htmlAttribute <| class "button"
+            ]
+    in
+    button <| commonAttrs ++ attrs
+
 
 main : Html a
 main =

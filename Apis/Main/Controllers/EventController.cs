@@ -25,25 +25,26 @@ namespace UnitPlanner.Apis.Main.Controllers;
 [Route("/api/{unitId}/events/")]
 public class EventController : ControllerBase
 {
-    private readonly IUnitsService _unitsService;
+    private readonly IAccountsService _unitsService;
     private readonly IEventsService _eventsService;
 
-    public EventController(IUnitsService unitsService, IEventsService eventsService) =>
+    public EventController(IAccountsService unitsService, IEventsService eventsService) =>
         (_unitsService, _eventsService) = (unitsService, eventsService);
 
     [HttpGet]
-    [Route("{id:int}")]
-    public async Task<CalendarEvent?> GetEvent(string unitId, int id)
+    [Route("{id}")]
+    public async Task<IActionResult> GetEvent(string unitId, string id)
     {
-        var unit = await _unitsService.GetUnit(unitId);
+        Account? unit = (await _unitsService.GetUnit(unitId)).Case as Account;
 
         if (unit is null)
-        {
-            return null;
-        }
+            return NotFound();
 
-        var queriedEvent = await _eventsService.GetEvent(unit, (int)id);
+        var queriedEvent = await _eventsService.GetEvent(unit, Guid.Parse(id));
 
-        return queriedEvent;
+        if (queriedEvent is null)
+            return NotFound();
+
+        return Ok(queriedEvent);
     }
 }

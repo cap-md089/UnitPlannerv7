@@ -11161,6 +11161,7 @@ var $author$project$WebmasterDashboard$Pages$MainPage$getUnits = function (msg) 
 };
 var $author$project$WebmasterDashboard$Pages$MainPage$init = _Utils_Tuple2(
 	{
+		deleteUnitResult: $elm$core$Maybe$Nothing,
 		newUnitEditModal: A2($author$project$Components$Modal$createModal, $author$project$WebmasterDashboard$Pages$MainPage$CloseNewUnitForm, $author$project$WebmasterDashboard$Pages$MainPage$UnitEditModalUpdate),
 		newUnitForm: {
 			id: '',
@@ -11627,8 +11628,28 @@ var $elm$url$Url$toString = function (url) {
 					_Utils_ap(http, url.host)),
 				url.path)));
 };
+var $author$project$WebmasterDashboard$Pages$MainPage$DeleteUnitResult = F2(
+	function (a, b) {
+		return {$: 'DeleteUnitResult', a: a, b: b};
+	});
 var $author$project$WebmasterDashboard$Pages$MainPage$FinishCreatingUnit = function (a) {
 	return {$: 'FinishCreatingUnit', a: a};
+};
+var $author$project$Data$Unit$accountID = function (account) {
+	switch (account.$) {
+		case 'CAPActivity':
+			var body = account.a;
+			return body.id;
+		case 'CAPWing':
+			var body = account.a;
+			return body.id;
+		case 'CAPGroup':
+			var body = account.a;
+			return body.id;
+		default:
+			var body = account.a;
+			return body.id;
+	}
 };
 var $elm$json$Json$Decode$andThen = _Json_andThen;
 var $elm$json$Json$Decode$fail = _Json_fail;
@@ -11726,6 +11747,47 @@ var $author$project$WebmasterDashboard$Pages$MainPage$createWing = F2(
 				expect: A2($elm$http$Http$expectJson, msg, $author$project$Data$Unit$accountDecoder),
 				url: '/api/unit/wing'
 			});
+	});
+var $elm$http$Http$expectBytesResponse = F2(
+	function (toMsg, toResult) {
+		return A3(
+			_Http_expect,
+			'arraybuffer',
+			_Http_toDataView,
+			A2($elm$core$Basics$composeR, toResult, toMsg));
+	});
+var $elm$http$Http$expectWhatever = function (toMsg) {
+	return A2(
+		$elm$http$Http$expectBytesResponse,
+		toMsg,
+		$elm$http$Http$resolve(
+			function (_v0) {
+				return $elm$core$Result$Ok(_Utils_Tuple0);
+			}));
+};
+var $author$project$WebmasterDashboard$Pages$MainPage$deleteUnit = F2(
+	function (unitId, msg) {
+		return $elm$http$Http$request(
+			{
+				body: $elm$http$Http$emptyBody,
+				expect: $elm$http$Http$expectWhatever(msg),
+				headers: _List_Nil,
+				method: 'DELETE',
+				timeout: $elm$core$Maybe$Nothing,
+				tracker: $elm$core$Maybe$Nothing,
+				url: '/api/unit/' + unitId
+			});
+	});
+var $elm$core$List$filter = F2(
+	function (isGood, list) {
+		return A3(
+			$elm$core$List$foldr,
+			F2(
+				function (x, xs) {
+					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
+				}),
+			_List_Nil,
+			list);
 	});
 var $elm$core$Maybe$map = F2(
 	function (f, maybe) {
@@ -12002,7 +12064,7 @@ var $author$project$WebmasterDashboard$Pages$MainPage$update = F2(
 							newUnitResultsModal: $author$project$Components$Modal$startClosingModal(model.newUnitResultsModal)
 						}),
 					$elm$core$Platform$Cmd$none);
-			default:
+			case 'UnitResultModalUpdate':
 				var modalUpdate = msg.a;
 				var handleOther = function (modal) {
 					return _Utils_Tuple2(
@@ -12013,6 +12075,39 @@ var $author$project$WebmasterDashboard$Pages$MainPage$update = F2(
 				};
 				var handlers = {handleFinishClose: handleOther, handleFinishOpen: handleOther, handleOther: handleOther};
 				return A3($author$project$Components$Modal$update, handlers, modalUpdate, model.newUnitResultsModal);
+			case 'StartDeletingUnit':
+				var unit = msg.a;
+				return _Utils_Tuple2(
+					model,
+					A2(
+						$author$project$WebmasterDashboard$Pages$MainPage$deleteUnit,
+						$author$project$Data$Unit$accountID(unit),
+						$author$project$WebmasterDashboard$Pages$MainPage$DeleteUnitResult(unit)));
+			default:
+				var unit = msg.a;
+				var res = msg.b;
+				if (res.$ === 'Ok') {
+					var acc = res.a;
+					var filterFunc = $elm$core$List$filter(
+						function (checkUnit) {
+							return !_Utils_eq(
+								$author$project$Data$Unit$accountID(checkUnit),
+								$author$project$Data$Unit$accountID(unit));
+						});
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								deleteUnitResult: $elm$core$Maybe$Just(res),
+								units: A2(
+									$elm$core$Maybe$map,
+									$elm$core$Result$map(filterFunc),
+									model.units)
+							}),
+						$elm$core$Platform$Cmd$none);
+				} else {
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				}
 		}
 	});
 var $author$project$WebmasterDashboard$update = F2(
@@ -15364,17 +15459,6 @@ var $mdgriffith$elm_ui$Internal$Model$adjust = F3(
 	function (size, height, vertical) {
 		return {height: height / size, size: size, vertical: vertical};
 	});
-var $elm$core$List$filter = F2(
-	function (isGood, list) {
-		return A3(
-			$elm$core$List$foldr,
-			F2(
-				function (x, xs) {
-					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
-				}),
-			_List_Nil,
-			list);
-	});
 var $elm$core$List$maximum = function (list) {
 	if (list.b) {
 		var x = list.a;
@@ -18054,22 +18138,6 @@ var $author$project$WebmasterDashboard$Pages$MainPage$SelectSquadron = {$: 'Sele
 var $author$project$WebmasterDashboard$Pages$MainPage$SelectWing = {$: 'SelectWing'};
 var $author$project$WebmasterDashboard$Pages$MainPage$UpdateNewUnitForm = function (a) {
 	return {$: 'UpdateNewUnitForm', a: a};
-};
-var $author$project$Data$Unit$accountID = function (account) {
-	switch (account.$) {
-		case 'CAPActivity':
-			var body = account.a;
-			return body.id;
-		case 'CAPWing':
-			var body = account.a;
-			return body.id;
-		case 'CAPGroup':
-			var body = account.a;
-			return body.id;
-		default:
-			var body = account.a;
-			return body.id;
-	}
 };
 var $mdgriffith$elm_ui$Internal$Model$Right = {$: 'Right'};
 var $mdgriffith$elm_ui$Element$alignRight = $mdgriffith$elm_ui$Internal$Model$AlignX($mdgriffith$elm_ui$Internal$Model$Right);
@@ -23694,6 +23762,9 @@ var $author$project$WebmasterDashboard$Theme$standardLoader = A3(
 	$perzanko$elm_loading$Loading$On);
 var $author$project$WebmasterDashboard$Theme$standardLoaderEl = $mdgriffith$elm_ui$Element$html($author$project$WebmasterDashboard$Theme$standardLoader);
 var $author$project$WebmasterDashboard$Pages$MainPage$OpenNewUnitForm = {$: 'OpenNewUnitForm'};
+var $author$project$WebmasterDashboard$Pages$MainPage$StartDeletingUnit = function (a) {
+	return {$: 'StartDeletingUnit', a: a};
+};
 var $mdgriffith$elm_ui$Internal$Model$Heading = function (a) {
 	return {$: 'Heading', a: a};
 };
@@ -23718,7 +23789,7 @@ var $author$project$WebmasterDashboard$Pages$MainPage$widgetAttrs = _List_fromAr
 var $author$project$WebmasterDashboard$Pages$MainPage$viewUnitsWidget = function (units) {
 	var unitRender = function (unit) {
 		return A2(
-			$mdgriffith$elm_ui$Element$el,
+			$mdgriffith$elm_ui$Element$row,
 			_List_fromArray(
 				[
 					$mdgriffith$elm_ui$Element$Border$color(
@@ -23733,8 +23804,20 @@ var $author$project$WebmasterDashboard$Pages$MainPage$viewUnitsWidget = function
 					$mdgriffith$elm_ui$Element$padding(10),
 					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
 				]),
-			$mdgriffith$elm_ui$Element$text(
-				$author$project$Data$Unit$accountID(unit)));
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$text(
+					$author$project$Data$Unit$accountID(unit)),
+					$mdgriffith$elm_ui$Element$text(' '),
+					A2(
+					$author$project$Components$Button$commonButton,
+					_List_Nil,
+					{
+						label: $mdgriffith$elm_ui$Element$text('Delete'),
+						onPress: $elm$core$Maybe$Just(
+							$author$project$WebmasterDashboard$Pages$MainPage$StartDeletingUnit(unit))
+					})
+				]));
 	};
 	var renderedUnits = A2($elm$core$List$map, unitRender, units);
 	return A2(
@@ -23943,7 +24026,7 @@ var $author$project$WebmasterDashboard$view = function (model) {
 var $author$project$WebmasterDashboard$main = $elm$browser$Browser$application(
 	{init: $author$project$WebmasterDashboard$init, onUrlChange: $author$project$WebmasterDashboard$UrlChanged, onUrlRequest: $author$project$WebmasterDashboard$LinkClicked, subscriptions: $author$project$WebmasterDashboard$subscriptions, update: $author$project$WebmasterDashboard$update, view: $author$project$WebmasterDashboard$view});
 _Platform_export({'WebmasterDashboard':{'init':$author$project$WebmasterDashboard$main(
-	$elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.1"},"types":{"message":"WebmasterDashboard.Msg","aliases":{"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"},"WebmasterDashboard.Pages.MainPage.NewUnitForm":{"args":[],"type":"{ id : String.String, unitSpecifics : WebmasterDashboard.Pages.MainPage.SpecificNewUnitForm }"},"Data.Unit.CAPActivityBody":{"args":[],"type":"{ id : String.String, hostId : String.String }"},"Data.Unit.CAPGroupBody":{"args":[],"type":"{ id : String.String, wingId : String.String }"},"Data.Unit.CAPSquadronBody":{"args":[],"type":"{ id : String.String, wingId : String.String, groupId : String.String }"},"Data.Unit.CAPWingBody":{"args":[],"type":"{ id : String.String }"},"WebmasterDashboard.Pages.MainPage.NewGroupForm":{"args":[],"type":"{ wingSelection : Maybe.Maybe String.String }"},"WebmasterDashboard.Pages.MainPage.NewGroupRequest":{"args":[],"type":"{ unitId : String.String, wingId : String.String }"},"WebmasterDashboard.Pages.MainPage.NewSquadronForm":{"args":[],"type":"{ wingSelection : Maybe.Maybe String.String, groupSelection : Maybe.Maybe String.String }"},"WebmasterDashboard.Pages.MainPage.NewSquadronRequest":{"args":[],"type":"{ unitId : String.String, wingId : String.String, groupId : String.String }"},"WebmasterDashboard.Pages.MainPage.NewWingForm":{"args":[],"type":"{}"},"WebmasterDashboard.Pages.MainPage.NewWingRequest":{"args":[],"type":"{ unitId : String.String }"}},"unions":{"WebmasterDashboard.Msg":{"args":[],"tags":{"LinkClicked":["Browser.UrlRequest"],"UrlChanged":["Url.Url"],"MainPageUpdate":["WebmasterDashboard.Pages.MainPage.Msg"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"WebmasterDashboard.Pages.MainPage.Msg":{"args":[],"tags":{"Ignore":[],"LoadedUnits":["Result.Result Http.Error (List.List Data.Unit.Account)"],"CloseNewUnitForm":[],"OpenNewUnitForm":[],"UpdateNewUnitForm":["WebmasterDashboard.Pages.MainPage.NewUnitForm"],"UnitEditModalUpdate":["Components.Modal.ModalMsg"],"CreateUnit":["WebmasterDashboard.Pages.MainPage.NewUnitRequest"],"DisabledCreateUnit":[],"FinishCreatingUnit":["Result.Result Http.Error Data.Unit.Account"],"CloseNewUnitResults":[],"UnitResultModalUpdate":["Components.Modal.ModalMsg"]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}},"Data.Unit.Account":{"args":[],"tags":{"CAPActivity":["Data.Unit.CAPActivityBody"],"CAPWing":["Data.Unit.CAPWingBody"],"CAPGroup":["Data.Unit.CAPGroupBody"],"CAPSquadron":["Data.Unit.CAPSquadronBody"]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Basics.Int"],"BadBody":["String.String"]}},"List.List":{"args":["a"],"tags":{}},"Components.Modal.ModalMsg":{"args":[],"tags":{"AnimationUpdate":["Components.Animation.AnimationMsg"],"Ignore":[]}},"WebmasterDashboard.Pages.MainPage.NewUnitRequest":{"args":[],"tags":{"NewWingR":["WebmasterDashboard.Pages.MainPage.NewWingRequest"],"NewGroupR":["WebmasterDashboard.Pages.MainPage.NewGroupRequest"],"NewSquadronR":["WebmasterDashboard.Pages.MainPage.NewSquadronRequest"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"WebmasterDashboard.Pages.MainPage.SpecificNewUnitForm":{"args":[],"tags":{"NewWing":["WebmasterDashboard.Pages.MainPage.NewWingForm"],"NewGroup":["WebmasterDashboard.Pages.MainPage.NewGroupForm"],"NewSquadron":["WebmasterDashboard.Pages.MainPage.NewSquadronForm"]}},"Components.Animation.AnimationMsg":{"args":[],"tags":{"Step":["Basics.Float"]}},"Basics.Float":{"args":[],"tags":{"Float":[]}}}}})}});}(this));
+	$elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.1"},"types":{"message":"WebmasterDashboard.Msg","aliases":{"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"},"WebmasterDashboard.Pages.MainPage.NewUnitForm":{"args":[],"type":"{ id : String.String, unitSpecifics : WebmasterDashboard.Pages.MainPage.SpecificNewUnitForm }"},"Data.Unit.CAPActivityBody":{"args":[],"type":"{ id : String.String, hostId : String.String }"},"Data.Unit.CAPGroupBody":{"args":[],"type":"{ id : String.String, wingId : String.String }"},"Data.Unit.CAPSquadronBody":{"args":[],"type":"{ id : String.String, wingId : String.String, groupId : String.String }"},"Data.Unit.CAPWingBody":{"args":[],"type":"{ id : String.String }"},"WebmasterDashboard.Pages.MainPage.NewGroupForm":{"args":[],"type":"{ wingSelection : Maybe.Maybe String.String }"},"WebmasterDashboard.Pages.MainPage.NewGroupRequest":{"args":[],"type":"{ unitId : String.String, wingId : String.String }"},"WebmasterDashboard.Pages.MainPage.NewSquadronForm":{"args":[],"type":"{ wingSelection : Maybe.Maybe String.String, groupSelection : Maybe.Maybe String.String }"},"WebmasterDashboard.Pages.MainPage.NewSquadronRequest":{"args":[],"type":"{ unitId : String.String, wingId : String.String, groupId : String.String }"},"WebmasterDashboard.Pages.MainPage.NewWingForm":{"args":[],"type":"{}"},"WebmasterDashboard.Pages.MainPage.NewWingRequest":{"args":[],"type":"{ unitId : String.String }"}},"unions":{"WebmasterDashboard.Msg":{"args":[],"tags":{"LinkClicked":["Browser.UrlRequest"],"UrlChanged":["Url.Url"],"MainPageUpdate":["WebmasterDashboard.Pages.MainPage.Msg"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"WebmasterDashboard.Pages.MainPage.Msg":{"args":[],"tags":{"Ignore":[],"LoadedUnits":["Result.Result Http.Error (List.List Data.Unit.Account)"],"CloseNewUnitForm":[],"OpenNewUnitForm":[],"UpdateNewUnitForm":["WebmasterDashboard.Pages.MainPage.NewUnitForm"],"UnitEditModalUpdate":["Components.Modal.ModalMsg"],"CreateUnit":["WebmasterDashboard.Pages.MainPage.NewUnitRequest"],"DisabledCreateUnit":[],"FinishCreatingUnit":["Result.Result Http.Error Data.Unit.Account"],"CloseNewUnitResults":[],"UnitResultModalUpdate":["Components.Modal.ModalMsg"],"StartDeletingUnit":["Data.Unit.Account"],"DeleteUnitResult":["Data.Unit.Account","Result.Result Http.Error ()"]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}},"Data.Unit.Account":{"args":[],"tags":{"CAPActivity":["Data.Unit.CAPActivityBody"],"CAPWing":["Data.Unit.CAPWingBody"],"CAPGroup":["Data.Unit.CAPGroupBody"],"CAPSquadron":["Data.Unit.CAPSquadronBody"]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Basics.Int"],"BadBody":["String.String"]}},"List.List":{"args":["a"],"tags":{}},"Components.Modal.ModalMsg":{"args":[],"tags":{"AnimationUpdate":["Components.Animation.AnimationMsg"],"Ignore":[]}},"WebmasterDashboard.Pages.MainPage.NewUnitRequest":{"args":[],"tags":{"NewWingR":["WebmasterDashboard.Pages.MainPage.NewWingRequest"],"NewGroupR":["WebmasterDashboard.Pages.MainPage.NewGroupRequest"],"NewSquadronR":["WebmasterDashboard.Pages.MainPage.NewSquadronRequest"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"WebmasterDashboard.Pages.MainPage.SpecificNewUnitForm":{"args":[],"tags":{"NewWing":["WebmasterDashboard.Pages.MainPage.NewWingForm"],"NewGroup":["WebmasterDashboard.Pages.MainPage.NewGroupForm"],"NewSquadron":["WebmasterDashboard.Pages.MainPage.NewSquadronForm"]}},"Components.Animation.AnimationMsg":{"args":[],"tags":{"Step":["Basics.Float"]}},"Basics.Float":{"args":[],"tags":{"Float":[]}}}}})}});}(this));
 
   var app = Elm.WebmasterDashboard.init({ node: document.getElementById("elm") });
 }

@@ -119,6 +119,23 @@ public class AccountController : ControllerBase
     [Route("{unitId}")]
     public async Task<IActionResult> GetUnit(string unitId) =>
         (await _unitsService.GetUnit(unitId)).Match<IActionResult>(Ok, NotFound);
+
+    [HttpDelete]
+    [Route("{unitId}")]
+    public async Task<IActionResult> DeleteUnit(string unitId) 
+    {
+        var unitOption = await _unitsService.GetUnit(unitId);
+
+        Account? unit = unitOption.Case as Account;
+
+        if(unit is null) {
+            return NotFound();
+        }
+
+        await _unitsService.DeleteUnit(unit);
+
+        return NoContent();
+    }
 }
 
 public class NewSquadronAccountRequest

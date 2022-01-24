@@ -1,4 +1,4 @@
-// UnitsService.cs: Provides abstractions for managing Units
+// AccountsService.cs: Provides abstractions for managing Units
 //
 // Copyright (C) 2022 Andrew Rioux
 // 
@@ -34,6 +34,8 @@ public interface IAccountsService
     Task<CAPWing> CreateNewWing(string id, IEnumerable<Models.NHQ.Organization> organizations);
 
     Task<IEnumerable<Account>> GetUnits();
+
+    Task DeleteUnit(Account account);
 }
 
 public class AccountsService : IAccountsService
@@ -147,4 +149,12 @@ public class AccountsService : IAccountsService
             .Include(a => a.Calendars)
             .Include(a => a.Domains)
             .ToListAsync();
+
+    public async Task DeleteUnit(Account account) 
+    {
+        _context.Accounts.Remove(account);
+
+        await _context.SaveChangesAsync();
+    }
+
 }

@@ -125,6 +125,7 @@ type alias Model =
     , newUnitEditModal : Modal Msg
     , sendCreateUnitCmd : Bool
     , newUnitResult : Maybe (Result Http.Error Account)
+    , deleteUnitResult : Maybe (Result Http.Error () )
     , newUnitResultsModal : Modal Msg
     }
 
@@ -141,6 +142,8 @@ type Msg
     | FinishCreatingUnit (Result Http.Error Account)
     | CloseNewUnitResults
     | UnitResultModalUpdate ModalMsg
+    | StartDeletingUnit Account
+    | DeleteUnitResult Account (Result Http.Error ())
 
 init : ( Model, Cmd Msg )
 init =
@@ -155,6 +158,7 @@ init =
       , newUnitEditModal = createModal CloseNewUnitForm UnitEditModalUpdate
       , sendCreateUnitCmd = False
       , newUnitResult = Nothing
+      , deleteUnitResult = Nothing
       , newUnitResultsModal = createModal CloseNewUnitResults UnitResultModalUpdate
       }
     , getUnits LoadedUnits
@@ -222,6 +226,18 @@ createSquadron unit msg =
                 , ("groupId", E.string unit.groupId)
                 , ("orgIds", E.list E.int [])
                 ]
+        }
+
+deleteUnit : String -> (Result Http.Error () -> msg) -> Cmd msg
+deleteUnit unitId msg = 
+    Http.request
+        { method = "DELETE"
+        , headers = []
+        , url = "/api/unit/" ++ unitId
+        , body = Http.emptyBody
+        , expect = Http.expectWhatever msg
+        , timeout = Nothing
+        , tracker = Nothing
         }
 
 
@@ -299,6 +315,26 @@ update msg model =
             in
             Modal.update handlers modalUpdate model.newUnitResultsModal
 
+        StartDeletingUnit unit ->
+            ( model, deleteUnit (accountID unit) (DeleteUnitResult unit) )
+
+        DeleteUnitResult unit res ->
+            case res of 
+                Ok acc ->
+                    let
+                        filterFunc =
+                            List.filter (\checkUnit -> (accountID checkUnit) /= (accountID unit))
+                            -- List.filter (\_ -> True)
+                    in
+                    ( { model
+                        | deleteUnitResult = Just res
+                        , units = Maybe.map (Result.map filterFunc) model.units
+                    }
+                    , Cmd.none 
+                    )
+
+                Err _ ->
+                    ( model, Cmd.none )
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
@@ -329,7 +365,7 @@ viewUnitsWidget : List Account -> Element Msg
 viewUnitsWidget units =
     let
         unitRender unit =
-            el
+            row
                 [ Border.color <| rgb255 0 0 0
                 , Border.shadow
                     { offset = ( 0, 0 )
@@ -341,7 +377,16 @@ viewUnitsWidget units =
                 , width fill
                 ]
             <|
-                (text <| accountID unit)
+                [text <| accountID unit
+                , text <| " "
+                , commonButton
+                    []
+                    { label = text "Delete"
+                    , onPress = unit
+                        |> StartDeletingUnit
+                        |> Just
+                    }
+                ]
 
         renderedUnits =
             List.map unitRender units

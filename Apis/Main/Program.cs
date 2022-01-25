@@ -20,31 +20,27 @@ using Microsoft.EntityFrameworkCore;
 using UnitPlanner.Apis.Main.Data;
 using UnitPlanner.Apis.Main.Models;
 using UnitPlanner.Apis.Main.Services;
-using UnitPlanner.Services.Authentication.Protos;
-using UnitPlanner.Services.Capwatch.Protos;
-using UnitPlanner.Services.Files.Protos;
-using UnitPlanner.Services.Graph.Protos;
+using UnitPlanner.Apis.Main.Services.Authentication;
+using UnitPlanner.Apis.Main.Services.Capwatch;
+using UnitPlanner.Apis.Main.Services.Files;
+using UnitPlanner.Apis.Main.Services.Graph;
 
 AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddGrpcClient<AuthGreeter.AuthGreeterClient>(o =>
-    o.Address = new Uri(Environment.GetEnvironmentVariable("SERVICE_AUTH_URL")!));
-builder.Services.AddGrpcClient<CapwatchGreeter.CapwatchGreeterClient>(o =>
-    o.Address = new Uri(Environment.GetEnvironmentVariable("SERVICE_CAPWATCH_URL")!));
-builder.Services.AddGrpcClient<FilesGreeter.FilesGreeterClient>(o =>
-    o.Address = new Uri(Environment.GetEnvironmentVariable("SERVICE_FILES_URL")!));
-builder.Services.AddGrpcClient<GraphGreeter.GraphGreeterClient>(o =>
-    o.Address = new Uri(Environment.GetEnvironmentVariable("SERVICE_GRAPH_URL")!));
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddDbContext<UnitPlannerDbContext>(options =>
-{
-    var connectionString = builder.Configuration.GetConnectionString("MainDB");
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
-});
+    options.UseMySql(builder.Configuration.GetConnectionString("MainDB"), ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("MainDB"))));
+
+builder.Services.RegisterAuthenticationService(builder.Environment);
+builder.Services.RegisterCapwatchService(builder.Environment);
+builder.Services.RegisterFilesService(builder.Environment);
+builder.Services.RegisterGraphService(builder.Environment);
+
 builder.Services.AddTransient<IAccountsService, AccountsService>();
 builder.Services.AddTransient<IEventsService, EventsService>();
 

@@ -2,20 +2,7 @@ syntax = "proto3";
 
 option csharp_namespace = "UnitPlanner.Services.Files.Protos";
 
-package filesgreet;
+package fileservice;
 
-// The greeting service definition.
-service FilesGreeter {
-  // Sends a greeting
-  rpc SayHello (FilesHelloRequest) returns (FilesHelloReply);
-}
-
-// The request message containing the user's name.
-message FilesHelloRequest {
-  string name = 1;
-}
-
-// The response message containing the greetings.
-message FilesHelloReply {
-  string message = 1;
+service FilesService {
 }

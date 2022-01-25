@@ -147,10 +147,6 @@ services:
       - "5000"
     depends_on:
       - db
-      - authentication_dev
-      - capwatch_dev
-      - files_dev
-      - graph_dev
     volumes:
       - .:/app
       - '~:/home'
@@ -181,7 +177,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - HOME=/home
-    command: dotnet watch --project Services/Development/Authentication/UnitPlanner.Services.Authentication.Development.csproj run -c Release < echo 'a'
+    command: dotnet watch --project Services/Authentication/UnitPlanner.Services.Authentication.csproj run -c Release < echo 'a'
     networks:
       - dev_network
     user: "1000"
@@ -199,7 +195,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - HOME=/home
-    command: dotnet watch --project Services/Development/Capwatch/UnitPlanner.Services.Capwatch.Development.csproj run -c Release < echo 'a'
+    command: dotnet watch --project Services/Capwatch/UnitPlanner.Services.Capwatch.csproj run -c Release < echo 'a'
     networks:
       - dev_network
     user: "1000"
@@ -217,7 +213,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - HOME=/home
-    command: dotnet watch --project Services/Development/Files/UnitPlanner.Services.Files.Development.csproj run -c Release < echo 'a'
+    command: dotnet watch --project Services/Files/UnitPlanner.Services.Files.csproj run -c Release < echo 'a'
     networks:
       - dev_network
     user: "1000"
@@ -235,7 +231,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - HOME=/home
-    command: dotnet watch --project Services/Development/Graph/UnitPlanner.Services.Graph.Development.csproj run -c Release < echo 'a'
+    command: dotnet watch --project Services/Graph/UnitPlanner.Services.Graph.csproj run -c Release < echo 'a'
     networks:
       - dev_network
     user: "1000"

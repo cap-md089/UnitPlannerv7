@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="..\..\Services\Authentication\Protos\auth.proto" GrpcServices="Client" />
+    <Protobuf Include="..\..\Services\Authentication\Protos\authentication.proto" GrpcServices="Client" />
     <Protobuf Include="..\..\Services\Capwatch\Protos\capwatch.proto" GrpcServices="Client" />
     <Protobuf Include="..\..\Services\Files\Protos\files.proto" GrpcServices="Client" />
     <Protobuf Include="..\..\Services\Graph\Protos\graph.proto" GrpcServices="Client" />
@@ -35,6 +35,7 @@
     <Compile Include="Data\*.cs" />
     <Compile Include="Models\**\*.cs" />
     <Compile Include="Services\*.cs" />
+    <Compile Include="Services\*\*.cs" />
     <Compile Include="Migrations\*.cs" />
     <Compile Include="Program.cs" />
   </ItemGroup>

@@ -2,20 +2,30 @@ syntax = "proto3";
 
 option csharp_namespace = "UnitPlanner.Services.Capwatch.Protos";
 
-package capwatchgreet;
+package capwatchimport;
 
-// The greeting service definition.
-service CapwatchGreeter {
-  // Sends a greeting
-  rpc SayHello (CapwatchHelloRequest) returns (CapwatchHelloReply);
+message CAPWATCHLogin {
+  int32 orgid = 1;
+  string prettyName = 2;
 }
 
-// The request message containing the user's name.
-message CapwatchHelloRequest {
-  string name = 1;
+service CapwatchImport {
+  rpc EnumerateLogins (LoginsRequest) returns (LoginsEnumeration);
+  rpc AddLogin (AddLoginRequest) returns (AddLoginReply);
 }
 
-// The response message containing the greetings.
-message CapwatchHelloReply {
-  string message = 1;
+message LoginsRequest {
+}
+
+message LoginsEnumeration {
+  repeated CAPWATCHLogin logins = 1;
+}
+
+message AddLoginRequest {
+  CAPWATCHLogin newLogin = 1;
+  string username = 2;
+  string password = 3;
+}
+
+message AddLoginReply {
 }

@@ -1,4 +1,4 @@
-// GreeterService.cs: An example service to get the project set up
+// auth.proto: Defines comms for interacting with the auth service to authenticate users
 // 
 // Copyright (C) 2021 Andrew Rioux
 // 
@@ -15,24 +15,11 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using Grpc.Core;
-using UnitPlanner.Services.Files.Protos;
+syntax = "proto3";
 
-namespace UnitPlanner.Services.Files.Services;
+option csharp_namespace = "UnitPlanner.Services.Authentication.Protos";
 
-public class GreeterService : FilesGreeter.FilesGreeterBase
-{
-    private readonly ILogger<GreeterService> _logger;
-    public GreeterService(ILogger<GreeterService> logger)
-    {
-        _logger = logger;
-    }
+package authenticationservice;
 
-    public override Task<FilesHelloReply> SayHello(FilesHelloRequest request, ServerCallContext context)
-    {
-        return Task.FromResult(new FilesHelloReply
-        {
-            Message = "Hello " + request.Name
-        });
-    }
+service AuthenticationService {
 }

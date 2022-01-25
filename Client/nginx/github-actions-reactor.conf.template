@@ -28,15 +28,8 @@ http {
     server {
         server_name ${PROXY_NAME};
 
-        location /static {
-            autoindex on;
-            root ${PROJECT_STATIC_DIR};
-        }
+        root ${PROJECT_STATIC_DIR};
 
-        location / {
-            proxy_pass ${ELM_REACTOR_URL};
-        }
-        
         location /swagger {
             proxy_pass ${API_SERVER_URL};
         }
@@ -52,6 +45,10 @@ http {
             client_max_body_size 0;
         }
 
+        location / {
+            proxy_pass ${ELM_REACTOR_URL};
+        }
+        
         listen ${PROXY_PORT};
     }
 }

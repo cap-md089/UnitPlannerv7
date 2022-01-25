@@ -27,7 +27,7 @@ describe('modal dialogue', () => {
             .get('.modal-background')
             .should('have.css', 'background-color')
             .then(alpha => +alpha.replace('rgba(0, 0, 0, ','').replace(')', ''))
-            .should('be.closeTo', 0.15, 0.10);
+            .should('be.closeTo', 0.15, 0.149);
 
         cy.wait(300);
 

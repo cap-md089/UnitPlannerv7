@@ -26,49 +26,78 @@ using UnitPlanner.Tests.Utils;
 
 namespace UnitPlanner.Apis.Main.Tests;
 
-public class UnitService : DbBasedTest<UnitPlannerDbContext>
+public class AccountService : DbBasedTest<UnitPlannerDbContext>
 {
-    public UnitService()
+    public AccountService()
         : base()
     {
+    }
+
+    [Fact]
+    public void Can_create_new_wing()
+    {
+        using var context = new UnitPlannerDbContext(ContextOptions);
+        Clear(context);
+
+        Assert.Equal(0, context.Accounts.Count());
+
+        var service = new AccountsService(context);
+        var result = service.CreateNewWing("md001", new List<Models.NHQ.Organization>()).Result;
+
+        Assert.Equal("md001", result.Id);
+        Assert.Equal(1, context.Accounts.Count());
+    }
+
+    [Fact]
+    public void Can_create_new_group()
+    {
+        using var context = new UnitPlannerDbContext(ContextOptions);
+        Clear(context);
+
+        var service = new AccountsService(context);
+        
+        var wing = service.CreateNewWing("md001", new List<Models.NHQ.Organization>()).Result;
+
+        Assert.Equal(1, context.Accounts.Count());
+
+        var result = service.CreateNewGroup(wing, "md043", new List<Models.NHQ.Organization>()).Result;
+
+        Assert.Equal("md043", result.Id);
+        Assert.Equal(2, context.Accounts.Count());
     }
 
     [Fact]
     public void Can_create_new_squadron()
     {
         using var context = new UnitPlannerDbContext(ContextOptions);
-
         Clear(context);
 
-        var wing = new CAPWing() { Id = "md001" };
-        var group = new CAPGroup() { Id = "md043" };
+        var service = new AccountsService(context);
 
-        context.Accounts.Add(wing);
-        context.Accounts.Add(group);
+        var wing = service.CreateNewWing("md001", new List<Models.NHQ.Organization>()).Result;
+        var group = service.CreateNewGroup(wing, "md043", new List<Models.NHQ.Organization>()).Result;
 
         Assert.Equal(2, context.Accounts.Count());
-
-        var service = new AccountsService(context);
 
         var result = service.CreateNewSquadron(wing, group, "md089", new List<Models.NHQ.Organization>()).Result;
 
         Assert.Equal("md089", result.Id);
-        Assert.Equal(1, context.Accounts.Count());
+        Assert.Equal(3, context.Accounts.Count());
     }
 
     [Fact]
     public void Can_enumerate_units()
     {
         using var context = new UnitPlannerDbContext(ContextOptions);
-
         Clear(context);
 
-        context.Accounts.Add(new CAPSquadron() { Id = "md001" });
-        context.Accounts.Add(new CAPSquadron() { Id = "md089" });
-        context.Accounts.Add(new CAPSquadron() { Id = "md890" });
-        context.SaveChanges();
-
         var service = new AccountsService(context);
+
+        var wing = service.CreateNewWing("md001", new List<Models.NHQ.Organization>()).Result;
+        var group = service.CreateNewGroup(wing, "md043", new List<Models.NHQ.Organization>()).Result;
+        var squadron = service.CreateNewSquadron(wing, group, "md089", new List<Models.NHQ.Organization>()).Result;
+
+        context.SaveChanges();
 
         var result = service.GetUnits().Result;
 
@@ -79,13 +108,11 @@ public class UnitService : DbBasedTest<UnitPlannerDbContext>
     public void Can_get_unit()
     {
         using var context = new UnitPlannerDbContext(ContextOptions);
-
         Clear(context);
 
-        context.Accounts.Add(new CAPSquadron() { Id = "md001" });
-        context.SaveChanges();
-
         var service = new AccountsService(context);
+
+        service.CreateNewWing("md001", new List<Models.NHQ.Organization>());
 
         Account? result = service.GetUnit("md001").Result.Case as Account;
 

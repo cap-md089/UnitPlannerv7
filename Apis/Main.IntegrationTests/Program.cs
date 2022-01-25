@@ -30,8 +30,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<UnitPlannerDbContext>(options =>
 {
-    var connectionString = "server=db;uid=root;pwd=toor;database=UnitPlannerv7";
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+    var connectionString = builder.Configuration.GetConnectionString("MainDB") ?? "server=db;uid=root;pwd=toor;database=UnitPlannerv7";
+    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 26)));
 });
 
 var app = builder.Build();

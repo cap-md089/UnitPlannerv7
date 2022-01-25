@@ -458,6 +458,7 @@ $RECYCLE.BIN/
 # Extra Elm stuff
 Client/elm-stuff
 Client/repl-temp-*
+Client/static/out
 
 
 # Cypress testing

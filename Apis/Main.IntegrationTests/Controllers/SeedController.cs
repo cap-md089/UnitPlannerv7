@@ -155,9 +155,16 @@ public class SeedController : ControllerBase
             "Teams"
         };
 
-        foreach (var table in tables)
+        try
         {
-            await _context.Database.ExecuteSqlRawAsync($"DELETE FROM {table};");
+            foreach (var table in tables)
+            {
+                await _context.Database.ExecuteSqlRawAsync($"DELETE FROM {table};");
+            }
+        }
+        catch
+        {
+            // Ignore; database hasn't been set up, and will be set up by the actual main process shortly
         }
     }
 

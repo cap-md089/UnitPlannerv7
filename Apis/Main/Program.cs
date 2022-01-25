@@ -29,12 +29,29 @@ AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport
 
 var builder = WebApplication.CreateBuilder(args);
 
+if (Environment.GetEnvironmentVariable("RUNNING_IN_CI") == "1")
+{
+    Console.Error.WriteLine($"Using connection string: {builder.Configuration.GetConnectionString("MainDB")}");
+}
+
+builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
+{
+    config.AddEnvironmentVariables();
+});
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<UnitPlannerDbContext>(options =>
-    options.UseMySql(builder.Configuration.GetConnectionString("MainDB"), ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("MainDB"))));
+{
+    options.UseMySql(builder.Configuration.GetConnectionString("MainDB"), new MySqlServerVersion(new Version(8, 0, 26)));
+    
+    if (builder.Environment.IsDevelopment())
+    {
+        options.EnableDetailedErrors();
+    }
+});
 
 builder.Services.RegisterAuthenticationService(builder.Environment);
 builder.Services.RegisterCapwatchService(builder.Environment);

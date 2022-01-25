@@ -158,6 +158,7 @@ services:
       - SERVICE_CAPWATCH_URL=http://capwatch_dev:5020
       - SERVICE_FILES_URL=http://files_dev:5030
       - SERVICE_GRAPH_URL=http://graph_dev:5040
+      - ConnectionStrings__MainDB=server=127.0.0.1;uid=root;password=root;database=test
       - HOME=/home
     command: dotnet watch --project Apis/Main/UnitPlanner.Apis.Main.csproj run -c Release < echo 'a'
     networks:

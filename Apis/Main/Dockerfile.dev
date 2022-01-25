@@ -1,0 +1,6 @@
+FROM mcr.microsoft.com/dotnet/sdk:6.0
+
+COPY scripts/dev-add-host.sh /usr/bin/dev-add-host.sh
+
+RUN chown root:root /usr/bin/dev-add-host.sh
+RUN chmod 1664 /usr/bin/dev-add-host.sh

@@ -39,6 +39,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{146B15A3
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitPlanner.Tests.Utils", "Tests\Utils\UnitPlanner.Tests.Utils.csproj", "{1EDC04D0-CD94-45B2-8A48-59E88F024542}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitPlanner.Services.HostConfiguration", "Services\HostConfiguration\UnitPlanner.Services.HostConfiguration.csproj", "{9BEB4F43-ED11-47DB-985D-99737127A806}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitPlanner.Services.HostConfiguration.Tests", "Services\Tests\HostConfiguration.Tests\UnitPlanner.Services.HostConfiguration.Tests.csproj", "{54788A8D-0D0E-4DB6-9396-7186E47AD360}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -100,6 +104,14 @@ Global
 		{1EDC04D0-CD94-45B2-8A48-59E88F024542}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1EDC04D0-CD94-45B2-8A48-59E88F024542}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1EDC04D0-CD94-45B2-8A48-59E88F024542}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BEB4F43-ED11-47DB-985D-99737127A806}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BEB4F43-ED11-47DB-985D-99737127A806}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BEB4F43-ED11-47DB-985D-99737127A806}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BEB4F43-ED11-47DB-985D-99737127A806}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54788A8D-0D0E-4DB6-9396-7186E47AD360}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54788A8D-0D0E-4DB6-9396-7186E47AD360}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54788A8D-0D0E-4DB6-9396-7186E47AD360}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54788A8D-0D0E-4DB6-9396-7186E47AD360}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{3771447D-EE9E-4F58-A252-03BD49792C6C} = {AD2DD7B0-C6CC-4438-AABD-676A13FAFC73}
@@ -116,5 +128,7 @@ Global
 		{B3295F3A-75BF-41C4-99C2-7532F4C0C7CA} = {8D90BB75-173C-4260-BAAC-A7EE2487E528}
 		{1A029105-A004-4403-8908-C148231C29ED} = {AD2DD7B0-C6CC-4438-AABD-676A13FAFC73}
 		{1EDC04D0-CD94-45B2-8A48-59E88F024542} = {146B15A3-A20A-49F6-A91D-0805392196F7}
+		{9BEB4F43-ED11-47DB-985D-99737127A806} = {36570363-0F76-477C-B735-183DD80AB3C5}
+		{54788A8D-0D0E-4DB6-9396-7186E47AD360} = {8D90BB75-173C-4260-BAAC-A7EE2487E528}
 	EndGlobalSection
 EndGlobal

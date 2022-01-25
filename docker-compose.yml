@@ -140,7 +140,9 @@ services:
     user: "1000"
 
   api_server:
-    image: mcr.microsoft.com/dotnet/sdk:6.0
+    build:
+      context: .
+      dockerfile: Apis/Main/Dockerfile.dev
     ports:
       - "5000:5000"
     expose:
@@ -150,6 +152,7 @@ services:
     volumes:
       - .:/app
       - '~:/home'
+      - /etc/hosts:/etc/hosts
     working_dir: /app
     environment:
       - ASPNETCORE_URLS=http://0.0.0.0:5000
@@ -158,7 +161,7 @@ services:
       - SERVICE_CAPWATCH_URL=http://capwatch_dev:5020
       - SERVICE_FILES_URL=http://files_dev:5030
       - SERVICE_GRAPH_URL=http://graph_dev:5040
-      - ConnectionStrings__MainDB=server=127.0.0.1;uid=root;password=root;database=test
+      - SERVICE_HOSTCONFIGURATION_URL=http://hosts_dev:5050
       - HOME=/home
     command: dotnet watch --project Apis/Main/UnitPlanner.Apis.Main.csproj run -c Release < echo 'a'
     networks:
@@ -233,6 +236,24 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - HOME=/home
     command: dotnet watch --project Services/Graph/UnitPlanner.Services.Graph.csproj run -c Release < echo 'a'
+    networks:
+      - dev_network
+    user: "1000"
+
+  hosts_dev:
+    image: mcr.microsoft.com/dotnet/sdk:6.0
+    expose:
+      - "5050"
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+      - '~:/home'
+    working_dir: /app
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - HOME=/home
+    command: dotnet watch --project Services/HostConfiguration/UnitPlanner.Services.HostConfiguration.csproj run -c Release < echo 'a'
     networks:
       - dev_network
     user: "1000"

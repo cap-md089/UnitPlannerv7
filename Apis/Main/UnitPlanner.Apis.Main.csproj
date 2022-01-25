@@ -28,6 +28,7 @@
     <Protobuf Include="..\..\Services\Capwatch\Protos\capwatch.proto" GrpcServices="Client" />
     <Protobuf Include="..\..\Services\Files\Protos\files.proto" GrpcServices="Client" />
     <Protobuf Include="..\..\Services\Graph\Protos\graph.proto" GrpcServices="Client" />
+    <Protobuf Include="..\..\Services\HostConfiguration\Protos\hosts.proto" GrpcServices="Client" />
   </ItemGroup>
 
   <ItemGroup>

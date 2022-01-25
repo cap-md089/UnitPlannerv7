@@ -24,6 +24,7 @@ using UnitPlanner.Apis.Main.Services.Authentication;
 using UnitPlanner.Apis.Main.Services.Capwatch;
 using UnitPlanner.Apis.Main.Services.Files;
 using UnitPlanner.Apis.Main.Services.Graph;
+using UnitPlanner.Apis.Main.Services.HostConfiguration;
 
 AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
@@ -57,6 +58,7 @@ builder.Services.RegisterAuthenticationService(builder.Environment);
 builder.Services.RegisterCapwatchService(builder.Environment);
 builder.Services.RegisterFilesService(builder.Environment);
 builder.Services.RegisterGraphService(builder.Environment);
+builder.Services.RegisterHostConfigurationService(builder.Environment);
 
 builder.Services.AddTransient<IAccountsService, AccountsService>();
 builder.Services.AddTransient<IEventsService, EventsService>();

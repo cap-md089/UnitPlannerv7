@@ -459,6 +459,7 @@ $RECYCLE.BIN/
 Client/elm-stuff
 Client/repl-temp-*
 Client/static/out
+Client/index.html
 
 
 # Cypress testing

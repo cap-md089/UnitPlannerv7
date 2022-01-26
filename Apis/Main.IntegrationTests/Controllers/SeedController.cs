@@ -118,7 +118,6 @@ public class SeedController : ControllerBase
         {
             "AccountDomain",
             "AccountOrganizationMapping",
-            "Accounts",
             "Attendance",
             "AttendanceApproval",
             "AttendanceApprovalRequirement",
@@ -127,15 +126,11 @@ public class SeedController : ControllerBase
             "CAPSquadrons",
             "CAPWings",
             "Calendars",
-            "CustomAttendanceField",
             "CustomAttendanceFieldFileSubmission",
             "CustomAttendanceFieldValue",
+            "CustomAttendanceField",
             "DebriefItem",
-            "Events",
-            "EventsLinked",
-            "EventsRegular",
             "ExtraAccountMembership",
-            "Members",
             "NHQ_CadetAchv",
             "NHQ_CadetAchvAprs",
             "NHQ_CadetActivities",
@@ -152,7 +147,12 @@ public class SeedController : ControllerBase
             "PointsOfContact",
             "Signature",
             "TeamMembership",
-            "Teams"
+            "Teams",
+            "Accounts",
+            "Members",
+            "EventsLinked",
+            "EventsRegular",
+            "Events",
         };
 
         try

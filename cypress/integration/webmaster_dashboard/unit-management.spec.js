@@ -31,6 +31,10 @@ describe('unit management', () => {
             .should('be.visible')
             .type(newUnitId);
 
+        cy.get('#new-unit-form-baseurl-input')
+            .should('be.visible')
+            .type('events.md.cap.gov');
+
         cy.get('[role=radio]').contains('Wing').click();
 
         cy.intercept('POST', '/api/unit/wing').as('newWing');
@@ -57,6 +61,10 @@ describe('unit management', () => {
         cy.get('#new-unit-form-id-input')
             .should('be.visible')
             .type(newWingId);
+
+        cy.get('#new-unit-form-baseurl-input')
+            .should('be.visible')
+            .type('events.md.cap.gov');
 
         cy.get('[role=radio]').contains('Wing').click();
 
@@ -102,6 +110,10 @@ describe('unit management', () => {
         cy.get('#new-unit-form-id-input')
             .should('be.visible')
             .type(newWingId);
+
+        cy.get('#new-unit-form-baseurl-input')
+            .should('be.visible')
+            .type('events.md.cap.gov');
 
         cy.get('[role=radio]').contains('Wing').click();
 

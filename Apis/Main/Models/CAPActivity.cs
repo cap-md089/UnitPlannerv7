@@ -23,6 +23,8 @@ public class CAPActivity : Account
 {
     public override string Type => "CAPActivity";
 
+    public string? OverrideBaseUrl { get; set; }
+
     public string HostId { get; set; } = null!;
     [JsonIgnore]
     public Account Host { get; set; } = null!;

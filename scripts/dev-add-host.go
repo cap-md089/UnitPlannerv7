@@ -1,37 +1,56 @@
 // Copyright (C) 2022 Andrew Rioux
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
 // published by the Free Software Foundation, either version 3 of the
 // License, or (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
+package main
 
-namespace UnitPlanner.Apis.Main.Models;
+import (
+	"log"
+	"os"
+	"strings"
+)
 
-[Table("CAPSquadrons")]
-public class CAPSquadron : Account
-{
-    public override string Type => "CAPSquadron";
+func main() {
+	if len(os.Args) < 2 {
+		log.Panic("No argument provided")
+	}
 
-    public string WingId { get; set; } = null!;
-    [JsonIgnore]
-    public CAPWing Wing { get; set; } = null!;
+	host_text, err := os.ReadFile("/etc/hosts")
+	if err != nil {
+		log.Panic(err)
+	}
 
-    public string GroupId { get; set; } = null!;
-    [JsonIgnore]
-    public CAPGroup Group { get; set; } = null!;
+	if strings.Contains(string(host_text), os.Args[1]) {
+		println("dev-add-host: host already added")
+		os.Exit(0)
+	}
 
-    public string? OverrideBaseUrl { get; set; }
+	hosts, err := os.OpenFile("/etc/hosts", os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Panic(err)
+	}
 
-    public ICollection<AccountOrganizationMapping> Organizations { get; set; } = null!;
+	_, err = hosts.Write([]byte(os.Args[1]))
+	if err != nil {
+		log.Panic(err)
+	}
+	_, err = hosts.Write([]byte("\n"))
+	if err != nil {
+		log.Panic(err)
+	}
+
+	hosts.Close()
+
+	os.Exit(0)
 }

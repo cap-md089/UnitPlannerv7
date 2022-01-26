@@ -54,7 +54,8 @@ public class AccountController : ControllerBase
 
         return await func
             .Apply(wingOption, groupOption)
-            .MapAsync((units) => _unitsService.CreateNewSquadron(units.Item1, units.Item2, request.unitId, orgs))
+            .MapAsync((units) =>
+                _unitsService.CreateNewSquadron(units.Item1, units.Item2, request.unitId, request.baseUrl, orgs))
             .Match<IActionResult>(
                 sq => CreatedAtAction(
                     nameof(GetUnit),
@@ -83,7 +84,7 @@ public class AccountController : ControllerBase
                 CreatedAtAction(
                     nameof(GetUnit),
                     new { unitId = request.unitId },
-                    await _unitsService.CreateNewGroup(wing, request.unitId, orgs)
+                    await _unitsService.CreateNewGroup(wing, request.unitId, request.baseUrl, orgs)
                 ),
                 NotFound
             );
@@ -98,7 +99,7 @@ public class AccountController : ControllerBase
         return CreatedAtAction(
             nameof(GetUnit),
             new { unitId = request.unitId },
-            await _unitsService.CreateNewWing(request.unitId, orgs)
+            await _unitsService.CreateNewWing(request.unitId, request.baseUrl, orgs)
         );
     }
 
@@ -149,6 +150,8 @@ public class NewSquadronAccountRequest
     [Required]
     public string groupId { get; set; } = null!;
 
+    public string? baseUrl { get; set; }
+
     [Required]
     public IEnumerable<int> orgIds { get; set; } = null!;
 }
@@ -161,6 +164,8 @@ public class NewGroupAccountRequest
     [Required]
     public string wingId { get; set; } = null!;
 
+    public string? baseUrl { get; set; }
+
     [Required]
     public IEnumerable<int> orgIds { get; set; } = null!;
 }
@@ -169,6 +174,9 @@ public class NewWingAccountRequest
 {
     [Required]
     public string unitId { get; set; } = null!;
+
+    [Required]
+    public string baseUrl { get; set; } = null!;
 
     [Required]
     public IEnumerable<int> orgIds { get; set; } = null!;

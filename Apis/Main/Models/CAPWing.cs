@@ -23,6 +23,8 @@ public class CAPWing : Account
 {
     public override string Type => "CAPWing";
 
+    public string BaseUrl { get; set; } = null!;
+
     [JsonIgnore]
     public ICollection<CAPActivity> ActivityAccounts { get; set; } = null!;
 

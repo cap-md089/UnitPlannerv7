@@ -27,6 +27,8 @@ public class CAPGroup : Account
     [JsonIgnore]
     public CAPWing Wing { get; set; } = null!;
 
+    public string? OverrideBaseUrl { get; set; }
+
     public ICollection<CAPSquadron> Squadrons { get; set; } = null!;
 
     public ICollection<CAPActivity> Activities { get; set; } = null!;

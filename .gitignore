@@ -464,3 +464,8 @@ Client/static/out
 # Cypress testing
 cypress/screenshots
 cypress/videos
+
+
+# Compiled "scripts"
+scripts/dev-add-host
+scripts/dev-remove-host

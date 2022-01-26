@@ -17,11 +17,13 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 using UnitPlanner.Apis.Main.Data;
 using UnitPlanner.Apis.Main.Models;
 using UnitPlanner.Apis.Main.Services;
+using UnitPlanner.Apis.Main.Services.HostConfiguration;
 using UnitPlanner.Tests.Utils;
 
 namespace UnitPlanner.Apis.Main.Tests;
@@ -41,8 +43,9 @@ public class AccountService : DbBasedTest<UnitPlannerDbContext>
 
         Assert.Equal(0, context.Accounts.Count());
 
-        var service = new AccountsService(context);
-        var result = service.CreateNewWing("md001", new List<Models.NHQ.Organization>()).Result;
+        var hostService = new TestHostConfigurationService();
+        var service = new AccountsService(context, hostService);
+        var result = service.CreateNewWing("md001", "localevmplus.org", new List<Models.NHQ.Organization>()).Result;
 
         Assert.Equal("md001", result.Id);
         Assert.Equal(1, context.Accounts.Count());
@@ -54,13 +57,14 @@ public class AccountService : DbBasedTest<UnitPlannerDbContext>
         using var context = new UnitPlannerDbContext(ContextOptions);
         Clear(context);
 
-        var service = new AccountsService(context);
+        var hostService = new TestHostConfigurationService();
+        var service = new AccountsService(context, hostService);
         
-        var wing = service.CreateNewWing("md001", new List<Models.NHQ.Organization>()).Result;
+        var wing = service.CreateNewWing("md001", "localevmplus.org", new List<Models.NHQ.Organization>()).Result;
 
         Assert.Equal(1, context.Accounts.Count());
 
-        var result = service.CreateNewGroup(wing, "md043", new List<Models.NHQ.Organization>()).Result;
+        var result = service.CreateNewGroup(wing, "md043", null, new List<Models.NHQ.Organization>()).Result;
 
         Assert.Equal("md043", result.Id);
         Assert.Equal(2, context.Accounts.Count());
@@ -72,14 +76,15 @@ public class AccountService : DbBasedTest<UnitPlannerDbContext>
         using var context = new UnitPlannerDbContext(ContextOptions);
         Clear(context);
 
-        var service = new AccountsService(context);
+        var hostService = new TestHostConfigurationService();
+        var service = new AccountsService(context, hostService);
 
-        var wing = service.CreateNewWing("md001", new List<Models.NHQ.Organization>()).Result;
-        var group = service.CreateNewGroup(wing, "md043", new List<Models.NHQ.Organization>()).Result;
+        var wing = service.CreateNewWing("md001", "localevmplus.org", new List<Models.NHQ.Organization>()).Result;
+        var group = service.CreateNewGroup(wing, "md043", null, new List<Models.NHQ.Organization>()).Result;
 
         Assert.Equal(2, context.Accounts.Count());
 
-        var result = service.CreateNewSquadron(wing, group, "md089", new List<Models.NHQ.Organization>()).Result;
+        var result = service.CreateNewSquadron(wing, group, "md089", null, new List<Models.NHQ.Organization>()).Result;
 
         Assert.Equal("md089", result.Id);
         Assert.Equal(3, context.Accounts.Count());
@@ -91,11 +96,12 @@ public class AccountService : DbBasedTest<UnitPlannerDbContext>
         using var context = new UnitPlannerDbContext(ContextOptions);
         Clear(context);
 
-        var service = new AccountsService(context);
+        var hostService = new TestHostConfigurationService();
+        var service = new AccountsService(context, hostService);
 
-        var wing = service.CreateNewWing("md001", new List<Models.NHQ.Organization>()).Result;
-        var group = service.CreateNewGroup(wing, "md043", new List<Models.NHQ.Organization>()).Result;
-        var squadron = service.CreateNewSquadron(wing, group, "md089", new List<Models.NHQ.Organization>()).Result;
+        var wing = service.CreateNewWing("md001", "localevmplus.org", new List<Models.NHQ.Organization>()).Result;
+        var group = service.CreateNewGroup(wing, "md043", null, new List<Models.NHQ.Organization>()).Result;
+        var squadron = service.CreateNewSquadron(wing, group, "md089", null, new List<Models.NHQ.Organization>()).Result;
 
         context.SaveChanges();
 
@@ -110,12 +116,19 @@ public class AccountService : DbBasedTest<UnitPlannerDbContext>
         using var context = new UnitPlannerDbContext(ContextOptions);
         Clear(context);
 
-        var service = new AccountsService(context);
+        var hostService = new TestHostConfigurationService();
+        var service = new AccountsService(context, hostService);
 
-        service.CreateNewWing("md001", new List<Models.NHQ.Organization>());
+        _ = service.CreateNewWing("md001", "localevmplus.org", new List<Models.NHQ.Organization>()).Result;
 
         Account? result = service.GetUnit("md001").Result.Case as Account;
 
         Assert.Equal("md001", result?.Id);
     }
+}
+
+internal class TestHostConfigurationService : IHostConfigurationService
+{
+    public Task AddNewHost(string id, string baseUrl, string hostName) => Task.CompletedTask;
+    public Task RemoveHost(string id, string baseUrl, string hostName) => Task.CompletedTask;
 }

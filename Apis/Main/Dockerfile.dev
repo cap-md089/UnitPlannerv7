@@ -3,7 +3,6 @@ FROM golang
 WORKDIR /app
 
 COPY scripts/dev-add-host.go .
-COPY scripts/dev-remove-host.go .
 
 RUN go build dev-add-host.go
 

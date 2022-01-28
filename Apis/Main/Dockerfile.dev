@@ -9,7 +9,6 @@ RUN go build dev-add-host.go
 FROM mcr.microsoft.com/dotnet/sdk:6.0
 
 COPY --from=0 /app/dev-add-host /usr/bin/dev-add-host
-COPY --from=0 /app/dev-remove-host /usr/bin/dev-remove-host
 
 RUN chown root:root /usr/bin/dev-add-host && \
     chmod 4555 /usr/bin/dev-add-host

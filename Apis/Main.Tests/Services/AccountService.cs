@@ -125,6 +125,44 @@ public class AccountService : DbBasedTest<UnitPlannerDbContext>
 
         Assert.Equal("md001", result?.Id);
     }
+
+    [Fact]
+
+    public void Can_get_unit_from_url()
+    {
+        using var context = new UnitPlannerDbContext(ContextOptions);
+        Clear(context);
+
+        var hostService = new TestHostConfigurationService();
+        var service = new AccountsService(context, hostService);
+
+        _ = service.CreateNewWing("md001", "localevmplus.org", new List<Models.NHQ.Organization>()).Result;
+        Account? unitFromUrl = service.GetUnitFromUrl("localevmplus.org").Result.Case as Account;
+        Assert.Equal("md001", unitFromUrl?.Id);
+
+        Account? unitFromUrl2 = service.GetUnitFromUrl("md001.localevmplus.org").Result.Case as Account;
+        Assert.Equal("md001", unitFromUrl2?.Id);
+
+    }
+
+    [Fact]
+
+    public void Can_delete_unit()
+    {
+        using var context = new UnitPlannerDbContext(ContextOptions);
+        Clear(context);
+
+        var hostService = new TestHostConfigurationService();
+        var service = new AccountsService(context, hostService);
+
+        Account account = service.CreateNewWing("md001", "localevmplus.org", new List<Models.NHQ.Organization>()).Result;
+        Assert.Single(service.GetUnits().Result);
+
+        service.DeleteUnit(account).Wait();
+        Assert.Empty(service.GetUnits().Result);
+
+    }
+
 }
 
 internal class TestHostConfigurationService : IHostConfigurationService

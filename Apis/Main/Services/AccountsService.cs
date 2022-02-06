@@ -28,6 +28,8 @@ public interface IAccountsService
 {
     Task<Option<Account>> GetUnit(string id);
 
+    Task<Option<Account>> GetUnitFromUrl(string id);
+
     Task<CAPSquadron> CreateNewSquadron(CAPWing wing, CAPGroup group, string id, string? baseUrl, IEnumerable<Models.NHQ.Organization> organizations);
 
     Task<CAPGroup> CreateNewGroup(CAPWing wing, string id, string? baseUrl, IEnumerable<Models.NHQ.Organization> organizations);

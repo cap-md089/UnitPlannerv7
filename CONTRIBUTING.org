@@ -9,7 +9,8 @@ The following steps should be all you need to get a working development environm
 4. Create a new terminal, and type in ~minikube ip~
 5. Next to Terminal, go to Ports. Click "Add Port", and enter in ~$IP:80~ where ~$IP~ is the IP address from ~minikube ip~
 6. Next to the address entered, there should be a label button, which when hovered over will say "Set Label and Update devcontainers.json". Click this button
-7. (Optional) Go into your hosts file (Windows: "C:\Windows\System32\drivers\etc\hosts", Linux: "/etc/hosts") and add an entry for ~admin.localevmplus.org~ pointing to ~127.0.0.1~
+7. Back in the terminal, run ~scripts/dev-create-resources.sh~
+8. (Optional) Go into your hosts file (Windows: "C:\Windows\System32\drivers\etc\hosts", Linux: "/etc/hosts") and add an entry for ~admin.localevmplus.org~ pointing to ~127.0.0.1~
 
 After getting set up, you will need to build and deploy the services you are developing. To build a container, run ~scripts/dev-build-containers.sh~ from within VS Code and specify the service or client you want to build via the ~-s~ or ~-c~ flags respectively. The name of the service is the path to the service root from the repository folder, e.g. to build the main API run ~scripts/dev-build-containers.sh -s Apis/Main~. The names of the clients are ~admin~ and ~main~.  Once the containers are built, deploy them with ~scripts/dev-deploy-services.sh~, specifying the services to deploy with ~-s~ again. Service names are the names of the accompanying Kubernetes yaml file in k8s, e.g. ~base-api~, ~client-admin-dev~, and ~service-host-configuration~. For basic development, you will need the ~Apis/Main~ and ~Services/HostConfiguration~ services and ~admin~ client, and to deploy ~base-api~, ~client-admin-dev~, and ~service-host-configuration~.
 

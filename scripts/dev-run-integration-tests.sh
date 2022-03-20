@@ -15,7 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with UnitPlannerv7.  If not, see <http://www.gnu.org/licenses/>.
 
+set -eux
 
-$IP = (Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.InterfaceAlias -like 'Wi-Fi' })[0].IPAdd
+cd $(git rev-parse --show-toplevel)
 
-docker-compose run -e DISPLAY=${IP}:0 cypress_test_runner_reactor_linux
+export DB=db_integration_tests
+
+docker-compose run -f docker-compose.yml -f docker-compose.test.yml cypress_tests_client
+docker-compose run -f docker-compose.yml -f docker-compose.test.yml cypress_tests_webmaster_dashboard
+docker-compose run -f docker-compose.yml -f docker-compose.test.yml cypress_tests_reactor

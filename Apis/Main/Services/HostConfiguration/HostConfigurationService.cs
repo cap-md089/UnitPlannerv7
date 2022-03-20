@@ -2,6 +2,8 @@
 
 using UnitPlanner.Services.HostConfiguration.Protos;
 
+using GrpcClient = UnitPlanner.Services.HostConfiguration.Protos.HostConfiguration.HostConfigurationClient;
+
 namespace UnitPlanner.Apis.Main.Services.HostConfiguration;
 
 public interface IHostConfigurationService
@@ -11,44 +13,18 @@ public interface IHostConfigurationService
     Task RemoveHost(string accountID, string baseUrl, string hostName);
 }
 
-public class DevHostConfigurationService : IHostConfigurationService
-{
-    public async Task AddNewHost(string accountID, string baseUrl, string hostName)
-    {
-        {
-            var tcs = new TaskCompletionSource();
-
-            var process = new Process
-            {
-                StartInfo = { FileName = "/usr/bin/dev-add-host", Arguments = $"\"127.0.0.1\t{hostName}.localunitplanner.org\t\t# {hostName}.{baseUrl}\"" },
-                EnableRaisingEvents = true
-            };
-
-            process.Exited += (sender, args) =>
-            {
-                Console.WriteLine("process exited");
-                tcs.SetResult();
-                process.Dispose();
-            };
-
-            process.Start();
-
-            await tcs.Task;
-        }
-    }
-
-    public Task RemoveHost(string accountID, string baseUrl, string hostName) => Task.CompletedTask;
-}
-
 public class GrpcHostConfigurationService : IHostConfigurationService
 {
-    private readonly HostConfigurationService.HostConfigurationServiceClient _hostsClient;
+    private readonly GrpcClient _hostsClient;
+    private readonly ILogger<GrpcHostConfigurationService> _logger;
 
-    public GrpcHostConfigurationService(HostConfigurationService.HostConfigurationServiceClient hostsClient) =>
-        (_hostsClient) = (hostsClient);
+    public GrpcHostConfigurationService(GrpcClient hostsClient, ILogger<GrpcHostConfigurationService> logger) =>
+        (_hostsClient, _logger) = (hostsClient, logger);
 
     public async Task AddNewHost(string accountID, string baseUrl, string hostName)
     {
+        _logger.LogInformation($"Used URL: {Environment.GetEnvironmentVariable("SERVICE_HOSTCONFIGURATION_URL")!}");
+
         var result = await _hostsClient.AddNewHostAsync(new HostChangeRequest
         {
             AccountID = accountID,

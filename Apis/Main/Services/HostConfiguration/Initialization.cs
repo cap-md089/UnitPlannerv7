@@ -24,15 +24,8 @@ public static class HostConfigurationServiceRegistration
 {
     public static void RegisterHostConfigurationService(this IServiceCollection services, IHostEnvironment env)
     {
-        if (env.EnvironmentName == Environments.Development && Environment.GetEnvironmentVariable("SERVICE_USE_PRODUCTION_HOSTCONFIGURATION") != "1")
-        {
-            services.AddTransient<IHostConfigurationService, DevHostConfigurationService>();
-        }
-        else
-        {
-            services.AddGrpcClient<HostConfigurationService.HostConfigurationServiceClient>(o =>
-                o.Address = new Uri(Environment.GetEnvironmentVariable("SERVICE_HOSTCONFIGURATION_URL")!));
-            services.AddTransient<IHostConfigurationService, GrpcHostConfigurationService>();
-        }
+        services.AddGrpcClient<UnitPlanner.Services.HostConfiguration.Protos.HostConfiguration.HostConfigurationClient>(o =>
+            o.Address = new Uri(Environment.GetEnvironmentVariable("SERVICE_HOSTCONFIGURATION_URL")!));
+        services.AddTransient<IHostConfigurationService, GrpcHostConfigurationService>();
     }
 }

@@ -1,0 +1,52 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.224.2/containers/kubernetes-helm-minikube
+{
+	"name": "UnitPlannerv7",
+	"dockerFile": "Dockerfile",
+	"context": "..",
+	"runArgs": ["--privileged"],
+	"mounts": [
+		"src=unitplannerv7-minikube-conf,dst=/home/vscode/.minikube,type=volume",
+		"src=unitplannerv7-minikube-var-lib-docker,dst=/var/lib/docker,type=volume",
+		"src=/etc/hosts,dst=/etc/host-hosts,type=bind",
+		"src=${localEnv:HOME}/.Xauthority,dst=/home/vscode/.Xauthority,type=bind",
+		"src=/tmp/.X11-unix,dst=/tmp/.X11-unix,type=bind"
+	],
+	"overrideCommand": false,
+
+	// Set *default* container specific settings.json values on container create.
+	"settings": {
+        "javascript.suggest.autoImports": false,
+        "licenser.license": "AGPLv3",
+		"docker.certPath": "/home/vscode/.minikube/certs",
+		"docker.host": "tcp://192.168.49.2:2376",
+		"docker.tlsVerify": "1"
+	},
+
+	// Add the IDs of extensions you want installed when the container is created.
+	"extensions": [
+        "derivitec-ltd.vscode-dotnet-adapter",
+        "ms-dotnettools.csharp",
+        "elmtooling.elm-ls-vscode",
+        "ymotongpoo.licenser",
+        "vs-vsliveshare.vsliveshare",
+        "hbenl.vscode-test-explorer",
+        "tootone.org-mode",
+        "ms-azuretools.vscode-docker",
+		"ms-kubernetes-tools.vscode-kubernetes-tools"
+	],
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	"forwardPorts": [],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	// "postCreateCommand": "kubectl version",
+
+	// Use 'postStartCommand' to run commands after the container is created like starting minikube.
+	// "postStartCommand": "nohup bash -c 'minikube start &' > minikube.log 2>&1",
+
+	// Minikube does not like running as root, so use a non-root user.
+	"remoteUser": "vscode",
+	"postAttachCommand": "minikube start && kubectl config set-context --current --namespace=unitplannerv7",
+	"postCreateCommand": "dotnet restore"
+}

@@ -1,0 +1,80 @@
+# Copyright (C) 2022 Andrew Rioux
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+# 
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: unitplannerv7
+  name: base-api
+  labels:
+    name: base-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: base-api
+  template:
+    metadata:
+      labels:
+        name: base-api
+    spec:
+      containers:
+      - name: base-api
+        image: ghcr.io/cap-md089/unitplannerv7/apis/main:$BASE_API_TAG
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 5000
+          name: http-api
+        env:
+          - name: ASPNETCORE_URLS
+            value: http://0.0.0.0:5000
+          - name: ASPNETCORE_ENVIRONMENT
+            value: $ASPNETCORE_ENVIRONMENT
+          - name: SERVICE_USE_PRODUCTION_AUTH
+            value: "${SERVICE_USE_PRODUCTION_AUTH_VALUE}"
+          - name: SERVICE_USE_PRODUCTION_CAPWATCH
+            value: "${SERVICE_USE_PRODUCTION_CAPWATCH_VALUE}"
+          - name: SERVICE_USE_PRODUCTION_FILES
+            value: "${SERVICE_USE_PRODUCTION_FILES_VALUE}"
+          - name: SERVICE_USE_PRODUCTION_GRAPH
+            value: "${SERVICE_USE_PRODUCTION_GRAPH_VALUE}"
+          - name: SERVICE_USE_PRODUCTION_HOSTCONFIGURATION
+            value: "${SERVICE_USE_PRODUCTION_HOSTCONFIGURATION_VALUE}"
+          - name: SERVICE_AUTH_URL
+            value: http://authentication:5010
+          - name: SERVICE_CAPWATCH_URL
+            value: http://capwatch:5020
+          - name: SERVICE_FILES_URL
+            value: http://files:5030
+          - name: SERVICE_GRAPH_URL
+            value: http://graph:5040
+          - name: SERVICE_HOSTCONFIGURATION_URL
+            value: http://host-configuration:5050
+          - name: ConnectionStrings__MainDB
+            valueFrom:
+              secretKeyRef:
+                name: mysql-password
+                key: connectionString
+        resources:
+          limits:
+            memory: 200Mi
+            cpu: 500m
+        volumeMounts:
+        - name: host-etc
+          mountPath: /host-etc
+      volumes:
+      - name: host-etc
+        hostPath:
+          path: /host-etc

@@ -28,28 +28,44 @@ RUN apk add curl jq && \
 
 ENTRYPOINT [ "/usr/local/bin/elm-live" ]
 
-FROM nginx AS development-proxy
-
-CMD bash -c "envsubst '\$PROXY_NAME,\$PROXY_PORT,\$API_SERVER_URL,\$ELM_REACTOR_URL,\$E2E_TEST_SEED_SERVICE' < /etc/nginx/extra-conf/development.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
-
-FROM base AS build
+FROM base AS build-admin
 
 WORKDIR /app
 
 COPY Client /app
 
-RUN elm make --optimize --output=/app/WebmasterDashboard.js Client/src/WebmasterDashboard.elm
-RUN elm make --optimize --output=/app/Main.js Client/src/Main.elm
+ARG RUNTIME_ARG=
 
-FROM nginx AS production
+RUN elm make $RUNTIME_ARG --output=/app/WebmasterDashboard.js /app/src/WebmasterDashboard.elm
+
+FROM base AS build-client
+
+WORKDIR /app
+
+COPY Client /app
+
+ARG RUNTIME_ARG=
+
+RUN elm make $RUNTIME_ARG --output=/app/Main.js /app/src/Main.elm
+
+FROM nginx AS final-admin
 
 COPY Client/static /var/www/html/static
 COPY Client/nginx/production.conf /etc/nginx/conf.d/default.conf
 
-COPY --from=build /app/WebmasterDashboard.js /var/www/html/out/WebmasterDashboard.js
-COPY --from=build /app/Main.js /var/www/html/out/Main.js
+COPY --from=build-admin /app/WebmasterDashboard.js /var/www/html/out/WebmasterDashboard.js
 
-COPY Client/static/webmasterdashboard.html /var/www/html/webmasterdashboard.html
-COPY Client/static/main.html /var/www/html/main.html
+COPY Client/static/webmasterdashboard.html /var/www/html/index.html
+
+CMD nginx -g 'daemon off;'
+
+FROM nginx AS final-main
+
+COPY Client/static /var/www/html/static
+COPY Client/nginx/production.conf /etc/nginx/conf.d/default.conf
+
+COPY --from=build-client /app/Main.js /var/www/html/out/Main.js
+
+COPY Client/static/main.html /var/www/html/index.html
 
 CMD nginx -g 'daemon off;'

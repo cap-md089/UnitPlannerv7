@@ -31,6 +31,4 @@ builder.WebHost.ConfigureKestrel(so =>
 
 var app = builder.Build();
 
-// app.MapGrpcService<GreeterService>();
-
 app.Run();

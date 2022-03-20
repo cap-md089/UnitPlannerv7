@@ -1,9 +1,19 @@
 #+TITLE: Contributing to Unit Planner
 
 * Getting set to develop UnitPlanner v7
-The development process for UnitPlanner v7 has been greatly simplified when compared to EvMPlus v6. Now, it should be possible to just download the repository and have Docker installed, and get up and running using [[./docker-compose.yml][docker-compose.yml]]. Check out the architecture guide below, as well as looking at the individual READMEs to see how to get started with developing UnitPlanner.
+The following steps should be all you need to get a working development environment for UnitPlanner:
 
-The simplest way to get set up is to run ~docker-compose up -d client_proxy~ and then browse to [[http://localhost][localhost]], and browse to src/Main.elm. Any code change made to any of the services or APIs will be automatically applied, but the client will have to be refreshed to see changes.
+1. Using VSCode, install the [[https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers][Remote - Containers]] extension (extension ID ~ms-vscode-remote.remote-containers~)
+2. Reopen the repository using the Remote Containers extension. There should be a prompt asking to do so
+3. Wait for the terminal in the bottom window to say "Press any key to close this terminal"
+4. Create a new terminal, and type in ~minikube ip~
+5. Next to Terminal, go to Ports. Click "Add Port", and enter in ~$IP:80~ where ~$IP~ is the IP address from ~minikube ip~
+6. Next to the address entered, there should be a label button, which when hovered over will say "Set Label and Update devcontainers.json". Click this button
+7. (Optional) Go into your hosts file (Windows: "C:\Windows\System32\drivers\etc\hosts", Linux: "/etc/hosts") and add an entry for ~admin.localevmplus.org~ pointing to ~127.0.0.1~
+
+After getting set up, you will need to build and deploy the services you are developing. To build a container, run ~scripts/dev-build-containers.sh~ from within VS Code and specify the service or client you want to build via the ~-s~ or ~-c~ flags respectively. The name of the service is the path to the service root from the repository folder, e.g. to build the main API run ~scripts/dev-build-containers.sh -s Apis/Main~. The names of the clients are ~admin~ and ~main~.  Once the containers are built, deploy them with ~scripts/dev-deploy-services.sh~, specifying the services to deploy with ~-s~ again. Service names are the names of the accompanying Kubernetes yaml file in k8s, e.g. ~base-api~, ~client-admin-dev~, and ~service-host-configuration~. For basic development, you will need the ~Apis/Main~ and ~Services/HostConfiguration~ services and ~admin~ client, and to deploy ~base-api~, ~client-admin-dev~, and ~service-host-configuration~.
+
+To open up the website, go to VS Code, go to Ports in the terminal/output pane, and Ctrl-click on the local address next to "$IP:80" from step 5. If you have extra hosts set up, it would be best to
 
 * Application architecture
 ** Apis
@@ -11,19 +21,19 @@ The simplest way to get set up is to run ~docker-compose up -d client_proxy~ and
 ** [[./Client/README.org][Client]]
 ** Common
 *** [[./Common/Authentication/README.org][Authentication]]
-*** [[./Common/Models/README.org][Models]]
 ** Services
 *** [[./Services/Authentication/README.org][Authentication]]
 *** [[./Services/Capwatch/README.org][Capwatch]]
 *** [[./Services/Files/README.org][Files]]
 *** [[./Services/Graph/README.org][Graph]]
+*** [[./Services/HostConfiguration/README.org][Host Configuration]]
 
 * Testing
 ** Unit tests
-Unit tests can be run with either ~dotnet test~ or if using Docker ~docker-compose run watch_[TEST_NAME]_tests~ where ~[TEST_NAME]~ is one of ~client~, ~api_server~, ~auth_service~, ~capwatch_service~, ~files_service~, or ~graph_service~.
+Unit tests can be run with either ~dotnet test~, either in the project root or in the individual .NET project folders
 
-** Integration tests
-*Do note: Running integration tests runs on the same database as the development environment, and will clear the database everytime it is run*
+** TODO Integration tests
+*TODO: Fix after reimplementing configuration to use Kubernetes*
 
 There are three main integration test suites, for two main different pages and the elm reactor. There are also two different ways to run each test suite, either with a GUI (if developing on Linux) or from the command line.
 

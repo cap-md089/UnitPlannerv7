@@ -1,6 +1,4 @@
-# production.conf: production configuration for static serving of files
-# 
-# Copyright (C) 2021 Andrew Rioux
+# Copyright (C) 2022 Andrew Rioux
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -15,12 +13,30 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-server {
-    root /var/www/html;
-
-    location / {
-        try_files $uri /index.html;
-    }
-
-    listen 80;
-}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: unitplannerv7
+  name: capwatch
+spec:
+  selector:
+    matchLabels:
+      name: capwatch
+  template:
+    metadata:
+      labels:
+        name: capwatch
+    spec:
+      containers:
+      - name: capwatch
+        image: ghcr.io/cap-md089/unitplannerv7/services/capwatch:$CAPWATCH_TAG
+        imagePullPolicy: Never
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "250m"
+        env:
+          - name: ASPNETCORE_ENVIRONMENT
+            value: $ASPNETCORE_ENVIRONMENT
+        ports:
+        - containerPort: 5020

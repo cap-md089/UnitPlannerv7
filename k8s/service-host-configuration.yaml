@@ -1,0 +1,84 @@
+# Copyright (C) 2022 Andrew Rioux
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+# 
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: unitplannerv7
+  name: host-configuration-service-account
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: unitplannerv7
+  name: manage-ingress
+rules:
+  - apiGroups:
+      - networking.k8s.io/v1
+    resources: 
+      - ingress
+    verbs:
+      - create
+      - update
+      - delete
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  namespace: unitplannerv7
+  name: host-configuration-ingress-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: manage-ingress
+subjects:
+  - namespace: unitplannerv7
+    kind: ServiceAccount
+    name: host-configuration-service-account
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: unitplannerv7
+  name: host-configuration
+spec:
+  selector:
+    matchLabels:
+      name: host-configuration
+  template:
+    metadata:
+      labels:
+        name: host-configuration
+    spec:
+      containers:
+      - name: host-configuration
+        image: ghcr.io/cap-md089/unitplannerv7/services/hostconfiguration:$HOST_CONFIGURATION_TAG
+        imagePullPolicy: Never
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "250m"
+        env:
+          - name: ASPNETCORE_ENVIRONMENT
+            value: $ASPNETCORE_ENVIRONMENT
+        ports:
+        - containerPort: 5050
+      serviceAccountName: host-configuration-service-account

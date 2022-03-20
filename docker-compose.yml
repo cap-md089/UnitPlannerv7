@@ -17,7 +17,6 @@
 
 version: "3.8"
 services:
-  # Development services
   client_proxy:
     build:
       context: .
@@ -152,7 +151,6 @@ services:
       - db
     volumes:
       - .:/app
-      - '~:/home'
       - /etc/hosts:/etc/hosts
     working_dir: /app
     environment:
@@ -164,7 +162,6 @@ services:
       - SERVICE_GRAPH_URL=http://graph_dev:5040
       - SERVICE_HOSTCONFIGURATION_URL=http://hosts_dev:5050
       - ConnectionStrings__MainDB=server=db;uid=root;pwd=toor;database=UnitPlannerv7
-      - HOME=/home
     command: dotnet watch --project Apis/Main/UnitPlanner.Apis.Main.csproj run -c Release < echo 'a'
     networks:
       - dev_network
@@ -174,15 +171,11 @@ services:
     image: mcr.microsoft.com/dotnet/sdk:6.0
     expose:
       - "5010"
-    depends_on:
-      - db
     volumes:
       - .:/app
-      - '~:/home'
     working_dir: /app
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - HOME=/home
     command: dotnet watch --project Services/Authentication/UnitPlanner.Services.Authentication.csproj run -c Release < echo 'a'
     networks:
       - dev_network
@@ -196,11 +189,9 @@ services:
       - db
     volumes:
       - .:/app
-      - '~:/home'
     working_dir: /app
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - HOME=/home
     command: dotnet watch --project Services/Capwatch/UnitPlanner.Services.Capwatch.csproj run -c Release < echo 'a'
     networks:
       - dev_network
@@ -214,11 +205,9 @@ services:
       - db
     volumes:
       - .:/app
-      - '~:/home'
     working_dir: /app
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - HOME=/home
     command: dotnet watch --project Services/Files/UnitPlanner.Services.Files.csproj run -c Release < echo 'a'
     networks:
       - dev_network
@@ -232,11 +221,9 @@ services:
       - db
     volumes:
       - .:/app
-      - '~:/home'
     working_dir: /app
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - HOME=/home
     command: dotnet watch --project Services/Graph/UnitPlanner.Services.Graph.csproj run -c Release < echo 'a'
     networks:
       - dev_network
@@ -246,15 +233,11 @@ services:
     image: mcr.microsoft.com/dotnet/sdk:6.0
     expose:
       - "5050"
-    depends_on:
-      - db
     volumes:
       - .:/app
-      - '~:/home'
     working_dir: /app
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - HOME=/home
     command: dotnet watch --project Services/HostConfiguration/UnitPlanner.Services.HostConfiguration.csproj run -c Release < echo 'a'
     networks:
       - dev_network
@@ -272,26 +255,33 @@ services:
     networks:
       - dev_network
 
-  dbsh:
-    image: mysql:8.0.26
-    entrypoint: mysql
-    command: --user=root --password=toor --host=db
-    networks:
-      - dev_network
-  
-  dev_shell:
-    build: .
-    working_dir: /app
+  integration_tests_seed_service:
+    image: mcr.microsoft.com/dotnet/sdk:6.0
+    expose:
+      - "4090"
+    depends_on:
+      - db
     volumes:
       - .:/app
-      - '~:/home/host_dev'
+    working_dir: /app
     environment:
-      - HOME=/home/host_dev
+      - ASPNETCORE_ENVIRONMENT=Development
+      - HOME=/tmp/home
+    command: dotnet run --project Apis/Main.IntegrationTests/UnitPlanner.Apis.Main.IntegrationTests.csproj < echo 'a'
     networks:
       - dev_network
     user: "1000"
-    
-  # Test services
+
+  db_integration_tests:
+    image: mysql:8.0.26
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=toor
+      - MYSQL_DATABASE=UnitPlannerv7
+    networks:
+      - dev_network
+
   watch_client_unit_tests:
     build:
       context: .
@@ -355,24 +345,6 @@ services:
     user: "1000"
     environment:
       - HOME=/tmp/home
-
-  # Integration/end to end test services
-  integration_tests_seed_service:
-    image: mcr.microsoft.com/dotnet/sdk:6.0
-    expose:
-      - "4090"
-    depends_on:
-      - db
-    volumes:
-      - .:/app
-    working_dir: /app
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - HOME=/tmp/home
-    command: dotnet run --project Apis/Main.IntegrationTests/UnitPlanner.Apis.Main.IntegrationTests.csproj < echo 'a'
-    networks:
-      - dev_network
-    user: "1000"
 
   cypress_tests_client:
     image: cypress/included:9.2.0

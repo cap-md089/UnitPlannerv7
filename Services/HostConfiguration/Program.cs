@@ -16,7 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using Microsoft.AspNetCore.Server.Kestrel.Core;
-// using UnitPlanner.Services.Graph.Services;
+
+using UnitPlanner.Services.HostConfiguration.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +33,6 @@ builder.WebHost.ConfigureKestrel(so =>
 
 var app = builder.Build();
 
-// app.MapGrpcService<GreeterService>();
+app.MapGrpcService<HostConfigurationService>();
 
 app.Run();

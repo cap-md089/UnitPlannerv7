@@ -1,4 +1,4 @@
 #+TITLE: README
 
-* Graph Service
-This service provides an interface to the Microsoft Graph API, allowing for the sending of email, managing of Teams attendance, and managing Teams and Outlook calendars
+* Host Configuration Service
+This service segregates the kubernetes API and the required service account from the base API to increase security. Its function is to allow the dynamic addition of new hosts to the Kubernetes cluster configuration

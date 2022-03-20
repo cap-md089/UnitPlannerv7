@@ -18,7 +18,6 @@
 using Microsoft.EntityFrameworkCore;
 
 using UnitPlanner.Apis.Main.Data;
-using UnitPlanner.Apis.Main.Models;
 using UnitPlanner.Apis.Main.Services;
 using UnitPlanner.Apis.Main.Services.Authentication;
 using UnitPlanner.Apis.Main.Services.Capwatch;
@@ -29,11 +28,6 @@ using UnitPlanner.Apis.Main.Services.HostConfiguration;
 AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
 var builder = WebApplication.CreateBuilder(args);
-
-if (Environment.GetEnvironmentVariable("RUNNING_IN_CI") == "1")
-{
-    Console.Error.WriteLine($"Using connection string: {builder.Configuration.GetConnectionString("MainDB")}");
-}
 
 builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
 {
@@ -46,7 +40,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<UnitPlannerDbContext>(options =>
 {
-    options.UseMySql(builder.Configuration.GetConnectionString("MainDB"), new MySqlServerVersion(new Version(8, 0, 26)));
+    var baseConnectionString = builder.Configuration.GetConnectionString("MainDB");
+    var connectionString = $"{baseConnectionString};database=UnitPlannerv7";
+    options.UseMySql(connectionString, MySqlServerVersion.AutoDetect(connectionString));
     
     if (builder.Environment.IsDevelopment())
     {

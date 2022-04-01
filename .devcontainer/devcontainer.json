@@ -8,6 +8,8 @@
 	"mounts": [
 		"src=unitplannerv7-minikube-conf,dst=/home/vscode/.minikube,type=volume",
 		"src=unitplannerv7-minikube-var-lib-docker,dst=/var/lib/docker,type=volume",
+		"src=unitplannerv7-vscode-extensions,dst=/home/vscode/.vscode-server/extensions,type=volume",
+		"src=unitplannerv7-vscode-insiders-extensions,dst=/home/vscode/.vscode-server-insiders/extensions,type=volume",
 		"src=/etc/hosts,dst=/etc/host-hosts,type=bind",
 		"src=${localEnv:HOME}/.Xauthority,dst=/home/vscode/.Xauthority,type=bind",
 		"src=/tmp/.X11-unix,dst=/tmp/.X11-unix,type=bind"
@@ -37,7 +39,16 @@
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	"forwardPorts": [],
+	"forwardPorts": [
+		"80"
+	],
+	"portsAttributes": {
+		"80": {
+			"onAutoForward": "notify",
+			"elevateIfNeeded": true,
+			"requireLocalPort": true
+		}
+	},
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// "postCreateCommand": "kubectl version",
@@ -47,6 +58,6 @@
 
 	// Minikube does not like running as root, so use a non-root user.
 	"remoteUser": "vscode",
-	"postAttachCommand": "minikube start && kubectl config set-context --current --namespace=unitplannerv7",
+	"postAttachCommand": "minikube start && kubectl config set-context --current --namespace=unitplannerv7 && kubectl port-forward -n ingress-nginx service/ingress-nginx-controller 80:80",
 	"postCreateCommand": "dotnet restore"
 }

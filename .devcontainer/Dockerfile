@@ -43,4 +43,9 @@ COPY k8s/mysql-dev.yaml /dev-k8s/mysql-dev.yaml
 RUN dotnet tool install --global dotnet-ef && \
     mkdir ~/.npm-global && \
     npm config set prefix '~/.npm-global' && \
-    npm i -g elm-test elm-live elm-format
+    npm i -g elm-test elm-live elm-format && \
+    mkdir -p /home/${USERNAME}/.vscode-server/extensions \
+            /home/${USERNAME}/.vscode-server-insiders/extensions && \
+    chown -R ${USERNAME} \
+            /home/${USERNAME}/.vscode-server/extensions \
+            /home/${USERNAME}/.vscode-server-insiders/extensions

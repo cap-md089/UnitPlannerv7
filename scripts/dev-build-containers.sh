@@ -83,7 +83,7 @@ while getopts "SChrs:c:" opt; do
             ;;
 
         C)
-            TARGET_CLIENTS=("main" "admin")
+            TARGET_CLIENTS=("admin")
             ;;
 
         h)

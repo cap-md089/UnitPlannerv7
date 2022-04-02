@@ -167,6 +167,6 @@ public class AccountService : DbBasedTest<UnitPlannerDbContext>
 
 internal class TestHostConfigurationService : IHostConfigurationService
 {
-    public Task AddNewHost(string id, string baseUrl, string hostName) => Task.CompletedTask;
-    public Task RemoveHost(string id, string baseUrl, string hostName) => Task.CompletedTask;
+    public Task UpdateHosts(string id, IEnumerable<string> hosts) => Task.CompletedTask;
+    public Task RemoveHost(string id) => Task.CompletedTask;
 }

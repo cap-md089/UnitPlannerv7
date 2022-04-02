@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\HostConfiguration\UnitPlanner.Services.HostConfiguration.csproj" />
+    <ProjectReference Include="..\..\HostConfiguration\HostConfiguration.Service\UnitPlanner.Services.HostConfiguration.Service.fsproj" />
   </ItemGroup>
 
 </Project>

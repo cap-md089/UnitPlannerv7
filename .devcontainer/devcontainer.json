@@ -22,7 +22,8 @@
         "licenser.license": "AGPLv3",
 		"docker.certPath": "/home/vscode/.minikube/certs",
 		"docker.host": "tcp://192.168.49.2:2376",
-		"docker.tlsVerify": "1"
+		"docker.tlsVerify": "1",
+		"FSharp.dotnetRoot": "/usr/share/dotnet"
 	},
 
 	// Add the IDs of extensions you want installed when the container is created.
@@ -35,7 +36,8 @@
         "hbenl.vscode-test-explorer",
         "tootone.org-mode",
         "ms-azuretools.vscode-docker",
-		"ms-kubernetes-tools.vscode-kubernetes-tools"
+		"ms-kubernetes-tools.vscode-kubernetes-tools",
+		"ionide.ionide-fsharp"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.

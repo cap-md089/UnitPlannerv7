@@ -62,8 +62,13 @@ metadata:
   name: client-admin-static
 spec:
   ingressClassName: nginx
+  tls:
+  - hosts:
+    - admin.localunitplanner.org
+    secretName: client-admin-tls-secret
   rules:
-  - http:
+  - host: admin.localunitplanner.org
+    http:
       paths:
       - path: /swagger
         pathType: Prefix

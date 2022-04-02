@@ -104,7 +104,10 @@ public class AccountsService : IAccountsService
             Name = "Default Calendar"
         });
 
-        await _hostConfiguration.AddNewHost(id, baseUrl, id);
+        await _hostConfiguration.UpdateHosts(id, new List<string> {
+            $"{id}.{baseUrl}",
+            baseUrl
+        });
 
         await _context.Accounts.AddAsync(unit);
         await _context.SaveChangesAsync();
@@ -136,7 +139,13 @@ public class AccountsService : IAccountsService
             Name = "Default Calendar"
         });
 
-        await _hostConfiguration.AddNewHost(id, baseUrl ?? wing.BaseUrl, id);
+        var hosts = new List<string> { $"{id}.{wing.BaseUrl}" };
+        if (baseUrl is not null)
+        {
+            hosts.Add(baseUrl);
+            hosts.Add($"{id}.{baseUrl}");
+        }
+        await _hostConfiguration.UpdateHosts(id, hosts);
 
         await _context.Accounts.AddAsync(unit);
         await _context.SaveChangesAsync();
@@ -169,7 +178,16 @@ public class AccountsService : IAccountsService
             Name = "Default Calendar"
         });
 
-        await _hostConfiguration.AddNewHost(id, baseUrl ?? group.OverrideBaseUrl ?? wing.BaseUrl, id);
+        var hosts = new List<string> { $"{id}.{wing.BaseUrl}" };
+        if (group.GetBaseUrl() is string groupBaseUrl)
+        {
+            hosts.Add($"{id}.{groupBaseUrl}");
+        }
+        if (baseUrl is not null)
+        {
+            hosts.Add(baseUrl);
+        }
+        await _hostConfiguration.UpdateHosts(id, hosts);
 
         await _context.Accounts.AddAsync(unit);
         await _context.SaveChangesAsync();
@@ -207,10 +225,7 @@ public class AccountsService : IAccountsService
                 .LoadAsync();
         }
 
-        foreach (var domain in account.Domains)
-        {
-            await _hostConfiguration.RemoveHost(account.Id, account.GetBaseUrl(), domain.Domain);
-        }
+        await _hostConfiguration.RemoveHost(account.Id);
 
         _context.Accounts.Remove(account);
 

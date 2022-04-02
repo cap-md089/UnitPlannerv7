@@ -3,14 +3,16 @@
 * Getting set to develop UnitPlanner v7
 The following steps should be all you need to get a working development environment for UnitPlanner:
 
-1. Using VSCode, install the [[https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers][Remote - Containers]] extension (extension ID ~ms-vscode-remote.remote-containers~)
-2. Reopen the repository using the Remote Containers extension. There should be a prompt asking to do so
-3. Wait for the terminal in the bottom window to say "Press any key to close this terminal"
-4. Create a new terminal, and type in ~minikube ip~
-5. Next to Terminal, go to Ports. Click "Add Port", and enter in ~$IP:80~ where ~$IP~ is the IP address from ~minikube ip~
-6. Next to the address entered, there should be a label button, which when hovered over will say "Set Label and Update devcontainers.json". Click this button
-7. Back in the terminal, run ~scripts/dev-create-resources.sh -a~
-8. (Optional) Go into your hosts file (Windows: "C:\Windows\System32\drivers\etc\hosts", Linux: "/etc/hosts") and add an entry for ~admin.localunitplanner.org~ pointing to ~127.0.0.1~
+1. Configure VS Code
+   1. Install the [[https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers][Remote - Containers]] extension (extension ID ~ms-vscode-remote.remote-containers~)
+   2. Reopen the repository using the Remote Containers extension. There should be a prompt asking to do so
+   3. Wait for the terminal in the bottom window to say "Press any key to close this terminal"
+2. Configure Kubernetes
+   1. Create a new terminal, and run ~scripts/dev-create-resources.sh -a~
+3. Configure F#
+   1. Bring up the command pallette (~Ctrl-Shift-P~ or ~Cmd-Shift-P~)
+   2. Run ~F#: Change workspace or solution~
+   3. Select ~/workspaces/UnitPlannerv7~
 
 ** Developing
 

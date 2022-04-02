@@ -13,42 +13,40 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-apiVersion: v1
-kind: Service
+apiVersion: skaffold/v2beta12
+kind: Config
 metadata:
-  namespace: unitplannerv7
-  name: client-main-static
-spec:
-  selector:
-    name: client-main-static
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 80
+  name: admin-static
+build:
+  artifacts:
+  - image: ghcr.io/cap-md089/unitplannerv7/client/admin
+    docker:
+      dockerfile: Client/Dockerfile
+      target: final-admin
+    context: ..
+  local:
+    useBuildkit: true
+deploy:
+  kubectl:
+    manifests:
+    - ../k8s/client-admin-dev.yaml
 
 ---
 
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: skaffold/v2beta12
+kind: Config
 metadata:
-  namespace: unitplannerv7
-  name: client-main-static
-spec:
-  selector:
-    matchLabels:
-      name: client-main-static
-  template:
-    metadata:
-      labels:
-        name: client-main-static
-    spec:
-      containers:
-      - name: client-main-static
-        image: ghcr.io/cap-md089/unitplannerv7/client/main
-        imagePullPolicy: Never
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "250m"
-        ports:
-        - containerPort: 80
+  name: main-static
+build:
+  artifacts:
+  - image: ghcr.io/cap-md089/unitplannerv7/client/main
+    docker:
+      dockerfile: Client/Dockerfile
+      target: final-main
+    context: ..
+  local:
+    useBuildkit: true
+deploy:
+  kubectl:
+    manifests:
+    - ../k8s/client-admin-dev.yaml

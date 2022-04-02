@@ -21,11 +21,12 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 
 WORKDIR /src
 
-COPY Services/HostConfiguration/HostConfiguration.Grpc/*.csproj Services/HostConfiguration/HostConfiguration.Grpc/
-COPY Services/HostConfiguration/HostConfiguration.Service/*.fsproj Services/HostConfiguration/HostConfiguration.Service/
+COPY unitplanner-v7.sln .
+COPY Services/HostConfiguration/HostConfiguration.Grpc/UnitPlanner.Services.HostConfiguration.Grpc.csproj Services/HostConfiguration/HostConfiguration.Grpc/
+COPY Services/HostConfiguration/HostConfiguration.Service/UnitPlanner.Services.HostConfiguration.Service.fsproj Services/HostConfiguration/HostConfiguration.Service/
 RUN dotnet restore Services/HostConfiguration/HostConfiguration.Service/UnitPlanner.Services.HostConfiguration.Service.fsproj
 
-COPY . .
+COPY Services/HostConfiguration Services/HostConfiguration
 WORKDIR /src/Services/HostConfiguration/HostConfiguration.Service
 
 ARG RELEASE_CONFIGURATION=Release

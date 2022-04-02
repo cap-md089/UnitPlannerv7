@@ -28,15 +28,9 @@ function setup_mysql() {
     kubectl apply -f k8s/mysql-dev.yaml
 }
 
-function initial_build_and_deploy() {
-    scripts/dev-build-containers.sh -C -S
-    scripts/dev-deploy-services.sh
-}
-
 RUN_SETUP_MINIKUBE=0
 RUN_BASE_INIT=0
 RUN_SETUP_MYSQL=0
-RUN_INITIAL_BUILD_AND_DEPLOY=0
 
 while getopts "miMbah" opt; do
     case $opt in
@@ -48,9 +42,6 @@ while getopts "miMbah" opt; do
             ;;
         M)
             RUN_SETUP_MYSQL=1
-            ;;
-        b)
-            RUN_INITIAL_BUILD_AND_DEPLOY=1
             ;;
         a)
             RUN_SETUP_MINIKUBE=1
@@ -71,4 +62,3 @@ done
 [ "$RUN_SETUP_MINIKUBE" = "1" ] && setup_minikube
 [ "$RUN_BASE_INIT" = "1" ] && base_init
 [ "$RUN_SETUP_MYSQL" = "1" ] && setup_mysql
-[ "$RUN_INITIAL_BUILD_AND_DEPLOY" = "1" ] && initial_build_and_deploy

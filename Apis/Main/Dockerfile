@@ -10,7 +10,13 @@ COPY Common/Authentication/*.csproj Common/Authentication/
 COPY Apis/Main/*.csproj Apis/Main/
 RUN dotnet restore Apis/Main/UnitPlanner.Apis.Main.csproj 
 
-COPY . .
+COPY Services/Authentication/Protos Services/Authentication/Protos
+COPY Services/Capwatch/Protos Services/Capwatch/Protos
+COPY Services/Files/Protos Services/Files/Protos
+COPY Services/Graph/Protos Services/Graph/Protos
+COPY Services/HostConfiguration/Protos Services/HostConfiguration/Protos
+COPY Common/Authentication Common/Authentication
+COPY Apis/Main Apis/Main
 WORKDIR /src/Apis/Main
 
 ARG RELEASE_CONFIGURATION=Release

@@ -32,7 +32,7 @@ spec:
     spec:
       containers:
       - name: base-api
-        image: ghcr.io/cap-md089/unitplannerv7/apis/main:$BASE_API_TAG
+        image: ghcr.io/cap-md089/unitplannerv7/apis/main
         imagePullPolicy: Never
         ports:
         - containerPort: 5000

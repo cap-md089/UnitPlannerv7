@@ -44,7 +44,7 @@ spec:
     spec:
       containers:
       - name: client-admin-static
-        image: ghcr.io/cap-md089/unitplannerv7/client/admin:$FILES_TAG
+        image: ghcr.io/cap-md089/unitplannerv7/client/admin
         imagePullPolicy: Never
         resources:
           limits:
@@ -62,10 +62,10 @@ metadata:
   name: client-admin-static
 spec:
   ingressClassName: nginx
-  tls:
-  - hosts:
-    - admin.localunitplanner.org
-    secretName: client-admin-tls-secret
+  # tls:
+  # - hosts:
+  #   - admin.localunitplanner.org
+  #   secretName: client-admin-tls-secret
   rules:
   - host: admin.localunitplanner.org
     http:

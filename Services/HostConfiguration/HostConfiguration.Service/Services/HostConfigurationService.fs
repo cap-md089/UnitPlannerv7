@@ -40,6 +40,8 @@ type HostConfigurationService(logger : ILogger<HostConfigurationService>) =
         let targetNamespace = "unitplannerv7"
         let ingressName = $"account-ingress-{request.AccountID}"
 
+        _logger.LogInformation($"Setting hosts for {request.AccountID}")
+
         async {
             let cluster = new Kubernetes(KubernetesClientConfiguration.InClusterConfig())
 
@@ -60,18 +62,12 @@ type HostConfigurationService(logger : ILogger<HostConfigurationService>) =
                 ),
                 spec = new V1IngressSpec(
                     ingressClassName = "nginx",
-                    tls = new Collections.Generic.List<V1IngressTLS>([
-                        new V1IngressTLS(
-                            secretName = $"tls-secret-ingress-{request.AccountID}",
-                            hosts = request.Hosts
-                        )
-                    ]),
-                    rules = new Collections.Generic.List<V1IngressRule>(seq {
+                    rules = (seq {
                         for host in request.Hosts do
                             yield new V1IngressRule(
                                 host = host,
                                 http = new V1HTTPIngressRuleValue(
-                                    paths = new Collections.Generic.List<V1HTTPIngressPath>([
+                                    paths = [|
                                         new V1HTTPIngressPath(
                                             path = "/api",
                                             pathType = "Prefix",
@@ -96,15 +92,22 @@ type HostConfigurationService(logger : ILogger<HostConfigurationService>) =
                                                 )
                                             )
                                         )
-                                    ])
+                                    |]
                                 )
                             )
-                    })
+                    }
+                        |> Seq.toArray)
                 )
             )
 
             match tlsClusterIssuer with
             | Some issuer -> newIngressRule.Metadata.Annotations.Add("cluster-issuer.io/ingress", issuer)
+                             newIngressRule.Spec.Tls <- [|
+                                new V1IngressTLS(
+                                    secretName = $"tls-secret-ingress-{request.AccountID}",
+                                    hosts = request.Hosts
+                                )
+                             |]
             | None -> ()
 
             match currentIngressRule with
@@ -124,6 +127,8 @@ type HostConfigurationService(logger : ILogger<HostConfigurationService>) =
     override this.RemoveHost(request : HostRemoveRequest, context : ServerCallContext) : Task<HostChangeResponse> =
         let targetNamespace = "unitplannerv7"
         let ingressName = $"account-ingress-{request.AccountID}"
+
+        _logger.LogInformation($"Removing ingress for {request.AccountID}")
 
         async {
             let cluster = new Kubernetes(KubernetesClientConfiguration.InClusterConfig())

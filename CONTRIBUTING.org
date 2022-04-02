@@ -16,13 +16,7 @@ The following steps should be all you need to get a working development environm
 
 ** Developing
 
-After making code changes, you will need to rebuild and redeploy the services you are developing. For basic development you will need to build the ~Apis/Main~ and ~Services/HostConfiguration~ services and ~admin~ client containers, and will need to apply the ~base-api~, ~client-admin-dev~, and ~service-host-configuration~ deployments.
 
-To build a container, run ~scripts/dev-build-containers.sh~ from within VS Code and specify the service or client you want to build via the ~-s~ or ~-c~ flags respectively. The name of the service is the path to the service root from the repository folder, e.g. to build the main API run ~scripts/dev-build-containers.sh -s Apis/Main~. The names of the clients are ~admin~ and ~main~.  
-
-Once the containers are built, apply the deployment using ~scripts/dev-redeploy-services.sh~, specifying the deployment with the ~-s~ flag ie: ~scripts/dev-redeploy-services.sh -s base-api -s client-admin-dev -s service-host-configuration~.  
-
-To open up the website, go to VS Code, go to Ports in the terminal/output pane, and Ctrl-click on the local address next to "$IP:80" from step 5. If you have extra hosts set up, it would be best to
 
 * Application architecture
 ** Apis

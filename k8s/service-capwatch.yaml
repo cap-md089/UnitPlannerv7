@@ -35,8 +35,5 @@ spec:
           limits:
             memory: "128Mi"
             cpu: "250m"
-        env:
-          - name: ASPNETCORE_ENVIRONMENT
-            value: $ASPNETCORE_ENVIRONMENT
         ports:
         - containerPort: 5020

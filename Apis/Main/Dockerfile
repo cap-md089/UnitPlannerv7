@@ -28,6 +28,7 @@ RUN adduser api-user
 
 WORKDIR /app
 USER api-user
+ENV ASPNETCORE_ENVIRONMENT=Development
 ENTRYPOINT ["dotnet", "UnitPlanner.Apis.Main.dll"]
 
 FROM build AS publish
@@ -40,4 +41,5 @@ COPY --from=publish /app .
 RUN adduser api-user
 USER api-user
 
+ENV ASPNETCORE_ENVIRONMENT=Production
 ENTRYPOINT ["dotnet", "UnitPlanner.Apis.Main.dll"]

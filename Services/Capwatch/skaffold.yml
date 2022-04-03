@@ -13,27 +13,40 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: skaffold/v2beta12
+kind: Config
 metadata:
-  namespace: unitplannerv7
-  name: authentication
-spec:
-  selector:
-    matchLabels:
-      name: authentication
-  template:
-    metadata:
-      labels:
-        name: authentication
-    spec:
-      containers:
-      - name: authentication
-        image: ghcr.io/cap-md089/unitplannerv7/services/authentication:$AUTHENTICATION_TAG
-        imagePullPolicy: Never
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "250m"
-        ports:
-        - containerPort: 5010
+  name: capwatch-dev
+build:
+  artifacts:
+  - image: ghcr.io/cap-md089/unitplannerv7/services/capwatch
+    docker:
+      dockerfile: Services/Capwatch/Dockerfile
+      target: dev
+    context: ../..
+  local:
+    useBuildkit: true
+deploy:
+  kubectl:
+    manifests:
+    - ../../k8s/service-capwatch.yaml
+
+---
+
+apiVersion: skaffold/v2beta12
+kind: Config
+metadata:
+  name: capwatch
+build:
+  artifacts:
+  - image: ghcr.io/cap-md089/unitplannerv7/services/capwatch
+    docker:
+      dockerfile: Services/Capwatch/Dockerfile
+      target: final
+    context: ../..
+  local:
+    useBuildkit: true
+deploy:
+  kubectl:
+    manifests:
+    - ../../k8s/service-capwatch.yaml

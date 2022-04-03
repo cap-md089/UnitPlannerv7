@@ -43,7 +43,7 @@ type HostConfigurationService(logger : ILogger<HostConfigurationService>) =
         _logger.LogInformation($"Setting hosts for {request.AccountID}")
 
         async {
-            let cluster = new Kubernetes(KubernetesClientConfiguration.InClusterConfig())
+            use cluster = new Kubernetes(KubernetesClientConfiguration.InClusterConfig())
 
             let! currentIngressRule = async {
                 try

@@ -35,6 +35,7 @@ RUN dotnet build UnitPlanner.Services.HostConfiguration.Service.fsproj -c ${RELE
 FROM build as dev
 
 WORKDIR /app
+ENV ASPNETCORE_ENVIRONMENT=Development
 ENTRYPOINT ["dotnet", "UnitPlanner.Services.HostConfiguration.Service.dll"]
 
 FROM build AS publish
@@ -43,4 +44,5 @@ RUN dotnet publish UnitPlanner.Services.HostConfiguration.Service.fsproj -c $REL
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
+ENV ASPNETCORE_ENVIRONMENT=Production
 ENTRYPOINT ["dotnet", "UnitPlanner.Services.HostConfiguration.Service.dll"]

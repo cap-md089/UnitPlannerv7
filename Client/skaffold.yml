@@ -23,6 +23,8 @@ build:
     docker:
       dockerfile: Client/Dockerfile
       target: final-admin
+      buildArgs:
+        RUNTIME_ARG: --optimize
     context: ..
   local:
     useBuildkit: true
@@ -37,6 +39,48 @@ apiVersion: skaffold/v2beta12
 kind: Config
 metadata:
   name: main-static
+build:
+  artifacts:
+  - image: ghcr.io/cap-md089/unitplannerv7/client/main
+    docker:
+      dockerfile: Client/Dockerfile
+      target: final-main
+      buildArgs:
+        RUNTIME_ARG: --optimize
+    context: ..
+  local:
+    useBuildkit: true
+deploy:
+  kubectl:
+    manifests:
+    - ../k8s/client-admin-dev.yaml
+
+---
+
+apiVersion: skaffold/v2beta12
+kind: Config
+metadata:
+  name: admin-static-dev
+build:
+  artifacts:
+  - image: ghcr.io/cap-md089/unitplannerv7/client/admin
+    docker:
+      dockerfile: Client/Dockerfile
+      target: final-admin
+    context: ..
+  local:
+    useBuildkit: true
+deploy:
+  kubectl:
+    manifests:
+    - ../k8s/client-admin-dev.yaml
+
+---
+
+apiVersion: skaffold/v2beta12
+kind: Config
+metadata:
+  name: main-static-dev
 build:
   artifacts:
   - image: ghcr.io/cap-md089/unitplannerv7/client/main

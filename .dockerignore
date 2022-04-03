@@ -10,5 +10,4 @@ cypress
 .vscode
 .ionide
 .github
-.devcontainer
 skaffold.yml

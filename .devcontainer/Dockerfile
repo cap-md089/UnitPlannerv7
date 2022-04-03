@@ -37,9 +37,6 @@ RUN apt update && \
     mv elm /usr/bin
 USER ${USERNAME}
 
-COPY k8s/base.yaml /dev-k8s/base.yaml
-COPY k8s/mysql-dev.yaml /dev-k8s/mysql-dev.yaml
-
 RUN dotnet tool install --global dotnet-ef && \
     mkdir ~/.npm-global && \
     npm config set prefix '~/.npm-global' && \

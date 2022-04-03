@@ -23,7 +23,8 @@
 		"docker.certPath": "/home/vscode/.minikube/certs",
 		"docker.host": "tcp://192.168.49.2:2376",
 		"docker.tlsVerify": "1",
-		"FSharp.dotnetRoot": "/usr/share/dotnet"
+		"FSharp.dotnetRoot": "/usr/share/dotnet",
+		"FSharp.workspacePath": "/workspaces/UnitPlannerv7"
 	},
 
 	// Add the IDs of extensions you want installed when the container is created.

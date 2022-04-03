@@ -21,24 +21,27 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 
 WORKDIR /src
 
-COPY Services/Graph/*.csproj Services/Graph/
-RUN dotnet restore Services/Graph/UnitPlanner.Services.Graph.csproj
+COPY Services/Graph/Graph.Grpc/UnitPlanner.Services.Graph.Grpc.csproj Services/Graph/Graph.Grpc/
+COPY Services/Graph/Graph.Service/UnitPlanner.Services.Graph.Service.fsproj Services/Graph/Graph.Service/
+RUN dotnet restore Services/Graph/Graph.Service/UnitPlanner.Services.Graph.Service.fsproj
 
-COPY . .
-WORKDIR /src/Services/Graph
+COPY Services/Graph Services/Graph
+WORKDIR /src/Services/Graph/Graph.Service
 
 ARG RELEASE_CONFIGURATION=Release
-RUN dotnet build UnitPlanner.Services.Graph.csproj -c ${RELEASE_CONFIGURATION} -o /app
+RUN dotnet build UnitPlanner.Services.Graph.Service.fsproj -c ${RELEASE_CONFIGURATION} -o /app
 
 FROM build as dev
 
 WORKDIR /app
-ENTRYPOINT ["dotnet", "UnitPlanner.Services.Graph.dll"]
+ENV ASPNETCORE_ENVIRONMENT=Development
+ENTRYPOINT ["dotnet", "UnitPlanner.Services.Graph.Service.dll"]
 
 FROM build AS publish
-RUN dotnet publish UnitPlanner.Services.Graph.csproj -c $RELEASE_CONFIGURATION -o /app
+RUN dotnet publish UnitPlanner.Services.Graph.Service.fsproj -c $RELEASE_CONFIGURATION -o /app
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
-ENTRYPOINT ["dotnet", "UnitPlanner.Services.Graph.dll"]
+ENV ASPNETCORE_ENVIRONMENT=Production
+ENTRYPOINT ["dotnet", "UnitPlanner.Services.Graph.Service.dll"]

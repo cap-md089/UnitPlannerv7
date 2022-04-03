@@ -52,7 +52,7 @@ spec:
   volumes:
   - name: mysql-persistent-storage
     hostPath:
-      path: "/srv/unitplannerv7/mysqldata"
+      path: "/srv/unitplannerv7/mysqldata-test"
 
 ---
 

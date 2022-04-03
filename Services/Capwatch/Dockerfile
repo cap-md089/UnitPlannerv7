@@ -21,24 +21,27 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 
 WORKDIR /src
 
-COPY Services/Capwatch/*.csproj Services/Capwatch/
-RUN dotnet restore Services/Capwatch/UnitPlanner.Services.Capwatch.csproj
+COPY Services/Capwatch/Capwatch.Grpc/UnitPlanner.Services.Capwatch.Grpc.csproj Services/Capwatch/Capwatch.Grpc/
+COPY Services/Capwatch/Capwatch.Service/UnitPlanner.Services.Capwatch.Service.fsproj Services/Capwatch/Capwatch.Service/
+RUN dotnet restore Services/Capwatch/UnitPlanner.Services.Capwatch.Service.fsproj
 
-COPY . .
-WORKDIR /src/Services/Capwatch
+COPY Services/Capwatch Services/Capwatch
+WORKDIR /src/Services/Capwatch/Capwatch.Service
 
 ARG RELEASE_CONFIGURATION=Release
-RUN dotnet build UnitPlanner.Services.Capwatch.csproj -c ${RELEASE_CONFIGURATION} -o /app
+RUN dotnet build UnitPlanner.Services.Capwatch.Service.fsproj -c ${RELEASE_CONFIGURATION} -o /app
 
 FROM build as dev
 
 WORKDIR /app
-ENTRYPOINT ["dotnet", "UnitPlanner.Services.Capwatch.dll"]
+ENV ASPNETCORE_ENVIRONMENT=Development
+ENTRYPOINT ["dotnet", "UnitPlanner.Services.Capwatch.Service.dll"]
 
 FROM build AS publish
-RUN dotnet publish UnitPlanner.Services.Capwatch.csproj -c $RELEASE_CONFIGURATION -o /app
+RUN dotnet publish UnitPlanner.Services.Capwatch.Service.fsproj -c $RELEASE_CONFIGURATION -o /app
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
-ENTRYPOINT ["dotnet", "UnitPlanner.Services.Capwatch.dll"]
+ENV ASPNETCORE_ENVIRONMENT=Production
+ENTRYPOINT ["dotnet", "UnitPlanner.Services.Capwatch.Service.dll"]

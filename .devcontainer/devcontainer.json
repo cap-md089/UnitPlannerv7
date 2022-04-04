@@ -1,5 +1,3 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
-// https://github.com/microsoft/vscode-dev-containers/tree/v0.224.2/containers/kubernetes-helm-minikube
 {
 	"name": "UnitPlannerv7",
 	"dockerFile": "Dockerfile",
@@ -10,13 +8,11 @@
 		"src=unitplannerv7-minikube-var-lib-docker,dst=/var/lib/docker,type=volume",
 		"src=unitplannerv7-vscode-extensions,dst=/home/vscode/.vscode-server/extensions,type=volume",
 		"src=unitplannerv7-vscode-insiders-extensions,dst=/home/vscode/.vscode-server-insiders/extensions,type=volume",
-		"src=/etc/hosts,dst=/etc/host-hosts,type=bind",
-		"src=${localEnv:HOME}/.Xauthority,dst=/home/vscode/.Xauthority,type=bind",
-		"src=/tmp/.X11-unix,dst=/tmp/.X11-unix,type=bind"
+//		"src=/etc/hosts,dst=/etc/host-hosts,type=bind",
+//		"src=${localEnv:HOME}/.Xauthority,dst=/home/vscode/.Xauthority,type=bind",
+//		"src=/tmp/.X11-unix,dst=/tmp/.X11-unix,type=bind"
 	],
 	"overrideCommand": false,
-
-	// Set *default* container specific settings.json values on container create.
 	"settings": {
         "javascript.suggest.autoImports": false,
         "licenser.license": "AGPLv3",
@@ -26,8 +22,6 @@
 		"FSharp.dotnetRoot": "/usr/share/dotnet",
 		"FSharp.workspacePath": "/workspaces/UnitPlannerv7"
 	},
-
-	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
         "derivitec-ltd.vscode-dotnet-adapter",
         "ms-dotnettools.csharp",
@@ -40,27 +34,23 @@
 		"ms-kubernetes-tools.vscode-kubernetes-tools",
 		"ionide.ionide-fsharp"
 	],
-
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	"forwardPorts": [
-		"80"
+		"80",
+		"34595"
 	],
 	"portsAttributes": {
 		"80": {
+			"label": "Web application view",
 			"onAutoForward": "notify",
 			"elevateIfNeeded": true,
 			"requireLocalPort": true
+		},
+		"34595": {
+			"label": "SSH (X Forwarding)",
+			"onAutoForward": "ignore",
+			"requireLocalPort": true
 		}
 	},
-
-	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "kubectl version",
-
-	// Use 'postStartCommand' to run commands after the container is created like starting minikube.
-	// "postStartCommand": "nohup bash -c 'minikube start &' > minikube.log 2>&1",
-
-	// Minikube does not like running as root, so use a non-root user.
 	"remoteUser": "vscode",
-	"postAttachCommand": "minikube start && kubectl config set-context --current --namespace=unitplannerv7 && kubectl port-forward -n ingress-nginx service/ingress-nginx-controller 80:80",
-	"postCreateCommand": "dotnet restore"
+	"postStartCommand": "dotnet restore && ${containerWorkspaceFolder}/node_modules/.bin/cypress install"
 }

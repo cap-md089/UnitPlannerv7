@@ -18,8 +18,12 @@
 //set up act and assert
 
 describe('unit management', () => {
+    before(() => {
+        Cypress.config('baseUrl', 'http://admin.localunitplanner.org')
+    });
+
     it('should create a new unit', () => {
-        cy.request('POST', '/api/seed/clear');
+        cy.request('POST', 'http://seed.localunitplanner.org/api/seed/clear');
 
         cy.visit('/');
 
@@ -49,7 +53,7 @@ describe('unit management', () => {
     });
 
     it('should create a new group given a wing', () => {
-        cy.request('POST', '/api/seed/clear');
+        cy.request('POST', 'http://seed.localunitplanner.org/api/seed/clear');
 
         cy.visit('/');
 
@@ -98,7 +102,7 @@ describe('unit management', () => {
 
     
     it('should create a new squadron given a wing and group', () => {
-        cy.request('POST', '/api/seed/clear');
+        cy.request('POST', 'http://seed.localunitplanner.org/api/seed/clear');
 
         cy.visit('/');
 
@@ -165,7 +169,7 @@ describe('unit management', () => {
     });
     
     it('should create a new wing and delete it afterwards', () => {
-        cy.request('POST', '/api/seed/clear');
+        cy.request('POST', 'http://seed.localunitplanner.org/api/seed/clear');
 
         cy.visit('/');
 
@@ -202,7 +206,7 @@ describe('unit management', () => {
 
     });
     it('create a new wing and group and delete the group', () => {
-        cy.request('POST', '/api/seed/clear');
+        cy.request('POST', 'http://seed.localunitplanner.org/api/seed/clear');
 
         cy.visit('/');
 
@@ -257,7 +261,7 @@ describe('unit management', () => {
         cy.contains(newGroupId).should('not.exist');
     })
     it('should create a new wing, group, and squadron', () => {
-        cy.request('POST', '/api/seed/clear');
+        cy.request('POST', 'http://seed.localunitplanner.org/api/seed/clear');
 
         cy.visit('/');
 

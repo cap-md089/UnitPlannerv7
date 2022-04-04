@@ -16,33 +16,18 @@
 apiVersion: skaffold/v2beta12
 kind: Config
 metadata:
-  name: base-api
+  name: test-seed-service
 profiles:
-- name: production
+- name: test
   build:
     artifacts:
-    - image: ghcr.io/cap-md089/unitplannerv7/apis/main
+    - image: ghcr.io/cap-md089/unitplannerv7/apis/main-integrationtests
       docker:
-        dockerfile: Apis/Main/Dockerfile
-        target: final
+        dockerfile: Apis/Main.IntegrationTests/Dockerfile
       context: ../..
     local:
       useBuildkit: true
   deploy:
     kubectl:
       manifests:
-      - ../../k8s/base-api.yaml
-- name: dev
-  build:
-    artifacts:
-    - image: ghcr.io/cap-md089/unitplannerv7/apis/main
-      docker:
-        dockerfile: Apis/Main/Dockerfile
-        target: dev
-      context: ../..
-    local:
-      useBuildkit: true
-  deploy:
-    kubectl:
-      manifests:
-      - ../../k8s/base-api.yaml
+      - ../../k8s/seed-service-test.yaml

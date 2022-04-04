@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
       - name: authentication
-        image: ghcr.io/cap-md089/unitplannerv7/services/authentication:$AUTHENTICATION_TAG
+        image: ghcr.io/cap-md089/unitplannerv7/services/authentication
         imagePullPolicy: Never
         resources:
           limits:

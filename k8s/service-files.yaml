@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
       - name: files
-        image: ghcr.io/cap-md089/unitplannerv7/services/files:$FILES_TAG
+        image: ghcr.io/cap-md089/unitplannerv7/services/files
         imagePullPolicy: Never
         resources:
           limits:

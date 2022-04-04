@@ -16,132 +16,76 @@
 apiVersion: skaffold/v2beta12
 kind: Config
 metadata:
-  name: standard-dev
+  name: standard
 requires:
-  - configs:
-    - host-configuration-dev
-    path: Services/HostConfiguration/skaffold.yml
-  - configs:
-    - base-api-dev
-    path: Apis/Main/skaffold.yml
-  - configs:
-    - admin-static-dev
-    - main-static-dev
-    path: Client/skaffold.yml
-
----
-
-apiVersion: skaffold/v2beta12
-kind: Config
-metadata:
-  name: authentication-dev
-requires:
-  - configs:
-    - host-configuration-dev
-    path: Services/HostConfiguration/skaffold.yml
-  - configs:
-    - base-api-dev
-    path: Apis/Main/skaffold.yml
-  - configs:
-    - admin-static-dev
-    - main-static-dev
-    path: Client/skaffold.yml
-  - configs:
-    - authentication-dev
-    path: Services/Authentication/skaffold.yml
-
-
----
-
-apiVersion: skaffold/v2beta12
-kind: Config
-metadata:
-  name: capwatch-dev
-requires:
-  - configs:
-    - host-configuration-dev
-    path: Services/HostConfiguration/skaffold.yml
-  - configs:
-    - base-api-dev
-    path: Apis/Main/skaffold.yml
-  - configs:
-    - admin-static-dev
-    - main-static-dev
-    path: Client/skaffold.yml
-  - configs:
-    - capwatch-dev
-    path: Services/Capwatch/skaffold.yml
-
-
----
-
-apiVersion: skaffold/v2beta12
-kind: Config
-metadata:
-  name: files-dev
-requires:
-  - configs:
-    - host-configuration-dev
-    path: Services/HostConfiguration/skaffold.yml
-  - configs:
-    - base-api-dev
-    path: Apis/Main/skaffold.yml
-  - configs:
-    - admin-static-dev
-    - main-static-dev
-    path: Client/skaffold.yml
-  - configs:
-    - files-dev
-    path: Services/Files/skaffold.yml
-
-
----
-
-apiVersion: skaffold/v2beta12
-kind: Config
-metadata:
-  name: graph-dev
-requires:
-  - configs:
-    - host-configuration-dev
-    path: Services/HostConfiguration/skaffold.yml
-  - configs:
-    - base-api-dev
-    path: Apis/Main/skaffold.yml
-  - configs:
-    - admin-static-dev
-    - main-static-dev
-    path: Client/skaffold.yml
-  - configs:
-    - graph-dev
-    path: Services/Graph/skaffold.yml
-
----
-
-apiVersion: skaffold/v2beta12
-kind: Config
-metadata:
-  name: production
-requires:
-  - configs:
-    - host-configuration
-    path: Services/HostConfiguration/skaffold.yml
-  - configs:
-    - base-api
-    path: Apis/Main/skaffold.yml
-  - configs:
-    - admin-static
-    - main-static
-    path: Client/skaffold.yml
-  - configs:
-    - authentication
-    path: Services/Authentication/skaffold.yml
-  - configs:
-    - capwatch
-    path: Services/Capwatch/skaffold.yml
-  - configs:
-    - files
-    path: Services/Files/skaffold.yml
-  - configs:
-    - graph
-    path: Services/Graph/skaffold.yml
+- configs:
+  - base-api
+  path: Apis/Main/skaffold.yml
+  activeProfiles:
+  - name: dev
+    activatedBy: ["dev", "authentication-dev", "capwatch-dev", "files-dev", "graph-dev"]
+  - name: production
+    activatedBy: ["test", "production"]
+- configs:
+  - admin-static
+  - main-static
+  - reactor
+  path: Client/skaffold.yml
+  activeProfiles:
+  - name: dev
+    activatedBy: ["dev", "authentication-dev", "capwatch-dev", "files-dev", "graph-dev"]
+  - name: production
+    activatedBy: ["test", "production"]
+- configs:
+  - authentication
+  path: Services/Authentication/skaffold.yml
+  activeProfiles:
+  - name: dev
+    activatedBy: ["authentication-dev"]
+  - name: production
+    activatedBy: ["production"]
+- configs:
+  - capwatch
+  path: Services/Capwatch/skaffold.yml
+  activeProfiles:
+  - name: dev
+    activatedBy: ["capwatch-dev"]
+  - name: production
+    activatedBy: ["production"]
+- configs:
+  - files
+  path: Services/Files/skaffold.yml
+  activeProfiles:
+  - name: dev
+    activatedBy: ["files-dev"]
+  - name: production
+    activatedBy: ["production"]
+- configs:
+  - graph
+  path: Services/Graph/skaffold.yml
+  activeProfiles:
+  - name: dev
+    activatedBy: ["graph-dev"]
+  - name: production
+    activatedBy: ["production"]
+- configs:
+  - host-configuration
+  path: Services/HostConfiguration/skaffold.yml
+  activeProfiles:
+  - name: dev
+    activatedBy: ["dev", "authentication-dev", "capwatch-dev", "files-dev", "graph-dev"]
+  - name: production
+    activatedBy: ["test", "production"]
+- configs:
+  - test-seed-service
+  path: Apis/Main.IntegrationTests/skaffold.yml
+profiles:
+- name: dev
+  activation:
+  - command: dev
+- name: test
+- name: authentication-dev
+- name: capwatch-dev
+- name: files-dev
+- name: graph-dev
+- name: production

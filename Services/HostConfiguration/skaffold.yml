@@ -16,37 +16,33 @@
 apiVersion: skaffold/v2beta12
 kind: Config
 metadata:
-  name: host-configuration-dev
-build:
-  artifacts:
-  - image: ghcr.io/cap-md089/unitplannerv7/services/hostconfiguration
-    docker:
-      dockerfile: Services/HostConfiguration/Dockerfile
-      target: dev
-    context: ../..
-  local:
-    useBuildkit: true
-deploy:
-  kubectl:
-    manifests:
-    - ../../k8s/service-host-configuration.yaml
-
----
-
-apiVersion: skaffold/v2beta12
-kind: Config
-metadata:
   name: host-configuration
-build:
-  artifacts:
-  - image: ghcr.io/cap-md089/unitplannerv7/services/hostconfiguration
-    docker:
-      dockerfile: Services/HostConfiguration/Dockerfile
-      target: final
-    context: ../..
-  local:
-    useBuildkit: true
-deploy:
-  kubectl:
-    manifests:
-    - ../../k8s/service-host-configuration.yaml
+profiles:
+- name: dev
+  build:
+    artifacts:
+    - image: ghcr.io/cap-md089/unitplannerv7/services/hostconfiguration
+      docker:
+        dockerfile: Services/HostConfiguration/Dockerfile
+        target: dev
+      context: ../..
+    local:
+      useBuildkit: true
+  deploy:
+    kubectl:
+      manifests:
+      - ../../k8s/service-host-configuration.yaml
+- name: production
+  build:
+    artifacts:
+    - image: ghcr.io/cap-md089/unitplannerv7/services/hostconfiguration
+      docker:
+        dockerfile: Services/HostConfiguration/Dockerfile
+        target: final
+      context: ../..
+    local:
+      useBuildkit: true
+  deploy:
+    kubectl:
+      manifests:
+      - ../../k8s/service-host-configuration.yaml

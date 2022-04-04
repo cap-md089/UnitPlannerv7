@@ -16,37 +16,33 @@
 apiVersion: skaffold/v2beta12
 kind: Config
 metadata:
-  name: files-dev
-build:
-  artifacts:
-  - image: ghcr.io/cap-md089/unitplannerv7/services/files
-    docker:
-      dockerfile: Services/Files/Dockerfile
-      target: dev
-    context: ../..
-  local:
-    useBuildkit: true
-deploy:
-  kubectl:
-    manifests:
-    - ../../k8s/service-files.yaml
-
----
-
-apiVersion: skaffold/v2beta12
-kind: Config
-metadata:
   name: files
-build:
-  artifacts:
-  - image: ghcr.io/cap-md089/unitplannerv7/services/files
-    docker:
-      dockerfile: Services/Files/Dockerfile
-      target: final
-    context: ../..
-  local:
-    useBuildkit: true
-deploy:
-  kubectl:
-    manifests:
-    - ../../k8s/service-files.yaml
+profiles:
+- name: dev
+  build:
+    artifacts:
+    - image: ghcr.io/cap-md089/unitplannerv7/services/files
+      docker:
+        dockerfile: Services/Files/Dockerfile
+        target: dev
+      context: ../..
+    local:
+      useBuildkit: true
+  deploy:
+    kubectl:
+      manifests:
+      - ../../k8s/service-files.yaml
+- name: production
+  build:
+    artifacts:
+    - image: ghcr.io/cap-md089/unitplannerv7/services/files
+      docker:
+        dockerfile: Services/Files/Dockerfile
+        target: final
+      context: ../..
+    local:
+      useBuildkit: true
+  deploy:
+    kubectl:
+      manifests:
+      - ../../k8s/service-files.yaml

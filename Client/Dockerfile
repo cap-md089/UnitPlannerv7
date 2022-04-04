@@ -28,6 +28,15 @@ RUN apk add curl jq && \
 
 ENTRYPOINT [ "/usr/local/bin/elm-live" ]
 
+FROM base AS reactor
+
+WORKDIR /workspaces/UnitPlannerv7/Client
+
+RUN apk add coreutils
+
+ENTRYPOINT [ "/usr/bin/elm" ]
+CMD [ "reactor", "--port=8000" ]
+
 FROM base AS build-admin
 
 WORKDIR /app

@@ -1,3 +1,4 @@
+#!/bin/sh
 # Copyright (C) 2022 Andrew Rioux
 # 
 # This program is free software: you can redistribute it and/or modify
@@ -13,36 +14,18 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-apiVersion: skaffold/v2beta12
-kind: Config
-metadata:
-  name: base-api
-profiles:
-- name: production
-  build:
-    artifacts:
-    - image: ghcr.io/cap-md089/unitplannerv7/apis/main
-      docker:
-        dockerfile: Apis/Main/Dockerfile
-        target: final
-      context: ../..
-    local:
-      useBuildkit: true
-  deploy:
-    kubectl:
-      manifests:
-      - ../../k8s/base-api.yaml
-- name: dev
-  build:
-    artifacts:
-    - image: ghcr.io/cap-md089/unitplannerv7/apis/main
-      docker:
-        dockerfile: Apis/Main/Dockerfile
-        target: dev
-      context: ../..
-    local:
-      useBuildkit: true
-  deploy:
-    kubectl:
-      manifests:
-      - ../../k8s/base-api.yaml
+cd /workspaces/UnitPlannerv7
+
+mkdir -p ssh
+rm ssh/x11-keys
+minikube start
+kubectl config set-context --current --namespace=unitplannerv7
+ssh-keygen -N "" -f ssh/x11-keys -b 1024
+mv ssh/x11-keys.pub ~/.ssh/authorized_keys
+ssh-add ssh/x11-keys
+sudo service ssh start
+nohup bash -c 'minikube mount /workspaces/UnitPlannerv7:/workspaces/UnitPlannerv7 &' > ~/minikube-mount.log 2>&1
+kubectl wait -n ingress-nginx deployment --for condition=Available=True -l app.kubernetes.io/name=ingress-nginx
+nohup bash -c 'kubectl port-forward -n ingress-nginx service/ingress-nginx-controller 80:80 &' > ~/port-forwarding.log 2>&1
+
+sleep infinity

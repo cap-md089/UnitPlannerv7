@@ -16,37 +16,33 @@
 apiVersion: skaffold/v2beta12
 kind: Config
 metadata:
-  name: graph-dev
-build:
-  artifacts:
-  - image: ghcr.io/cap-md089/unitplannerv7/services/graph
-    docker:
-      dockerfile: Services/Graph/Dockerfile
-      target: dev
-    context: ../..
-  local:
-    useBuildkit: true
-deploy:
-  kubectl:
-    manifests:
-    - ../../k8s/service-graph.yaml
-
----
-
-apiVersion: skaffold/v2beta12
-kind: Config
-metadata:
-  name: files
-build:
-  artifacts:
-  - image: ghcr.io/cap-md089/unitplannerv7/services/graph
-    docker:
-      dockerfile: Services/Graph/Dockerfile
-      target: final
-    context: ../..
-  local:
-    useBuildkit: true
-deploy:
-  kubectl:
-    manifests:
-    - ../../k8s/service-graph.yaml
+  name: graph
+profiles:
+- name: dev
+  build:
+    artifacts:
+    - image: ghcr.io/cap-md089/unitplannerv7/services/graph
+      docker:
+        dockerfile: Services/Graph/Dockerfile
+        target: dev
+      context: ../..
+    local:
+      useBuildkit: true
+  deploy:
+    kubectl:
+      manifests:
+      - ../../k8s/service-graph.yaml
+- name: production
+  build:
+    artifacts:
+    - image: ghcr.io/cap-md089/unitplannerv7/services/graph
+      docker:
+        dockerfile: Services/Graph/Dockerfile
+        target: final
+      context: ../..
+    local:
+      useBuildkit: true
+  deploy:
+    kubectl:
+      manifests:
+      - ../../k8s/service-graph.yaml

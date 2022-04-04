@@ -1,3 +1,4 @@
+#!/bin/sh
 # Copyright (C) 2022 Andrew Rioux
 # 
 # This program is free software: you can redistribute it and/or modify
@@ -13,36 +14,6 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-apiVersion: skaffold/v2beta12
-kind: Config
-metadata:
-  name: base-api
-profiles:
-- name: production
-  build:
-    artifacts:
-    - image: ghcr.io/cap-md089/unitplannerv7/apis/main
-      docker:
-        dockerfile: Apis/Main/Dockerfile
-        target: final
-      context: ../..
-    local:
-      useBuildkit: true
-  deploy:
-    kubectl:
-      manifests:
-      - ../../k8s/base-api.yaml
-- name: dev
-  build:
-    artifacts:
-    - image: ghcr.io/cap-md089/unitplannerv7/apis/main
-      docker:
-        dockerfile: Apis/Main/Dockerfile
-        target: dev
-      context: ../..
-    local:
-      useBuildkit: true
-  deploy:
-    kubectl:
-      manifests:
-      - ../../k8s/base-api.yaml
+cd $(git rev-parse --show-toplevel)
+
+ssh -X vscode@localhost -p 34595 /workspaces/UnitPlannerv7/node_modules/.bin/cypress open --project /workspaces/UnitPlannerv7

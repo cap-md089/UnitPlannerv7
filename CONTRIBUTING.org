@@ -15,9 +15,9 @@ The following steps should be all you need to get a working development environm
    3. Select ~/workspaces/UnitPlannerv7~
 
 ** Developing
+To start the development environment for UnitPlannerv7, open a terminal /inside VS Code/ and run the command ~skaffold dev~.
 
-
-
+To start a development environment for different backend services, enable the different profiles with ~skaffold dev~ by running ~skaffold dev -p [PROFILE_NAME]~, where ~[PROFILE_NAME]~ is one of ~authentication-dev~, ~capwatch-dev~, ~files-dev~, or ~graph-dev~.
 * Application architecture
 ** Apis
 *** [[./Apis/Main/README.org][Main]]
@@ -35,14 +35,11 @@ The following steps should be all you need to get a working development environm
 ** Unit tests
 Unit tests can be run with either ~dotnet test~, either in the project root or in the individual .NET project folders
 
-** TODO Integration tests
-*TODO: Fix after reimplementing configuration to use Kubernetes*
+** Integration tests
+First, ~skaffold dev~ cannot be running; it has to be replaced with ~skaffold dev -p test,-dev~ to create the test environment.
 
-There are three main integration test suites, for two main different pages and the elm reactor. There are also two different ways to run each test suite, either with a GUI (if developing on Linux) or from the command line.
+Actually bringing up the test runner is based on the host environment. For Linux, go to the host computer and run ~scripts/run-integration-test-runner-linux.sh~. For Windows, ensure VcXsrv is installed and configured to run on display 0 and with unauthenticated access allowed. Then, in the VS Code terminal run ~scripts/run-integration-test-runner-windows.sh~.
 
-To run an integration test suite from the command line, run ~docker-compose run cypress_tests_[SUITE_NAME]~, where ~[SUITE_NAME]~ is one of ~client~, ~webmaster_dashboard~, or ~reactor~.
-
-To run the GUI, run ~docker-compose up -d cypress_test_runner_[SUITE_NAME]_linux~ with the same ~[SUITE_NAME]~ options as above.
-
+You can then run any specific test suite, or run all the integration tests by clicking on the test suite or the 'Run all' button.
 ** Pull request
 Pull requests must have appropriate tests written to cover any new code

@@ -11,3 +11,4 @@ cypress
 .ionide
 .github
 skaffold.yml
+ssh

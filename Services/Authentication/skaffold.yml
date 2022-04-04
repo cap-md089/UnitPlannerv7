@@ -16,37 +16,33 @@
 apiVersion: skaffold/v2beta12
 kind: Config
 metadata:
-  name: authentication-dev
-build:
-  artifacts:
-  - image: ghcr.io/cap-md089/unitplannerv7/services/authentication
-    docker:
-      dockerfile: Services/Authentication/Dockerfile
-      target: dev
-    context: ../..
-  local:
-    useBuildkit: true
-deploy:
-  kubectl:
-    manifests:
-    - ../../k8s/service-authentication.yaml
-
----
-
-apiVersion: skaffold/v2beta12
-kind: Config
-metadata:
   name: authentication
-build:
-  artifacts:
-  - image: ghcr.io/cap-md089/unitplannerv7/services/authentication
-    docker:
-      dockerfile: Services/Authentication/Dockerfile
-      target: final
-    context: ../..
-  local:
-    useBuildkit: true
-deploy:
-  kubectl:
-    manifests:
-    - ../../k8s/service-authentication.yaml
+profiles:
+- name: dev
+  build:
+    artifacts:
+    - image: ghcr.io/cap-md089/unitplannerv7/services/authentication
+      docker:
+        dockerfile: Services/Authentication/Dockerfile
+        target: dev
+      context: ../..
+    local:
+      useBuildkit: true
+  deploy:
+    kubectl:
+      manifests:
+      - ../../k8s/service-authentication.yaml
+- name: production
+  build:
+    artifacts:
+    - image: ghcr.io/cap-md089/unitplannerv7/services/authentication
+      docker:
+        dockerfile: Services/Authentication/Dockerfile
+        target: final
+      context: ../..
+    local:
+      useBuildkit: true
+  deploy:
+    kubectl:
+      manifests:
+      - ../../k8s/service-authentication.yaml

@@ -20,6 +20,8 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+using k8s;
+
 using UnitPlanner.Apis.Main.Data;
 using UnitPlanner.Apis.Main.Models;
 
@@ -165,6 +167,16 @@ public class SeedController : ControllerBase
         catch
         {
             // Ignore; database hasn't been set up, and will be set up by the actual main process shortly
+        }
+
+        using var cluster = new Kubernetes(KubernetesClientConfiguration.InClusterConfig());
+        var ingresses = await cluster.ListNamespacedIngressAsync("unitplannerv7");
+        foreach (var ingress in ingresses.Items)
+        {
+            if (ingress.Metadata.Name.StartsWith("account-ingress-"))
+            {
+                await cluster.DeleteNamespacedIngressAsync(ingress.Metadata.Name, "unitplannerv7");
+            }
         }
     }
 

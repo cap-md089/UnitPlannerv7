@@ -25,12 +25,14 @@ VOLUME [ "/var/lib/docker" ]
 # inside the container "overrideCommand": false is set in devcontainer.json. 
 # The script will also execute CMD if you need to alter startup behaviors.
 ENTRYPOINT [ "/usr/local/share/docker-init.sh" ]
-CMD [ "sleep", "infinity" ]
+CMD [ "/workspaces/UnitPlannerv7/scripts/dev-container-start.sh" ]
 
 ENV PATH=$PATH:/home/$USERNAME/.dotnet/tools:/home/$USERNAME/.npm-global/bin
 
 RUN apt update && \
-    apt install -y --no-install-recommends npm gettext-base chromium && \
+    apt install -y --no-install-recommends npm gettext-base chromium openssh-server && \
+    curl -Lo /usr/bin/skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-amd64 && \
+    chmod +x /usr/bin/skaffold && \
     curl -L -o elm.gz https://github.com/elm/compiler/releases/download/0.19.1/binary-for-linux-64-bit.gz && \
     gunzip elm.gz && \
     chmod +x elm && \
@@ -45,4 +47,7 @@ RUN dotnet tool install --global dotnet-ef && \
             /home/${USERNAME}/.vscode-server-insiders/extensions && \
     chown -R ${USERNAME} \
             /home/${USERNAME}/.vscode-server/extensions \
-            /home/${USERNAME}/.vscode-server-insiders/extensions
+            /home/${USERNAME}/.vscode-server-insiders/extensions && \
+    sudo mkdir -p /etc/sshd && \
+    echo "Port 34595\nX11Forwarding yes\nAuthorizedKeysFile .ssh/authorized_keys\nPubkeyAuthentication yes\nX11DisplayOffset 10\nX11UseLocalhost no" | sudo tee /etc/ssh/sshd_config && \
+    echo 'vscode:vscode' | sudo chpasswd

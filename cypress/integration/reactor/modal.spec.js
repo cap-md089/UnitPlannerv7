@@ -16,6 +16,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 describe('modal dialogue', () => {
+    before(() => {
+        Cypress.config('baseUrl', 'http://reactor.localunitplanner.org')
+    });
+
     it('should open the modal', () => {
         cy.visit('/src/Integration/Components/Modal/ModalOpening.elm');
 

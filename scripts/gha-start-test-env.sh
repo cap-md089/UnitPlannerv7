@@ -22,3 +22,6 @@ skaffold run -p test,-dev
 kubectl get -n unitplannerv7 ingress
 kubectl wait -n ingress-nginx deployment --for condition=Available=True -l app.kubernetes.io/name=ingress-nginx
 kubectl wait -n unitplannerv7 deployment --for condition=Available=True -l name=client-reactor
+
+kubectl logs -n ingress-nginx -f $(kubectl get pods -n ingress-nginx | grep controller     | awk '{ print $1 }') &
+kubectl logs -n unitplannerv7 -f $(kubectl get pods -n unitplannerv7 | grep client-reactor | awk '{ print $1 }') &

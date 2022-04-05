@@ -1,7 +1,3 @@
-#!/bin/sh
-# gha-build-reactor-env.sh: builds the integration test environment
-# for the reactor for GitHub Actions
-#
 # Copyright (C) 2022 Andrew Rioux
 # 
 # This program is free software: you can redistribute it and/or modify
@@ -21,15 +17,7 @@ set -eux
 
 cd $(git rev-parse --show-toplevel)
 
-dotnet build
+skaffold run -p test,-dev
 
-export PROXY_NAME=*.localunitplanner.org
-export PROXY_PORT=3000
-export API_SERVER_URL=http://localhost:5000
-export ELM_REACTOR_URL=http://localhost:8000
-export PROJECT_STATIC_DIR=$PWD/Client/static
-export HTML_FILE_LOCATION=$PWD/Client/static/webmasterdashboard.html
-
-envsubst '$PROXY_NAME,$PROXY_PORT,$API_SERVER_URL,$ELM_REACTOR_URL,$PROJECT_STATIC_DIR,$HTML_FILE_LOCATION' < $PWD/Client/nginx/github-actions-reactor.conf.template > $PWD/Client/nginx/github-actions.conf
-
-cd $(git rev-parse --show-toplevel)
+kubectl wait -n ingress-nginx deployment --for condition=Available=True -l app.kubernetes.io/name=ingress-nginx
+kubectl port-forward -n ingress-nginx service/ingress-nginx-controller 80:80 &

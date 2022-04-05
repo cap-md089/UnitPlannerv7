@@ -18,6 +18,8 @@ The following steps should be all you need to get a working development environm
 To start the development environment for UnitPlannerv7, open a terminal /inside VS Code/ and run the command ~skaffold dev~.
 
 To start a development environment for different backend services, enable the different profiles with ~skaffold dev~ by running ~skaffold dev -p [PROFILE_NAME]~, where ~[PROFILE_NAME]~ is one of ~authentication-dev~, ~capwatch-dev~, ~files-dev~, or ~graph-dev~.
+
+To enable the base API to actually call the backend services, run ~kubectl edit configmap base-api-env~ and change the specific values from 0 to 1 in order to use the specified backend
 * Application architecture
 ** Apis
 *** [[./Apis/Main/README.org][Main]]

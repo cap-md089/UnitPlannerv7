@@ -1,6 +1,3 @@
-#!/bin/sh
-# gha-start-services.sh: used to start all programs in GitHub Actions for integration tests
-#
 # Copyright (C) 2022 Andrew Rioux
 # 
 # This program is free software: you can redistribute it and/or modify
@@ -20,12 +17,9 @@ set -eux
 
 cd $(git rev-parse --show-toplevel)
 
-sudo systemctl start mysql.service
+minikube addons enable ingress
 
-export ConnectionStrings__MainDB="server=localhost;uid=root;password=root;database=test"
-export RUNNING_IN_CI=1
+kubectl apply -f k8s/base.yaml
+kubectl apply -f k8s/mysql-dev.yaml
 
-dotnet run --project Apis/Main.IntegrationTests/UnitPlanner.Apis.Main.IntegrationTests.csproj > /dev/null &
-dotnet run --project Apis/Main/UnitPlanner.Apis.Main.csproj > /dev/null &
-
-sudo nginx -c $PWD/Client/nginx/github-actions.conf > /dev/null
+skaffold build -p test,-dev

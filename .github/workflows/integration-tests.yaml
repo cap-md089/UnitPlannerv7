@@ -25,54 +25,24 @@ on:
       - master
 
 jobs:
-  webmaster-dashboard-integration-tests:
+  integration-tests:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
 
-      - uses: actions/setup-dotnet@v1
+      - uses: manusa/actions-setup-minikube@v2.4.3
         with:
-          dotnet-version: "6.0"
-
-      - uses: JorelAli/setup-elm@v1
-        with:
-          elm-version: 0.19.1
+          kubernetes version: '1.23.5'
+          minikube version: '1.25.2'
 
       - name: Run Dashboard Cypress tests
         uses: cypress-io/github-action@v2
         with:
           record: true
-          build: /home/runner/work/UnitPlannerv7/UnitPlannerv7/scripts/gha-build-webmaster-dashboard-env.sh
-          start: /home/runner/work/UnitPlannerv7/UnitPlannerv7/scripts/gha-start-webmaster-dashboard-env.sh
-          spec: cypress/integration/webmaster_dashboard/*.spec.js
-        env:
-          CYPRESS_BASE_URL: http://localhost:3000
-          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
-  reactor-integration-tests:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: "6.0"
-
-      - uses: JorelAli/setup-elm@v1
-        with:
-          elm-version: 0.19.1
-
-      - name: Run Reactor Cypress tests
-        uses: cypress-io/github-action@v2
-        with:
-          record: true
-          build: /home/runner/work/UnitPlannerv7/UnitPlannerv7/scripts/gha-build-reactor-env.sh
-          start: /home/runner/work/UnitPlannerv7/UnitPlannerv7/scripts/gha-start-reactor-env.sh
-          spec: cypress/integration/reactor/*.spec.js
+          build: /home/runner/work/UnitPlannerv7/UnitPlannerv7/scripts/gha-build-test-env.sh
+          start: /home/runner/work/UnitPlannerv7/UnitPlannerv7/scripts/gha-start-test-env.sh
+          spec: cypress/integration/**/*.spec.js
         env:
           CYPRESS_BASE_URL: http://localhost:3000
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}

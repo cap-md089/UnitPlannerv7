@@ -16,4 +16,11 @@
 
 cd $(git rev-parse --show-toplevel)
 
-ssh -X vscode@localhost -p 34595 /workspaces/UnitPlannerv7/node_modules/.bin/cypress open --project /workspaces/UnitPlannerv7
+export DISPLAY=:0
+
+if ! test -S /tmp/.X11-unix/X0; then
+    export DISPLAY=docker.for.win.localhost:0
+fi
+
+echo "Using display: $DISPLAY"
+node_modules/.bin/cypress open --project .

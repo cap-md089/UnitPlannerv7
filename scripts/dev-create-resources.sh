@@ -28,9 +28,14 @@ function setup_mysql() {
     kubectl apply -f k8s/mysql-dev.yaml
 }
 
+function setup_base_env() {
+    kubectl create configmap base-api-env --from-env-file=k8s/base-api-config.yaml
+}
+
 RUN_SETUP_MINIKUBE=0
 RUN_BASE_INIT=0
 RUN_SETUP_MYSQL=0
+RUN_SETUP_BASE_ENV=0
 
 while getopts "miMbah" opt; do
     case $opt in
@@ -43,11 +48,14 @@ while getopts "miMbah" opt; do
         M)
             RUN_SETUP_MYSQL=1
             ;;
+        e)
+            RUN_SETUP_BASE_ENV=1
+            ;;
         a)
             RUN_SETUP_MINIKUBE=1
             RUN_BASE_INIT=1
             RUN_SETUP_MYSQL=1
-            RUN_INITIAL_BUILD_AND_DEPLOY=1
+            RUN_SETUP_BASE_ENV=1
             ;;
         h)
             cat - <<EOD
@@ -62,3 +70,4 @@ done
 [ "$RUN_SETUP_MINIKUBE" = "1" ] && setup_minikube
 [ "$RUN_BASE_INIT" = "1" ] && base_init
 [ "$RUN_SETUP_MYSQL" = "1" ] && setup_mysql
+[ "$RUN_SETUP_BASE_ENV" = "1" ] && setup_base_env

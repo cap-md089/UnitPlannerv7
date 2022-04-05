@@ -8,9 +8,10 @@
 		"src=unitplannerv7-minikube-var-lib-docker,dst=/var/lib/docker,type=volume",
 		"src=unitplannerv7-vscode-extensions,dst=/home/vscode/.vscode-server/extensions,type=volume",
 		"src=unitplannerv7-vscode-insiders-extensions,dst=/home/vscode/.vscode-server-insiders/extensions,type=volume",
-//		"src=/etc/hosts,dst=/etc/host-hosts,type=bind",
-//		"src=${localEnv:HOME}/.Xauthority,dst=/home/vscode/.Xauthority,type=bind",
-//		"src=/tmp/.X11-unix,dst=/tmp/.X11-unix,type=bind"
+		"src=unitplannerv7-cypress-cache,dst=/home/vscode/.cache/Cypress,type=volume",
+		"src=unitplannerv7-nuget-cache,dst=/home/vscode/.nuget,type=volume",
+		"src=${localEnv:HOME}/.Xauthority,dst=/home/vscode/.Xauthority,type=bind",
+		"src=/tmp/.X11-unix,dst=/temp/.X11-unix,type=bind"
 	],
 	"overrideCommand": false,
 	"settings": {
@@ -35,8 +36,7 @@
 		"ionide.ionide-fsharp"
 	],
 	"forwardPorts": [
-		"80",
-		"34595"
+		"80"
 	],
 	"portsAttributes": {
 		"80": {
@@ -45,11 +45,6 @@
 			"elevateIfNeeded": true,
 			"requireLocalPort": true
 		},
-		"34595": {
-			"label": "SSH (X Forwarding)",
-			"onAutoForward": "ignore",
-			"requireLocalPort": true
-		}
 	},
 	"remoteUser": "vscode",
 	"postStartCommand": "dotnet restore && ${containerWorkspaceFolder}/node_modules/.bin/cypress install"

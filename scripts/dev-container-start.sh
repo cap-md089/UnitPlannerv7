@@ -16,14 +16,11 @@
 
 cd /workspaces/UnitPlannerv7
 
-mkdir -p ssh
-rm ssh/x11-keys
+sudo chown -R vscode:vscode /home/vscode/.cache
+sudo chown -R vscode:vscode /home/vscode/.nuget
+test -d /tmp/.X11-unix || ln -s /temp/.X11-unix /tmp/.X11-unix
 minikube start
 kubectl config set-context --current --namespace=unitplannerv7
-ssh-keygen -N "" -f ssh/x11-keys -b 1024
-mv ssh/x11-keys.pub ~/.ssh/authorized_keys
-ssh-add ssh/x11-keys
-sudo service ssh start
 nohup bash -c 'minikube mount /workspaces/UnitPlannerv7:/workspaces/UnitPlannerv7 &' > ~/minikube-mount.log 2>&1
 kubectl wait -n ingress-nginx deployment --for condition=Available=True -l app.kubernetes.io/name=ingress-nginx
 nohup bash -c 'kubectl port-forward -n ingress-nginx service/ingress-nginx-controller 80:80 &' > ~/port-forwarding.log 2>&1

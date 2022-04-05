@@ -29,6 +29,7 @@ RUN adduser api-user
 WORKDIR /app
 USER api-user
 ENV ASPNETCORE_ENVIRONMENT=Development
+ENV ASPNETCORE_URLS=http://0.0.0.0:5000
 ENTRYPOINT ["dotnet", "UnitPlanner.Apis.Main.dll"]
 
 FROM build AS publish
@@ -42,4 +43,5 @@ RUN adduser api-user
 USER api-user
 
 ENV ASPNETCORE_ENVIRONMENT=Production
+ENV ASPNETCORE_URLS=http://0.0.0.0:5000
 ENTRYPOINT ["dotnet", "UnitPlanner.Apis.Main.dll"]

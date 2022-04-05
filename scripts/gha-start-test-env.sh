@@ -19,5 +19,6 @@ cd $(git rev-parse --show-toplevel)
 
 skaffold run -p test,-dev
 
+kubectl get -n unitplannerv7 ingress
 kubectl wait -n ingress-nginx deployment --for condition=Available=True -l app.kubernetes.io/name=ingress-nginx
 sudo -E kubectl port-forward -n ingress-nginx service/ingress-nginx-controller 80:80 &

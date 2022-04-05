@@ -74,10 +74,6 @@ spec:
       - name: host-configuration
         image: ghcr.io/cap-md089/unitplannerv7/services/hostconfiguration
         imagePullPolicy: Never
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "250m"
         ports:
         - containerPort: 5050
       serviceAccountName: host-configuration-service-account

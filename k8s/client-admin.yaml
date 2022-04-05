@@ -46,10 +46,6 @@ spec:
       - name: client-admin-static
         image: ghcr.io/cap-md089/unitplannerv7/client/admin
         imagePullPolicy: Never
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "250m"
         ports:
         - containerPort: 80
 

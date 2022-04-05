@@ -46,10 +46,6 @@ spec:
       - name: client-reactor
         image: ghcr.io/cap-md089/unitplannerv7/client/reactor
         imagePullPolicy: Never
-        resources:
-          limits:
-            memory: "4Gi"
-            cpu: "2000m"
         ports:
         - containerPort: 8000
         volumeMounts:

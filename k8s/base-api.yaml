@@ -56,10 +56,6 @@ spec:
         envFrom:
         - configMapRef:
             name: base-api-env
-        resources:
-          limits:
-            memory: 200Mi
-            cpu: 500m
         volumeMounts:
         - name: host-etc
           mountPath: /host-etc

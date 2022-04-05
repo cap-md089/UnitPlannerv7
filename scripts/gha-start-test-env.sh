@@ -19,7 +19,6 @@ cd $(git rev-parse --show-toplevel)
 
 skaffold run -p test,-dev
 
-minikube mount $PWD:/workspaces/UnitPlannerv7 &
 kubectl get -n unitplannerv7 ingress
 kubectl wait -n ingress-nginx deployment --for condition=Available=True -l app.kubernetes.io/name=ingress-nginx
 kubectl wait -n unitplannerv7 deployment --for condition=Available=True -l name=client-reactor

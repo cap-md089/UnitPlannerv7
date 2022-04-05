@@ -30,9 +30,8 @@ ENTRYPOINT [ "/usr/local/bin/elm-live" ]
 
 FROM base AS reactor
 
-WORKDIR /workspaces/UnitPlannerv7/Client
-
-RUN apk add coreutils
+WORKDIR /app
+COPY Client /app
 
 ENTRYPOINT [ "/usr/bin/elm" ]
 CMD [ "reactor", "--port=8000" ]

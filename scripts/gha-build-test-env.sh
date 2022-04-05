@@ -21,5 +21,6 @@ minikube addons enable ingress
 
 kubectl apply -f k8s/base.yaml
 kubectl apply -f k8s/mysql-dev.yaml
+kubectl create configmap base-api-env --from-env-file=k8s/base-api-config.yaml
 
 skaffold build -p test,-dev

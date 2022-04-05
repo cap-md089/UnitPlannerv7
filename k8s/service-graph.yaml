@@ -31,9 +31,5 @@ spec:
       - name: graph
         image: ghcr.io/cap-md089/unitplannerv7/services/graph
         imagePullPolicy: Never
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "250m"
         ports:
         - containerPort: 5040

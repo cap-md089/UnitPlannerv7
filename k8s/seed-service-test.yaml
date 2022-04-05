@@ -110,10 +110,6 @@ spec:
       - name: test-seed-service
         image: ghcr.io/cap-md089/unitplannerv7/apis/main-integrationtests
         imagePullPolicy: Never
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "250m"
         env:
           - name: ASPNETCORE_URLS
             value: http://0.0.0.0:4090

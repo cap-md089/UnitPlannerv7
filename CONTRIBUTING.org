@@ -3,25 +3,23 @@
 * Getting set to develop UnitPlanner v7
 The following steps should be all you need to get a working development environment for UnitPlanner:
 
-1. Using VSCode, install the [[https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers][Remote - Containers]] extension (extension ID ~ms-vscode-remote.remote-containers~)
-2. Reopen the repository using the Remote Containers extension. There should be a prompt asking to do so
-3. Wait for the terminal in the bottom window to say "Press any key to close this terminal"
-4. Create a new terminal, and type in ~minikube ip~
-5. Next to Terminal, go to Ports. Click "Add Port", and enter in ~$IP:80~ where ~$IP~ is the IP address from ~minikube ip~
-6. Next to the address entered, there should be a label button, which when hovered over will say "Set Label and Update devcontainers.json". Click this button
-7. Back in the terminal, run ~scripts/dev-create-resources.sh -a~
-8. (Optional) Go into your hosts file (Windows: "C:\Windows\System32\drivers\etc\hosts", Linux: "/etc/hosts") and add an entry for ~admin.localunitplanner.org~ pointing to ~127.0.0.1~
+1. Configure VS Code
+   1. Install the [[https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers][Remote - Containers]] extension (extension ID ~ms-vscode-remote.remote-containers~)
+   2. Reopen the repository using the Remote Containers extension. There should be a prompt asking to do so
+   3. Wait for the terminal in the bottom window to say "Press any key to close this terminal"
+2. Configure Kubernetes
+   1. Create a new terminal, and run ~scripts/dev-create-resources.sh -a~
+3. Configure F#
+   1. Bring up the command pallette (~Ctrl-Shift-P~ or ~Cmd-Shift-P~)
+   2. Run ~F#: Change workspace or solution~
+   3. Select ~/workspaces/UnitPlannerv7~
 
 ** Developing
+To start the development environment for UnitPlannerv7, open a terminal /inside VS Code/ and run the command ~skaffold dev~.
 
-After making code changes, you will need to rebuild and redeploy the services you are developing. For basic development you will need to build the ~Apis/Main~ and ~Services/HostConfiguration~ services and ~admin~ client containers, and will need to apply the ~base-api~, ~client-admin-dev~, and ~service-host-configuration~ deployments.
+To start a development environment for different backend services, enable the different profiles with ~skaffold dev~ by running ~skaffold dev -p [PROFILE_NAME]~, where ~[PROFILE_NAME]~ is one of ~authentication-dev~, ~capwatch-dev~, ~files-dev~, or ~graph-dev~.
 
-To build a container, run ~scripts/dev-build-containers.sh~ from within VS Code and specify the service or client you want to build via the ~-s~ or ~-c~ flags respectively. The name of the service is the path to the service root from the repository folder, e.g. to build the main API run ~scripts/dev-build-containers.sh -s Apis/Main~. The names of the clients are ~admin~ and ~main~.  
-
-Once the containers are built, apply the deployment using ~scripts/dev-redeploy-services.sh~, specifying the deployment with the ~-s~ flag ie: ~scripts/dev-redeploy-services.sh -s base-api -s client-admin-dev -s service-host-configuration~.  
-
-To open up the website, go to VS Code, go to Ports in the terminal/output pane, and Ctrl-click on the local address next to "$IP:80" from step 5. If you have extra hosts set up, it would be best to
-
+To enable the base API to actually call the backend services, run ~kubectl edit configmap base-api-env~ and change the specific values from 0 to 1 in order to use the specified backend
 * Application architecture
 ** Apis
 *** [[./Apis/Main/README.org][Main]]
@@ -39,14 +37,11 @@ To open up the website, go to VS Code, go to Ports in the terminal/output pane, 
 ** Unit tests
 Unit tests can be run with either ~dotnet test~, either in the project root or in the individual .NET project folders
 
-** TODO Integration tests
-*TODO: Fix after reimplementing configuration to use Kubernetes*
+** Integration tests
+First, ~skaffold dev~ cannot be running; it has to be replaced with ~skaffold dev -p test,-dev~ to create the test environment.
 
-There are three main integration test suites, for two main different pages and the elm reactor. There are also two different ways to run each test suite, either with a GUI (if developing on Linux) or from the command line.
+If on Windows, an X server needs to be installed and running on port 6000 (display :0) for unauthenticated clients (see: [[https://sourceforge.net/projects/vcxsrv/]]). On Linux the host X server is auto-mounted into the container.
 
-To run an integration test suite from the command line, run ~docker-compose run cypress_tests_[SUITE_NAME]~, where ~[SUITE_NAME]~ is one of ~client~, ~webmaster_dashboard~, or ~reactor~.
-
-To run the GUI, run ~docker-compose up -d cypress_test_runner_[SUITE_NAME]_linux~ with the same ~[SUITE_NAME]~ options as above.
-
+In VS Code, run ~scripts/run-integration-test-runner.sh~ to bring up the test runner. You can then run any specific test suite, or run all the integration tests by clicking on the test suite or the 'Run all' button.
 ** Pull request
 Pull requests must have appropriate tests written to cover any new code

@@ -1,0 +1,71 @@
+# Copyright (C) 2022 Andrew Rioux
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+# 
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+apiVersion: v1
+kind: Secret
+metadata:
+  namespace: unitplannerv7
+  name: mysql-password
+type: kubernetes.io/basic-auth
+stringData:
+  connectionString: server=db;uid=root;pwd=toor
+  username: root
+  password: toor
+
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
+  namespace: unitplannerv7
+  name: mysql
+  labels:
+    name: mysql
+spec:
+  containers:
+  - image: mysql:8.0.26
+    name: mysql
+    env:
+    - name: MYSQL_ROOT_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: mysql-password
+          key: password
+    ports:
+    - containerPort: 3306
+      name: mysql
+    volumeMounts:
+    - name: mysql-persistent-storage
+      mountPath: /var/lib/mysql
+  volumes:
+  - name: mysql-persistent-storage
+    hostPath:
+      path: "/srv/unitplannerv7/mysqldata-test"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: unitplannerv7
+  name: db
+spec:
+  selector:
+    name: mysql
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+      name: mysql

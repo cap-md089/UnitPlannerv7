@@ -29,14 +29,7 @@ spec:
     spec:
       containers:
       - name: authentication
-        image: ghcr.io/cap-md089/unitplannerv7/services/authentication:$AUTHENTICATION_TAG
+        image: ghcr.io/cap-md089/unitplannerv7/services/authentication
         imagePullPolicy: Never
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "250m"
-        env:
-          - name: ASPNETCORE_ENVIRONMENT
-            value: $ASPNETCORE_ENVIRONMENT
         ports:
         - containerPort: 5010

@@ -23,7 +23,9 @@ stringData:
   connectionString: server=db;uid=root;pwd=toor
   username: root
   password: toor
+
 ---
+
 apiVersion: v1
 kind: Pod
 metadata:
@@ -51,7 +53,9 @@ spec:
   - name: mysql-persistent-storage
     hostPath:
       path: "/srv/unitplannerv7/mysqldata"
+
 ---
+
 apiVersion: v1
 kind: Service
 metadata:

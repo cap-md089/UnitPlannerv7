@@ -25,16 +25,18 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   namespace: unitplannerv7
-  name: manage-ingress
+  name: manage-ingresses
 rules:
-  - apiGroups:
-      - networking.k8s.io/v1
-    resources: 
-      - ingress
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["ingresses"]
     verbs:
       - create
-      - update
+      - patch
+      - replace
       - delete
+      - get
+      - list
+      - read
 
 ---
 
@@ -46,11 +48,11 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: manage-ingress
+  name: manage-ingresses
 subjects:
-  - namespace: unitplannerv7
-    kind: ServiceAccount
+  - kind: ServiceAccount
     name: host-configuration-service-account
+    namespace: unitplannerv7
 
 ---
 
@@ -70,15 +72,8 @@ spec:
     spec:
       containers:
       - name: host-configuration
-        image: ghcr.io/cap-md089/unitplannerv7/services/hostconfiguration:$HOST_CONFIGURATION_TAG
+        image: ghcr.io/cap-md089/unitplannerv7/services/hostconfiguration
         imagePullPolicy: Never
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "250m"
-        env:
-          - name: ASPNETCORE_ENVIRONMENT
-            value: $ASPNETCORE_ENVIRONMENT
         ports:
         - containerPort: 5050
       serviceAccountName: host-configuration-service-account

@@ -28,13 +28,21 @@ RUN apk add curl jq && \
 
 ENTRYPOINT [ "/usr/local/bin/elm-live" ]
 
+FROM base AS reactor
+
+WORKDIR /app
+COPY Client /app
+
+ENTRYPOINT [ "/usr/bin/elm" ]
+CMD [ "reactor", "--port=8000" ]
+
 FROM base AS build-admin
 
 WORKDIR /app
 
 COPY Client /app
 
-ARG RUNTIME_ARG=
+ARG RUNTIME_ARG=--debug
 
 RUN elm make $RUNTIME_ARG --output=/app/WebmasterDashboard.js /app/src/WebmasterDashboard.elm
 
@@ -44,7 +52,7 @@ WORKDIR /app
 
 COPY Client /app
 
-ARG RUNTIME_ARG=
+ARG RUNTIME_ARG=--debug
 
 RUN elm make $RUNTIME_ARG --output=/app/Main.js /app/src/Main.elm
 

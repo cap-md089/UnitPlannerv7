@@ -29,14 +29,7 @@ spec:
     spec:
       containers:
       - name: graph
-        image: ghcr.io/cap-md089/unitplannerv7/services/graph:$GRAPH_TAG
+        image: ghcr.io/cap-md089/unitplannerv7/services/graph
         imagePullPolicy: Never
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "250m"
-        env:
-          - name: ASPNETCORE_ENVIRONMENT
-            value: $ASPNETCORE_ENVIRONMENT
         ports:
         - containerPort: 5040

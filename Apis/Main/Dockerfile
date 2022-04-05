@@ -10,7 +10,13 @@ COPY Common/Authentication/*.csproj Common/Authentication/
 COPY Apis/Main/*.csproj Apis/Main/
 RUN dotnet restore Apis/Main/UnitPlanner.Apis.Main.csproj 
 
-COPY . .
+COPY Services/Authentication/Protos Services/Authentication/Protos
+COPY Services/Capwatch/Protos Services/Capwatch/Protos
+COPY Services/Files/Protos Services/Files/Protos
+COPY Services/Graph/Protos Services/Graph/Protos
+COPY Services/HostConfiguration/Protos Services/HostConfiguration/Protos
+COPY Common/Authentication Common/Authentication
+COPY Apis/Main Apis/Main
 WORKDIR /src/Apis/Main
 
 ARG RELEASE_CONFIGURATION=Release
@@ -22,6 +28,8 @@ RUN adduser api-user
 
 WORKDIR /app
 USER api-user
+ENV ASPNETCORE_ENVIRONMENT=Development
+ENV ASPNETCORE_URLS=http://0.0.0.0:5000
 ENTRYPOINT ["dotnet", "UnitPlanner.Apis.Main.dll"]
 
 FROM build AS publish
@@ -34,4 +42,6 @@ COPY --from=publish /app .
 RUN adduser api-user
 USER api-user
 
+ENV ASPNETCORE_ENVIRONMENT=Production
+ENV ASPNETCORE_URLS=http://0.0.0.0:5000
 ENTRYPOINT ["dotnet", "UnitPlanner.Apis.Main.dll"]

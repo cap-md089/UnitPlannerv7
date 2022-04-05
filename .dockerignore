@@ -1,2 +1,14 @@
 obj
 bin
+k8s
+docs
+*.org
+LICENSE
+package.json
+package-lock.json
+cypress
+.vscode
+.ionide
+.github
+skaffold.yml
+ssh

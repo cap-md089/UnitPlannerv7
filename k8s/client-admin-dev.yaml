@@ -44,12 +44,8 @@ spec:
     spec:
       containers:
       - name: client-admin-static
-        image: ghcr.io/cap-md089/unitplannerv7/client/admin:$FILES_TAG
+        image: ghcr.io/cap-md089/unitplannerv7/client/admin
         imagePullPolicy: Never
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "250m"
         ports:
         - containerPort: 80
 
@@ -63,7 +59,8 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - http:
+  - host: admin.localunitplanner.org
+    http:
       paths:
       - path: /swagger
         pathType: Prefix

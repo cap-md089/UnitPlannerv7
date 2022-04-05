@@ -21,24 +21,27 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 
 WORKDIR /src
 
-COPY Services/Files/*.csproj Services/Files/
-RUN dotnet restore Services/Files/UnitPlanner.Services.Files.csproj
+COPY Services/Files/Files.Grpc/UnitPlanner.Services.Files.Grpc.csproj Services/Files/Files.Grpc
+COPY Services/Files/Files.Service/UnitPlanner.Services.Files.Service.fsproj Services/Files/Files.Service
+RUN dotnet restore Services/Files/UnitPlanner.Services.Files.Service.fsproj
 
-COPY . .
-WORKDIR /src/Services/Files
+COPY Services/Files Services/Files
+WORKDIR /src/Services/Files/Files.Service
 
 ARG RELEASE_CONFIGURATION=Release
-RUN dotnet build UnitPlanner.Services.Files.csproj -c ${RELEASE_CONFIGURATION} -o /app
+RUN dotnet build UnitPlanner.Services.Files.Service.fsproj -c ${RELEASE_CONFIGURATION} -o /app
 
 FROM build as dev
 
 WORKDIR /app
-ENTRYPOINT ["dotnet", "UnitPlanner.Services.Files.dll"]
+ENV ASPNETCORE_ENVIRONMENT=Development
+ENTRYPOINT ["dotnet", "UnitPlanner.Services.Files.Service.dll"]
 
 FROM build AS publish
-RUN dotnet publish UnitPlanner.Services.Files.csproj -c $RELEASE_CONFIGURATION -o /app
+RUN dotnet publish UnitPlanner.Services.Files.Service.fsproj -c $RELEASE_CONFIGURATION -o /app
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
-ENTRYPOINT ["dotnet", "UnitPlanner.Services.Files.dll"]
+ENV ASPNETCORE_ENVIRONMENT=Production
+ENTRYPOINT ["dotnet", "UnitPlanner.Services.Files.Service.dll"]

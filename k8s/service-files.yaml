@@ -29,14 +29,7 @@ spec:
     spec:
       containers:
       - name: files
-        image: ghcr.io/cap-md089/unitplannerv7/services/files:$FILES_TAG
+        image: ghcr.io/cap-md089/unitplannerv7/services/files
         imagePullPolicy: Never
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "250m"
-        env:
-          - name: ASPNETCORE_ENVIRONMENT
-            value: $ASPNETCORE_ENVIRONMENT
         ports:
         - containerPort: 5030

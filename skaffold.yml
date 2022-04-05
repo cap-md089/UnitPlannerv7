@@ -1,0 +1,91 @@
+# Copyright (C) 2022 Andrew Rioux
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+# 
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+apiVersion: skaffold/v2beta12
+kind: Config
+metadata:
+  name: standard
+requires:
+- configs:
+  - base-api
+  path: Apis/Main/skaffold.yml
+  activeProfiles:
+  - name: dev
+    activatedBy: ["dev", "authentication-dev", "capwatch-dev", "files-dev", "graph-dev"]
+  - name: production
+    activatedBy: ["test", "production"]
+- configs:
+  - admin-static
+  - main-static
+  - reactor
+  path: Client/skaffold.yml
+  activeProfiles:
+  - name: dev
+    activatedBy: ["dev", "authentication-dev", "capwatch-dev", "files-dev", "graph-dev"]
+  - name: production
+    activatedBy: ["test", "production"]
+- configs:
+  - authentication
+  path: Services/Authentication/skaffold.yml
+  activeProfiles:
+  - name: dev
+    activatedBy: ["authentication-dev"]
+  - name: production
+    activatedBy: ["production"]
+- configs:
+  - capwatch
+  path: Services/Capwatch/skaffold.yml
+  activeProfiles:
+  - name: dev
+    activatedBy: ["capwatch-dev"]
+  - name: production
+    activatedBy: ["production"]
+- configs:
+  - files
+  path: Services/Files/skaffold.yml
+  activeProfiles:
+  - name: dev
+    activatedBy: ["files-dev"]
+  - name: production
+    activatedBy: ["production"]
+- configs:
+  - graph
+  path: Services/Graph/skaffold.yml
+  activeProfiles:
+  - name: dev
+    activatedBy: ["graph-dev"]
+  - name: production
+    activatedBy: ["production"]
+- configs:
+  - host-configuration
+  path: Services/HostConfiguration/skaffold.yml
+  activeProfiles:
+  - name: dev
+    activatedBy: ["dev", "authentication-dev", "capwatch-dev", "files-dev", "graph-dev"]
+  - name: production
+    activatedBy: ["test", "production"]
+- configs:
+  - test-seed-service
+  path: Apis/Main.IntegrationTests/skaffold.yml
+profiles:
+- name: dev
+  activation:
+  - command: dev
+- name: test
+- name: authentication-dev
+- name: capwatch-dev
+- name: files-dev
+- name: graph-dev
+- name: production

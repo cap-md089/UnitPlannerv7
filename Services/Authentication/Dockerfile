@@ -21,24 +21,27 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 
 WORKDIR /src
 
-COPY Services/Authentication/*.csproj Services/Authentication/
-RUN dotnet restore Services/Authentication/UnitPlanner.Services.Authentication.csproj
+COPY Services/Authentication/Authentication.Grpc/UnitPlanner.Services.Authentication.Grpc.csproj Services/Authentication/Authentication.Grpc/
+COPY Services/Authentication/Authentication.Service/UnitPlanner.Services.Authentication.Service.fsproj Services/Authentication/Authentication.Service/
+RUN dotnet restore Services/Authentication/Authentication.Service/UnitPlanner.Services.Authentication.Service.fsproj
 
-COPY . .
-WORKDIR /src/Services/Authentication
+COPY Services/Authentication Services/Authentication
+WORKDIR /src/Services/Authentication/Authentication.Service
 
 ARG RELEASE_CONFIGURATION=Release
-RUN dotnet build UnitPlanner.Services.Authentication.csproj -c ${RELEASE_CONFIGURATION} -o /app
+RUN dotnet build UnitPlanner.Services.Authentication.Service.fsproj -c ${RELEASE_CONFIGURATION} -o /app
 
 FROM build as dev
 
 WORKDIR /app
-ENTRYPOINT ["dotnet", "UnitPlanner.Services.Authentication.dll"]
+ENV ASPNETCORE_ENVIRONMENT=Development
+ENTRYPOINT ["dotnet", "UnitPlanner.Services.Authentication.Service.dll"]
 
 FROM build AS publish
-RUN dotnet publish UnitPlanner.Services.Authentication.csproj -c $RELEASE_CONFIGURATION -o /app
+RUN dotnet publish UnitPlanner.Services.Authentication.Service.fsproj -c $RELEASE_CONFIGURATION -o /app
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
-ENTRYPOINT ["dotnet", "UnitPlanner.Services.Authentication.dll"]
+ENV ASPNETCORE_ENVIRONMENT=Production
+ENTRYPOINT ["dotnet", "UnitPlanner.Services.Authentication.Service.dll"]

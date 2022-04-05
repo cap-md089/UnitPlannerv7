@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="KubernetesClient" Version="7.0.15" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Services/HostConfigurationService.fs" />
+    <Compile Include="Services\HostConfigurationService.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HostConfiguration.Grpc\UnitPlanner.Services.HostConfiguration.Grpc.csproj" />
+  </ItemGroup>
+</Project>

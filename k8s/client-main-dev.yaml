@@ -13,3 +13,42 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: unitplannerv7
+  name: client-main-static
+spec:
+  selector:
+    name: client-main-static
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: unitplannerv7
+  name: client-main-static
+spec:
+  selector:
+    matchLabels:
+      name: client-main-static
+  template:
+    metadata:
+      labels:
+        name: client-main-static
+    spec:
+      containers:
+      - name: client-main-static
+        image: ghcr.io/cap-md089/unitplannerv7/client/main
+        imagePullPolicy: Never
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "250m"
+        ports:
+        - containerPort: 80

@@ -25,22 +25,26 @@ VOLUME [ "/var/lib/docker" ]
 # inside the container "overrideCommand": false is set in devcontainer.json. 
 # The script will also execute CMD if you need to alter startup behaviors.
 ENTRYPOINT [ "/usr/local/share/docker-init.sh" ]
-CMD [ "sleep", "infinity" ]
+CMD [ "/workspaces/UnitPlannerv7/scripts/dev-container-start.sh" ]
 
 ENV PATH=$PATH:/home/$USERNAME/.dotnet/tools:/home/$USERNAME/.npm-global/bin
 
 RUN apt update && \
-    apt install -y --no-install-recommends npm gettext-base chromium && \
+    apt install -y --no-install-recommends npm gettext-base chromium firefox-esr xvfb && \
+    curl -Lo /usr/bin/skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-amd64 && \
+    chmod +x /usr/bin/skaffold && \
     curl -L -o elm.gz https://github.com/elm/compiler/releases/download/0.19.1/binary-for-linux-64-bit.gz && \
     gunzip elm.gz && \
     chmod +x elm && \
     mv elm /usr/bin
 USER ${USERNAME}
 
-COPY k8s/base.yaml /dev-k8s/base.yaml
-COPY k8s/mysql-dev.yaml /dev-k8s/mysql-dev.yaml
-
 RUN dotnet tool install --global dotnet-ef && \
     mkdir ~/.npm-global && \
     npm config set prefix '~/.npm-global' && \
-    npm i -g elm-test elm-live elm-format
+    npm i -g elm-test elm-live elm-format && \
+    mkdir -p /home/${USERNAME}/.vscode-server/extensions \
+            /home/${USERNAME}/.vscode-server-insiders/extensions && \
+    chown -R ${USERNAME} \
+            /home/${USERNAME}/.vscode-server/extensions \
+            /home/${USERNAME}/.vscode-server-insiders/extensions

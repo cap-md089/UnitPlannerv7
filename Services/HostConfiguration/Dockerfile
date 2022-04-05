@@ -21,24 +21,28 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 
 WORKDIR /src
 
-COPY Services/HostConfiguration/*.csproj Services/HostConfiguration/
-RUN dotnet restore Services/HostConfiguration/UnitPlanner.Services.HostConfiguration.csproj
+COPY unitplanner-v7.sln .
+COPY Services/HostConfiguration/HostConfiguration.Grpc/UnitPlanner.Services.HostConfiguration.Grpc.csproj Services/HostConfiguration/HostConfiguration.Grpc/
+COPY Services/HostConfiguration/HostConfiguration.Service/UnitPlanner.Services.HostConfiguration.Service.fsproj Services/HostConfiguration/HostConfiguration.Service/
+RUN dotnet restore Services/HostConfiguration/HostConfiguration.Service/UnitPlanner.Services.HostConfiguration.Service.fsproj
 
-COPY . .
-WORKDIR /src/Services/HostConfiguration
+COPY Services/HostConfiguration Services/HostConfiguration
+WORKDIR /src/Services/HostConfiguration/HostConfiguration.Service
 
 ARG RELEASE_CONFIGURATION=Release
-RUN dotnet build UnitPlanner.Services.HostConfiguration.csproj -c ${RELEASE_CONFIGURATION} -o /app
+RUN dotnet build UnitPlanner.Services.HostConfiguration.Service.fsproj -c ${RELEASE_CONFIGURATION} -o /app
 
 FROM build as dev
 
 WORKDIR /app
-ENTRYPOINT ["dotnet", "UnitPlanner.Services.HostConfiguration.dll"]
+ENV ASPNETCORE_ENVIRONMENT=Development
+ENTRYPOINT ["dotnet", "UnitPlanner.Services.HostConfiguration.Service.dll"]
 
 FROM build AS publish
-RUN dotnet publish UnitPlanner.Services.HostConfiguration.csproj -c $RELEASE_CONFIGURATION -o /app
+RUN dotnet publish UnitPlanner.Services.HostConfiguration.Service.fsproj -c $RELEASE_CONFIGURATION -o /app
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
-ENTRYPOINT ["dotnet", "UnitPlanner.Services.HostConfiguration.dll"]
+ENV ASPNETCORE_ENVIRONMENT=Production
+ENTRYPOINT ["dotnet", "UnitPlanner.Services.HostConfiguration.Service.dll"]

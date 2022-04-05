@@ -32,26 +32,12 @@ spec:
     spec:
       containers:
       - name: base-api
-        image: ghcr.io/cap-md089/unitplannerv7/apis/main:$BASE_API_TAG
+        image: ghcr.io/cap-md089/unitplannerv7/apis/main
         imagePullPolicy: Never
         ports:
         - containerPort: 5000
           name: http-api
         env:
-          - name: ASPNETCORE_URLS
-            value: http://0.0.0.0:5000
-          - name: ASPNETCORE_ENVIRONMENT
-            value: $ASPNETCORE_ENVIRONMENT
-          - name: SERVICE_USE_PRODUCTION_AUTH
-            value: "${SERVICE_USE_PRODUCTION_AUTH_VALUE}"
-          - name: SERVICE_USE_PRODUCTION_CAPWATCH
-            value: "${SERVICE_USE_PRODUCTION_CAPWATCH_VALUE}"
-          - name: SERVICE_USE_PRODUCTION_FILES
-            value: "${SERVICE_USE_PRODUCTION_FILES_VALUE}"
-          - name: SERVICE_USE_PRODUCTION_GRAPH
-            value: "${SERVICE_USE_PRODUCTION_GRAPH_VALUE}"
-          - name: SERVICE_USE_PRODUCTION_HOSTCONFIGURATION
-            value: "${SERVICE_USE_PRODUCTION_HOSTCONFIGURATION_VALUE}"
           - name: SERVICE_AUTH_URL
             value: http://authentication:5010
           - name: SERVICE_CAPWATCH_URL
@@ -67,10 +53,9 @@ spec:
               secretKeyRef:
                 name: mysql-password
                 key: connectionString
-        resources:
-          limits:
-            memory: 200Mi
-            cpu: 500m
+        envFrom:
+        - configMapRef:
+            name: base-api-env
         volumeMounts:
         - name: host-etc
           mountPath: /host-etc

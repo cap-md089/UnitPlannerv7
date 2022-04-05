@@ -1,0 +1,80 @@
+# Copyright (C) 2022 Andrew Rioux
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+# 
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: unitplannerv7
+  name: client-reactor
+spec:
+  selector:
+    name: client-reactor
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: unitplannerv7
+  name: client-reactor
+  labels:
+    name: client-reactor
+spec:
+  selector:
+    matchLabels:
+      name: client-reactor
+  template:
+    metadata:
+      labels:
+        name: client-reactor
+    spec:
+      containers:
+      - name: client-reactor
+        image: ghcr.io/cap-md089/unitplannerv7/client/reactor
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8000
+        volumeMounts:
+        - name: client
+          mountPath: /workspaces/UnitPlannerv7/Client
+      volumes:
+      - name: client
+        hostPath:
+          path: /workspaces/UnitPlannerv7/Client
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: unitplannerv7
+  name: client-reactor
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: reactor.localunitplanner.org
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: client-reactor
+            port:
+              number: 8000

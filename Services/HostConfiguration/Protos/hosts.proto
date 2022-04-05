@@ -5,14 +5,17 @@ option csharp_namespace = "UnitPlanner.Services.HostConfiguration.Protos";
 package hostservice;
 
 service HostConfiguration {
-    rpc AddNewHost(HostChangeRequest) returns (HostChangeResponse);
-    rpc RemoveHost(HostChangeRequest) returns (HostChangeResponse);
+    rpc SetHosts(HostChangeRequest) returns (HostChangeResponse);
+    rpc RemoveHost(HostRemoveRequest) returns (HostChangeResponse);
 }
 
 message HostChangeRequest {
-    string host = 1;
-    string baseUrl = 2;
-    string accountID = 3;
+    string accountID = 1;
+    repeated string hosts = 2;
+}
+
+message HostRemoveRequest {
+    string accountID = 1;
 }
 
 message HostChangeResponse {

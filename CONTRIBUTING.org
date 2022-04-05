@@ -40,8 +40,8 @@ Unit tests can be run with either ~dotnet test~, either in the project root or i
 ** Integration tests
 First, ~skaffold dev~ cannot be running; it has to be replaced with ~skaffold dev -p test,-dev~ to create the test environment.
 
-Actually bringing up the test runner is based on the host environment. For Linux, go to the host computer and run ~scripts/run-integration-test-runner-linux.sh~. For Windows, ensure VcXsrv is installed and configured to run on display 0 and with unauthenticated access allowed. Then, in the VS Code terminal run ~scripts/run-integration-test-runner-windows.sh~.
+If on Windows, an X server needs to be installed and running on port 6000 (display :0) for unauthenticated clients (see: [[https://sourceforge.net/projects/vcxsrv/]]). On Linux the host X server is auto-mounted into the container.
 
-You can then run any specific test suite, or run all the integration tests by clicking on the test suite or the 'Run all' button.
+In VS Code, run ~scripts/run-integration-test-runner.sh~ to bring up the test runner. You can then run any specific test suite, or run all the integration tests by clicking on the test suite or the 'Run all' button.
 ** Pull request
 Pull requests must have appropriate tests written to cover any new code

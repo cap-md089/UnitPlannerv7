@@ -36,8 +36,13 @@ jobs:
         with:
           kubernetes version: 'v1.23.3'
           minikube version: 'v1.25.2'
+        
+      - name: Install skaffold
+        run: |
+          sudo curl -Lo /usr/bin/skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-amd64
+          sudo chmod +x /usr/bin/skaffold
 
-      - name: Run Dashboard Cypress tests
+      - name: Run Cypress tests
         uses: cypress-io/github-action@v2
         with:
           record: true

@@ -31,3 +31,8 @@ public class Member
 
     public ICollection<TeamMembership> TeamMemberships { get; set; } = null!;
 }
+
+public class CAPMember : Member
+{
+    public int CAPID;
+}

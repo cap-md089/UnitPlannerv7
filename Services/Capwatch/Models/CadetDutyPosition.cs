@@ -17,7 +17,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace UnitPlanner.Apis.Main.Models.NHQ;
+namespace UnitPlanner.Services.Capwatch.Models;
 
 [Table("NHQ_CadetDutyPosition")]
 public class CadetDutyPosition

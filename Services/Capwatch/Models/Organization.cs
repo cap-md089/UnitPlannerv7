@@ -16,17 +16,33 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace UnitPlanner.Apis.Main.Models.NHQ;
+namespace UnitPlanner.Services.Capwatch.Models;
 
-[Table("NHQ_CdtAchvEnum")]
-public class CdtAchvEnum
+[Table("NHQ_Organization")]
+public class Organization
 {
     [Key]
-    public int CadetAchvID { get; set; }
+    public int ORGID { get; set; }
 
-    public string AchvName { get; set; } = null!;
+    public string Region { get; set; } = null!;
 
-    public int CurAwdNo { get; set; }
+    public string Wing { get; set; } = null!;
+
+    public string Unit { get; set; } = null!;
+
+    public int? NextLevel { get; set; }
+    [ForeignKey("NextLevel")]
+    public Organization? Parent { get; set; }
+
+    public string Name { get; set; } = null!;
+
+    public string Type { get; set; } = null!;
+
+    public DateTime DateChartered { get; set; }
+
+    public string Status { get; set; } = null!;
+
+    public string Scope { get; set; } = null!;
 
     public string UsrID { get; set; } = null!;
 
@@ -36,5 +52,11 @@ public class CdtAchvEnum
 
     public DateTime DateCreated { get; set; }
 
-    public string Rank { get; set; } = null!;
+    public DateTime DateReceived { get; set; }
+
+    public string OrgNotes { get; set; } = null!;
+
+    public ICollection<Member> Members { get; set; } = null!;
+
+    public ICollection<Organization> SubordinateOrganizations { get; set; } = null!; 
 }

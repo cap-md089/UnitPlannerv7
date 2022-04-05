@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Andrew Rioux, Glenn Rioux
+// Copyright (C) 2022 Andrew Rioux
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -13,28 +13,28 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace UnitPlanner.Apis.Main.Models.NHQ;
+namespace UnitPlanner.Services.Capwatch.Models;
 
-[Table("NHQ_CadetActivities")]
-public class CadetActivities
+[Table("NHQ_CdtAchvEnum")]
+public class CdtAchvEnum
 {
-    public int CAPID { get; set; }
-    public Member Member { get; set; } = null!;
+    [Key]
+    public int CadetAchvID { get; set; }
 
-    [StringLength(25)]
-    public string Type { get; set; } = null!;
+    public string AchvName { get; set; } = null!;
 
-    [StringLength(75)]
-    public string Location { get; set; } = null!;
+    public int CurAwdNo { get; set; }
 
-    public DateTime Completed { get; set; }
-
-    [StringLength(25)]
-    public string UserID { get; set; } = null!;
+    public string UsrID { get; set; } = null!;
 
     public DateTime DateMod { get; set; }
+
+    public string FirstUsr { get; set; } = null!;
+
+    public DateTime DateCreated { get; set; }
+
+    public string Rank { get; set; } = null!;
 }

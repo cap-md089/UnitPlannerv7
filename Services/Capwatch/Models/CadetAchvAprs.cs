@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Andrew Rioux
+// Copyright (C) 2022 Andrew Rioux, Glenn Rioux
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -13,50 +13,41 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace UnitPlanner.Apis.Main.Models.NHQ;
+namespace UnitPlanner.Services.Capwatch.Models;
 
-[Table("NHQ_Organization")]
-public class Organization
+[Table("NHQ_CadetAchvAprs")]
+public class CadetAchvAprs
 {
-    [Key]
-    public int ORGID { get; set; }
+    public int CadetAchvID { get; set; }
 
-    public string Region { get; set; } = null!;
+    public int CAPID { get; set; }
+    public Member Member { get; set; } = null!;
 
-    public string Wing { get; set; } = null!;
-
-    public string Unit { get; set; } = null!;
-
-    public int? NextLevel { get; set; }
-    [ForeignKey("NextLevel")]
-    public Organization? Parent { get; set; }
-
-    public string Name { get; set; } = null!;
-
-    public string Type { get; set; } = null!;
-
-    public DateTime DateChartered { get; set; }
-
+    [StringLength(3)]
     public string Status { get; set; } = null!;
 
-    public string Scope { get; set; } = null!;
+    public int AprCAPID { get; set; }
 
+    [StringLength(15)]
+    public string DspReason { get; set; } = null!;
+
+    public int AwardNo { get; set; }
+
+    public bool JROTCWaiver { get; set; }
+
+    [StringLength(25)]
     public string UsrID { get; set; } = null!;
 
     public DateTime DateMod { get; set; }
 
+    [StringLength(25)]
     public string FirstUsr { get; set; } = null!;
 
     public DateTime DateCreated { get; set; }
 
-    public DateTime DateReceived { get; set; }
-
-    public string OrgNotes { get; set; } = null!;
-
-    public ICollection<Member> Members { get; set; } = null!;
-
-    public ICollection<Organization> SubordinateOrganizations { get; set; } = null!; 
+    public bool PrintedCert { get; set; }
 }

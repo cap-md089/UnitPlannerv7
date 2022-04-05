@@ -37,7 +37,7 @@ public class AccountController : ControllerBase
     [Route("squadron")]
     public async Task<IActionResult> CreateNewSquadron(NewSquadronAccountRequest request)
     {
-        var orgs = new List<Models.NHQ.Organization>();
+        var orgs = new List<int>();
 
         var wingOption = (await _unitsService.GetUnit(request.wingId))
             .Bind(wingMaybe =>
@@ -70,7 +70,7 @@ public class AccountController : ControllerBase
     [Route("group")]
     public async Task<IActionResult> CreateNewGroup(NewGroupAccountRequest request)
     {
-        var orgs = new List<Models.NHQ.Organization>();
+        var orgs = new List<int>();
 
         var wingOption = await _unitsService.GetUnit(request.wingId);
 
@@ -94,7 +94,7 @@ public class AccountController : ControllerBase
     [Route("wing")]
     public async Task<IActionResult> CreateNewWing(NewWingAccountRequest request)
     {
-        var orgs = new List<Models.NHQ.Organization>();
+        var orgs = new List<int>();
 
         return CreatedAtAction(
             nameof(GetUnit),

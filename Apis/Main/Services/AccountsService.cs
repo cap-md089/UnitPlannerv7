@@ -30,11 +30,11 @@ public interface IAccountsService
 
     Task<Option<Account>> GetUnitFromUrl(string id);
 
-    Task<CAPSquadron> CreateNewSquadron(CAPWing wing, CAPGroup group, string id, string? baseUrl, IEnumerable<Models.NHQ.Organization> organizations);
+    Task<CAPSquadron> CreateNewSquadron(CAPWing wing, CAPGroup group, string id, string? baseUrl, IEnumerable<int> organizationsIds);
 
-    Task<CAPGroup> CreateNewGroup(CAPWing wing, string id, string? baseUrl, IEnumerable<Models.NHQ.Organization> organizations);
+    Task<CAPGroup> CreateNewGroup(CAPWing wing, string id, string? baseUrl, IEnumerable<int> organizationsIds);
 
-    Task<CAPWing> CreateNewWing(string id, string baseUrl, IEnumerable<Models.NHQ.Organization> organizations);
+    Task<CAPWing> CreateNewWing(string id, string baseUrl, IEnumerable<int> organizationIds);
 
     Task<IEnumerable<Account>> GetUnits();
 
@@ -81,7 +81,7 @@ public class AccountsService : IAccountsService
         return await GetUnit(accountIdCheck);
     }
 
-    public async Task<CAPWing> CreateNewWing(string id, string baseUrl, IEnumerable<Models.NHQ.Organization> organizations)
+    public async Task<CAPWing> CreateNewWing(string id, string baseUrl, IEnumerable<int> organizations)
     {
         var unit = new CAPWing()
         {
@@ -112,7 +112,7 @@ public class AccountsService : IAccountsService
         return unit;
     }
 
-    public async Task<CAPGroup> CreateNewGroup(CAPWing wing, string id, string? baseUrl, IEnumerable<Models.NHQ.Organization> organizations)
+    public async Task<CAPGroup> CreateNewGroup(CAPWing wing, string id, string? baseUrl, IEnumerable<int> organizations)
     {
         var unit = new CAPGroup()
         {
@@ -144,7 +144,7 @@ public class AccountsService : IAccountsService
         return unit;
     }
 
-    public async Task<CAPSquadron> CreateNewSquadron(CAPWing wing, CAPGroup group, string id, string? baseUrl, IEnumerable<Models.NHQ.Organization> organizations)
+    public async Task<CAPSquadron> CreateNewSquadron(CAPWing wing, CAPGroup group, string id, string? baseUrl, IEnumerable<int> organizations)
     {
         var unit = new CAPSquadron()
         {

@@ -39,11 +39,9 @@ public class SeedController : ControllerBase
     public async Task<CurrentDatabaseState> GetDbState()
     {
         var (
-            CdtAchvEnumTask, OrganizationsTask, AccountsTask, CalendarsTask, EquipmentTask,
+            AccountsTask, CalendarsTask, EquipmentTask,
             EventsTask, MembersTask, NotificationsTask, TeamsTask
         ) = (
-            _context.CadetAchvEnum.ToListAsync(),
-            _context.Organizations.ToListAsync(),
             _context.Accounts
                 .Include(a => a.Domains)
                 .Include(a => a.ExtraAccountMembership)
@@ -68,14 +66,6 @@ public class SeedController : ControllerBase
                 .ToListAsync(),
             _context.Equipment.ToListAsync(),
             _context.Members
-                .Include(m => (m as Models.NHQ.Member)!.Activities)
-                .Include(m => (m as Models.NHQ.Member)!.CadetAchv)
-                .Include(m => (m as Models.NHQ.Member)!.CadetAchvAprs)
-                .Include(m => (m as Models.NHQ.Member)!.CadetDutyPositions)
-                .Include(m => (m as Models.NHQ.Member)!.ContactInfo)
-                .Include(m => (m as Models.NHQ.Member)!.DutyPositions)
-                .Include(m => (m as Models.NHQ.Member)!.HFZInformation)
-                .Include(m => (m as Models.NHQ.Member)!.OFlights)
                 .ToListAsync(),
             _context.Notifications
                 .Include(n => n.NotificationData)
@@ -85,21 +75,19 @@ public class SeedController : ControllerBase
                 .ToListAsync()
         );
         await Task.WhenAll(
-            CdtAchvEnumTask, OrganizationsTask, AccountsTask, CalendarsTask,
+            AccountsTask, CalendarsTask,
             EquipmentTask, EventsTask, MembersTask, NotificationsTask, TeamsTask
         );
         var (
-            CdtAchvEnum, Organizations, Accounts, Calendars, CalendarEvents,
+            Accounts, Calendars, CalendarEvents,
             Equipment, Members, Notifications, Teams
         ) = (
-            CdtAchvEnumTask.Result, OrganizationsTask.Result, AccountsTask.Result,
+            AccountsTask.Result,
             CalendarsTask.Result, EquipmentTask.Result, EventsTask.Result,
             MembersTask.Result, NotificationsTask.Result, TeamsTask.Result
         );
 
         return new CurrentDatabaseState(
-            cdtAchvEnum: CdtAchvEnum,
-            organizations: Organizations,
             accounts: Accounts,
             calendars: Calendars,
             equipment: Equipment,
@@ -177,50 +165,37 @@ public class SeedController : ControllerBase
         async Task AddRange<T>(DbSet<T> db, IEnumerable<IEnumerable<T>?> values)
             where T : class
         {
-            foreach (var value in values) {
+            foreach (var value in values)
+            {
                 if (value is not null)
                     await db.AddRangeAsync(value);
             }
         }
 
-        await AddRange(_context.CadetAchvs, new [] { state.CadetAchvs });
-        await AddRange(_context.CadetAchvAprs, new [] { state.CadetAchvAprs });
-        await AddRange(_context.CadetActivities, new [] { state.CadetActivities });
-        await AddRange(_context.CadetDutyPositions, new [] { state.CadetDutyPositions });
-        await AddRange(_context.CadetHFZInformation, new [] { state.CadetHFZInformation });
-        await AddRange(_context.CadetAchvEnum, new [] { state.CdtAchvEnum });
-        await AddRange(_context.DutyPositions, new [] { state.DutyPosition });
-        await AddRange(_context.MbrContact, new [] { state.MbrContact });
-        await AddRange(_context.OFlights, new [] { state.OFlights });
-        await AddRange(_context.Organizations, new [] { state.Organizations });
         await AddRange(
             _context.Accounts,
-            new [] { state.CAPSquadrons?.Select(sqd => sqd as Account), state.CAPGroups, state.CAPWings, state.CAPActivities }
+            new[] { state.CAPSquadrons?.Select(sqd => sqd as Account), state.CAPGroups, state.CAPWings, state.CAPActivities }
         );
-        await AddRange(_context.Calendars, new [] { state.Calendars });
-        await AddRange(_context.Events, new [] { state.Events });
-        await AddRange(_context.Equipment, new [] { state.Equipment });
-        await AddRange(_context.Members, new [] { state.NHQMembers });
-        await AddRange(_context.Notifications, new [] { state.Notifications });
-        await AddRange(_context.Teams, new [] { state.Teams });
+        await AddRange(_context.Calendars, new[] { state.Calendars });
+        await AddRange(_context.Events, new[] { state.Events });
+        await AddRange(_context.Equipment, new[] { state.Equipment });
+        await AddRange(_context.Members, new[] { state.Members });
+        await AddRange(_context.Notifications, new[] { state.Notifications });
+        await AddRange(_context.Teams, new[] { state.Teams });
     }
 }
 
 public class CurrentDatabaseState
 {
-    public IEnumerable<Models.NHQ.CdtAchvEnum> CdtAchvEnum { get; set; }
-    public IEnumerable<Models.NHQ.Organization> Organizations { get; set; }
     public IEnumerable<Account> Accounts { get; set; }
     public IEnumerable<Calendar> Calendars { get; set; }
     public IEnumerable<Equipment> Equipment { get; set; }
     public IEnumerable<CalendarEvent> CalendarEvents { get; set; }
     public IEnumerable<Member> Members { get; set; }
     public IEnumerable<Notification> Notifications { get; set; }
-    public IEnumerable<Team> Teams { get; set; } 
+    public IEnumerable<Team> Teams { get; set; }
 
     public CurrentDatabaseState(
-        IEnumerable<Models.NHQ.CdtAchvEnum> cdtAchvEnum,
-        IEnumerable<Models.NHQ.Organization> organizations,
         IEnumerable<Account> accounts,
         IEnumerable<Calendar> calendars,
         IEnumerable<Equipment> equipment,
@@ -230,8 +205,6 @@ public class CurrentDatabaseState
         IEnumerable<Team> teams
     )
     {
-        CdtAchvEnum = cdtAchvEnum;
-        Organizations = organizations;
         Accounts = accounts;
         Calendars = calendars;
         Equipment = equipment;
@@ -244,17 +217,7 @@ public class CurrentDatabaseState
 
 public class SetDatabaseState
 {
-    public IEnumerable<Models.NHQ.CadetAchv>? CadetAchvs { get; set; }
-    public IEnumerable<Models.NHQ.CadetAchvAprs>? CadetAchvAprs { get; set; }
-    public IEnumerable<Models.NHQ.CadetActivities>? CadetActivities { get; set; }
-    public IEnumerable<Models.NHQ.CadetDutyPosition>? CadetDutyPositions { get; set; }
-    public IEnumerable<Models.NHQ.CadetHFZInformation>? CadetHFZInformation { get; set; }
-    public IEnumerable<Models.NHQ.CdtAchvEnum>? CdtAchvEnum { get; set; }
-    public IEnumerable<Models.NHQ.DutyPosition>? DutyPosition { get; set; }
-    public IEnumerable<Models.NHQ.MbrContact>? MbrContact { get; set; }
-    public IEnumerable<Models.NHQ.Member>? NHQMembers { get; set; }
-    public IEnumerable<Models.NHQ.OFlight>? OFlights { get; set; }
-    public IEnumerable<Models.NHQ.Organization>? Organizations { get; set; }
+    public IEnumerable<Member>? Members { get; set; }
     public IEnumerable<CAPSquadron>? CAPSquadrons { get; set; }
     public IEnumerable<CAPGroup>? CAPGroups { get; set; }
     public IEnumerable<CAPWing>? CAPWings { get; set; }

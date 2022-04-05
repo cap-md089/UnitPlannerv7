@@ -16,11 +16,12 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace UnitPlanner.Apis.Main.Models.NHQ;
+namespace UnitPlanner.Services.Capwatch.Models;
 
 [Table("NHQ_Member")]
-public class Member : Models.Member
+public class Member
 {
+    [Key]
     public int CAPID { get; set; }
 
     public string SSN => "";

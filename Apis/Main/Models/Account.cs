@@ -49,8 +49,6 @@ public class AccountOrganizationMapping
     public Account Account { get; set; } = null!;
 
     public int ORGID { get; set; }
-    [ForeignKey("ORGID")]
-    public Models.NHQ.Organization Organization { get; set; } = null!;
 }
 
 [Table("ExtraAccountMembership")]

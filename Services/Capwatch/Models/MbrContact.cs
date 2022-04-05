@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Andrew Rioux, Glenn Rioux
+// Copyright (C) 2022 Andrew Rioux
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -13,41 +13,28 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
-namespace UnitPlanner.Apis.Main.Models.NHQ;
+namespace UnitPlanner.Services.Capwatch.Models;
 
-[Table("NHQ_CadetAchvAprs")]
-public class CadetAchvAprs
+[Table("NHQ_MbrContact")]
+public class MbrContact
 {
-    public int CadetAchvID { get; set; }
-
     public int CAPID { get; set; }
     public Member Member { get; set; } = null!;
 
-    [StringLength(3)]
-    public string Status { get; set; } = null!;
+    public string Type { get; set; } = null!;
 
-    public int AprCAPID { get; set; }
+    public string Priority { get; set; } = null!;
 
-    [StringLength(15)]
-    public string DspReason { get; set; } = null!;
+    public string Contact { get; set; } = null!;
 
-    public int AwardNo { get; set; }
-
-    public bool JROTCWaiver { get; set; }
-
-    [StringLength(25)]
-    public string UsrID { get; set; } = null!;
+    public string UserID { get; set; } = null!;
 
     public DateTime DateMod { get; set; }
 
-    [StringLength(25)]
-    public string FirstUsr { get; set; } = null!;
+    public int DoNotContact { get; set; }
 
-    public DateTime DateCreated { get; set; }
-
-    public bool PrintedCert { get; set; }
+    public string ContactName { get; set; } = null!;
 }

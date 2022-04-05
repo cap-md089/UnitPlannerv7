@@ -24,16 +24,6 @@ namespace UnitPlanner.Apis.Main.Data;
 
 public class UnitPlannerDbContext : DbContext
 {
-    public DbSet<Models.NHQ.CadetAchv> CadetAchvs => Set<Models.NHQ.CadetAchv>();
-    public DbSet<Models.NHQ.CadetAchvAprs> CadetAchvAprs => Set<Models.NHQ.CadetAchvAprs>();
-    public DbSet<Models.NHQ.CadetActivities> CadetActivities => Set<Models.NHQ.CadetActivities>();
-    public DbSet<Models.NHQ.CadetDutyPosition> CadetDutyPositions => Set<Models.NHQ.CadetDutyPosition>();
-    public DbSet<Models.NHQ.CadetHFZInformation> CadetHFZInformation => Set<Models.NHQ.CadetHFZInformation>();
-    public DbSet<Models.NHQ.CdtAchvEnum> CadetAchvEnum => Set<Models.NHQ.CdtAchvEnum>();
-    public DbSet<Models.NHQ.DutyPosition> DutyPositions => Set<Models.NHQ.DutyPosition>();
-    public DbSet<Models.NHQ.MbrContact> MbrContact => Set<Models.NHQ.MbrContact>();
-    public DbSet<Models.NHQ.OFlight> OFlights => Set<Models.NHQ.OFlight>();
-    public DbSet<Models.NHQ.Organization> Organizations => Set<Models.NHQ.Organization>();
     public DbSet<Account> Accounts => Set<Account>();
     public DbSet<Calendar> Calendars => Set<Calendar>();
     public DbSet<Equipment> Equipment => Set<Equipment>();
@@ -150,28 +140,5 @@ public class UnitPlannerDbContext : DbContext
 
         modelBuilder.Entity<TeamMembership>()
             .HasKey(tm => new { tm.MemberId, tm.TeamId });
-
-        modelBuilder.Entity<Models.NHQ.Member>();
-
-        modelBuilder.Entity<Models.NHQ.CadetAchv>()
-            .HasKey(ca => new { ca.CAPID, ca.CadetAchvID });
-
-        modelBuilder.Entity<Models.NHQ.CadetAchvAprs>()
-            .HasKey(ca => new { ca.CAPID, ca.CadetAchvID });
-
-        modelBuilder.Entity<Models.NHQ.CadetActivities>()
-            .HasKey(ca => new { ca.CAPID, ca.Completed });
-
-        modelBuilder.Entity<Models.NHQ.CadetDutyPosition>()
-            .HasKey(dp => new { dp.CAPID, dp.Duty, dp.ORGID, dp.Asst });
-
-        modelBuilder.Entity<Models.NHQ.DutyPosition>()
-            .HasKey(dp => new { dp.CAPID, dp.Duty, dp.ORGID, dp.Asst });
-
-        modelBuilder.Entity<Models.NHQ.MbrContact>()
-            .HasKey(mc => new { mc.CAPID, mc.Type, mc.Priority });
-
-        modelBuilder.Entity<Models.NHQ.OFlight>()
-            .HasKey(of => new { of.CAPID, of.FltDate });
     }
 }

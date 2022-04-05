@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Andrew Rioux
+// Copyright (C) 2022 Andrew Rioux, Glenn Rioux
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -13,28 +13,28 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
 
-namespace UnitPlanner.Apis.Main.Models.NHQ;
+namespace UnitPlanner.Services.Capwatch.Models;
 
-[Table("NHQ_MbrContact")]
-public class MbrContact
+[Table("NHQ_CadetActivities")]
+public class CadetActivities
 {
     public int CAPID { get; set; }
     public Member Member { get; set; } = null!;
 
+    [StringLength(25)]
     public string Type { get; set; } = null!;
 
-    public string Priority { get; set; } = null!;
+    [StringLength(75)]
+    public string Location { get; set; } = null!;
 
-    public string Contact { get; set; } = null!;
+    public DateTime Completed { get; set; }
 
+    [StringLength(25)]
     public string UserID { get; set; } = null!;
 
     public DateTime DateMod { get; set; }
-
-    public int DoNotContact { get; set; }
-
-    public string ContactName { get; set; } = null!;
 }

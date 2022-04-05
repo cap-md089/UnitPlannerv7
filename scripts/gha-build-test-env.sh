@@ -19,6 +19,7 @@ cd $(git rev-parse --show-toplevel)
 
 minikube addons enable ingress
 
+kubectl config set-context --current --namespace=unitplannerv7
 kubectl apply -f k8s/base.yaml
 kubectl apply -f k8s/mysql-dev.yaml
 kubectl create configmap base-api-env --from-env-file=k8s/base-api-config.yaml

@@ -20,10 +20,6 @@ on:
   pull_request:
     branches:
       - master
-  push:
-    branches:
-      - master
-      - r-a303931/setup-github-actions
 
 jobs:
   integration-tests:

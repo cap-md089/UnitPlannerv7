@@ -50,6 +50,5 @@ jobs:
           start: /home/runner/work/UnitPlannerv7/UnitPlannerv7/scripts/gha-start-test-env.sh
           spec: cypress/integration/**/*.spec.js
         env:
-          CYPRESS_BASE_URL: http://reactor.localunitplanner.org
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

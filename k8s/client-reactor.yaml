@@ -33,6 +33,8 @@ kind: Deployment
 metadata:
   namespace: unitplannerv7
   name: client-reactor
+  labels:
+    name: client-reactor
 spec:
   selector:
     matchLabels:

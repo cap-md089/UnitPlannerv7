@@ -33,6 +33,8 @@ kind: Deployment
 metadata:
   namespace: unitplannerv7
   name: client-admin-static
+  labels:
+    name: client-admin-static
 spec:
   selector:
     matchLabels:

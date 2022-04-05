@@ -34,8 +34,8 @@ jobs:
 
       - uses: manusa/actions-setup-minikube@v2.4.3
         with:
-          kubernetes version: '1.23.0'
-          minikube version: '1.25.0'
+          kubernetes version: 'v1.23.3'
+          minikube version: 'v1.25.2'
 
       - name: Run Dashboard Cypress tests
         uses: cypress-io/github-action@v2

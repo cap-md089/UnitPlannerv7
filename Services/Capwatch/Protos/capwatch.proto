@@ -76,19 +76,19 @@ message CadetAchvAprs{
   int32 AwardNo = 6;
   bool JROTCWaiver = 7;
   string UsrID = 8;
-  google.protobuf.TimeStamp DateMod = 9;
+  google.protobuf.Timestamp DateMod = 9;
   string FirstUsr = 10;
-  google.protobuf.TimeStamp DateCreated = 11;
-  book PrintedCert = 12;
+  google.protobuf.Timestamp DateCreated = 11;
+  bool PrintedCert = 12;
 }
 
 message CadetActivities{
   int32 CAPID = 1;
   string Type = 2;
   string Location = 3;
-  google.protobuf.TimeStamp Completed = 4;
+  google.protobuf.Timestamp Completed = 4;
   string UserID = 5;
-  google.protobuf.TimeStamp DateMod = 6;
+  google.protobuf.Timestamp DateMod = 6;
 }
 
 message CadetDutyPosition{
@@ -98,24 +98,23 @@ message CadetDutyPosition{
   string Lvl = 4;
   int32 Asst = 5;
   string UserID = 6;
-  google.protobuf.TimeStamp DateMod = 7;
+  google.protobuf.Timestamp DateMod = 7;
   int32 ORGID = 8;
 }
 
 message CadetHFZInformation{
   int32 HFZID = 1;
   int32 CAPID = 2;
-  google.protobuf.TimeStamp DateTaken = 3;
+  google.protobuf.Timestamp DateTaken = 3;
   int32 ORGID = 4;
   int32 IsPassed = 5;
   int32 WeatherWaiver = 6;
   string PacerRun = 7;
-  int32 = PacerRunWaiver = 8;
-  int32 = PacerRunPassed = 9;
+  int32 PacerRunWaiver = 8;
+  int32 PacerRunPassed = 9;
   string MileRun = 10;
   int32 MileRunWaiver = 11;
   string CurlUp = 12;
-  int32 CurlUp = 13;
   int32 CurlUpPassed = 14;
   string PushUp = 15;
   int32 PushUpWaiver = 16;
@@ -130,9 +129,9 @@ message CadetAchvEnum{
   string AchvName = 2;
   int32 CurAwdNo = 3;
   string UsrID = 4;
-  google.protobuf.TimeStamp DateMod = 5;
+  google.protobuf.Timestamp DateMod = 5;
   string FirstUsr = 6;
-  google.protobuf.TimeStamp Datecreated = 7;
+  google.protobuf.Timestamp Datecreated = 7;
   string Rank = 8;
 }
 
@@ -142,7 +141,7 @@ message DutyPosition{
   string Lvl = 3;
   int32 Asst = 4;
   string UserID = 5;
-  google.protobuf.TimeStamp DateMod = 6;
+  google.protobuf.Timestamp DateMod = 6;
   int32 ORGID = 7;
 }
 
@@ -150,18 +149,18 @@ message MbrAchievements{
   int32 CAPID = 1;
   int32 AchvID = 2;
   string Status = 3;
-  google.protobuf.TimeStamp OriginallyAccomplished = 4;
-  google.protobuf.TimeStamp Completed = 5;
-  google.protobuf.TimeStamp Expiration = 6;
+  google.protobuf.Timestamp OriginallyAccomplished = 4;
+  google.protobuf.Timestamp Completed = 5;
+  google.protobuf.Timestamp Expiration = 6;
   int32 AuthByCAPID = 7;
   string AuthReason = 8;
-  google.protobuf.TimeStamp AuthDate = 9;
+  google.protobuf.Timestamp AuthDate = 9;
   string Source = 10;
   int32 RecID = 11;
   string FirstUsr = 12;
-  google.protobuf.TimeStamp DateCreated = 13;
+  google.protobuf.Timestamp DateCreated = 13;
   string UsrID =14;
-  google.protobuf.TimeStamp DateMod = 15;
+  google.protobuf.Timestamp DateMod = 15;
   int32 ORGID = 16;
 }
 
@@ -171,7 +170,7 @@ message MbrContact{
   string Priority = 3;
   string Contact = 4;
   string UserID = 5;
-  google.protobuf.TimeStamp DateMod = 6;
+  google.protobuf.Timestamp DateMod = 6;
   int32 DoNotContact = 7;
   string ContactName = 8;
 }
@@ -184,7 +183,7 @@ message Member{
   string NameMiddle = 5;
   string NameSuffix = 6;
   string Gender = 7;
-  google.protobuf.TimeStamp DOB = 8;
+  google.protobuf.Timestamp DOB = 8;
   string Profession = 9;
   string EducationLevel = 10;
   string Citizen = 11;
@@ -192,18 +191,18 @@ message Member{
   string Wing = 13;
   string Unit = 14;
   string Rank = 15;
-  google.protobuf.TimeStamp Joined = 16;
-  google.protobuf.TimeStamp Expiration = 17;
-  google.protobuf.TimeStamp OrgJoined = 18;
+  google.protobuf.Timestamp Joined = 16;
+  google.protobuf.Timestamp Expiration = 17;
+  google.protobuf.Timestamp OrgJoined = 18;
   string UsrID = 19;
-  google.protobuf.TimeStamp DateMod = 20;
+  google.protobuf.Timestamp DateMod = 20;
   string LSCode = 21;
   string Type = 22;
-  google.protobuf.TimeStamp RankDate = 23;
+  google.protobuf.Timestamp RankDate = 23;
   string Region = 24;
   string MbrStatus = 25;
   string PicStatus = 26;
-  google.protobuf.TimeStamp CdtWaiver = 27;
+  google.protobuf.Timestamp CdtWaiver = 27;
   string Ethnicity = 28;
 }
 
@@ -214,13 +213,13 @@ message OFlight{
   double Amount = 4;
   int32 Syllabus = 5;
   int32 Type = 6;
-  google.protobuf.TimeStamp FltDate = 7;
-  google.protobuf.TimeStamp TransDate = 8;
+  google.protobuf.Timestamp FltDate = 7;
+  google.protobuf.Timestamp TransDate = 8;
   string FltRlsNum = 9;
   string AcftTailNum = 10;
   double FltTime = 11;
   string LstUser = 12;
-  google.protobuf.TimeStamp LstDateMod = 13;
+  google.protobuf.Timestamp LstDateMod = 13;
   string Comments = 14;
 }
 
@@ -232,14 +231,14 @@ message Organization{
   int32 NextLevel = 5;
   string Name = 6;
   string Type = 7;
-  google.protobuf.TimeStamp DateChartered = 8;
+  google.protobuf.Timestamp DateChartered = 8;
   string Status = 9;
   string Scope = 10;
   string UsrID = 11;
-  google.protobuf.TimeStamp DateMod = 12;
+  google.protobuf.Timestamp DateMod = 12;
   string FirstUsr = 13;
-  google.protobuf.TimeStamp DateCreated = 14;
-  google.protobuf.TimeStamp DateReceived = 15;
+  google.protobuf.Timestamp DateCreated = 14;
+  google.protobuf.Timestamp DateReceived = 15;
   string OrgNotes = 16;
 }
 

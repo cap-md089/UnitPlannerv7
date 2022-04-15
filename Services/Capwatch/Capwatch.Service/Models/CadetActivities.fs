@@ -13,28 +13,23 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
+namespace UnitPlanner.Services.Capwatch.Service.Models
 
-namespace UnitPlanner.Services.Capwatch.Models;
+open System
+open System.ComponentModel.DataAnnotations.Schema
+open Microsoft.EntityFrameworkCore
 
-[Table("NHQ_MbrContact")]
-public class MbrContact
-{
-    public int CAPID { get; set; }
-    public Member Member { get; set; } = null!;
+[<TableAttribute("NHQ_CadetActivities")>]
+type CadetActivities<'a>(CAPID : int, Member : 'a, Type : string, Location : string, Completed : DateTime,
+                        UsrID : string, DateMod : DateTime) =
 
-    public string Type { get; set; } = null!;
+    member this.CAPID = CAPID
+    [<ForeignKey("CAPID")>]
+    member this.Member = Member
+    member this.Type = Type
+    member this.Location = Location 
+    member this.Completed = Completed
+    member this.UsrID = UsrID
+    member this.DateMod = DateMod
 
-    public string Priority { get; set; } = null!;
-
-    public string Contact { get; set; } = null!;
-
-    public string UserID { get; set; } = null!;
-
-    public DateTime DateMod { get; set; }
-
-    public int DoNotContact { get; set; }
-
-    public string ContactName { get; set; } = null!;
-}
+    

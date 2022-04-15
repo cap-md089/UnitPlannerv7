@@ -16,7 +16,7 @@
 apiVersion: skaffold/v2beta12
 kind: Config
 metadata:
-  name: capwatch-dev
+  name: capwatch
 profiles:
 - name: dev
   build:

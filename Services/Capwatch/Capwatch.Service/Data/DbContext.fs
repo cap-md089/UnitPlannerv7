@@ -17,32 +17,56 @@ module UnitPlanner.Services.Capwatch.Service.Data
 
 open Microsoft.EntityFrameworkCore
 open Microsoft.EntityFrameworkCore.Metadata.Builders
+open EntityFrameworkCore.FSharp.Extensions
 
 open UnitPlanner.Services.Capwatch.Service.Models
 
-type CapwatchDbContext(options : DbContextOptions<CapwatchDbContext>) =
+type CapwatchDbContext(options : DbContextOptions<CapwatchDbContext>) as this =
     inherit DbContext(options)
 
+    let CadetAchvs = this.Set<CadetAchvM>()
+    let CadetAchvAprs = this.Set<CadetAchvAprsM>()
+    let CadetActivities = this.Set<CadetActivitiesM>()
+    let CadetDutyPositions = this.Set<CadetDutyPositionM>()
+    let CadetHFZInformation = this.Set<CadetHFZInformationM>()
+    let CadetAchvEnum = this.Set<CdtAchvEnum>()
+    let DutyPositions = this.Set<DutyPositionM>()
+    let MbrContact = this.Set<MbrContactM>()
+    let OFlights = this.Set<OFlightM>()
+    let Organizations = this.Set<OrganizationM>()
+    let Members = this.Set<Member>()
+
     override this.OnModelCreating(modelBuilder : ModelBuilder) =
-        modelBuilder.Entity<Member>();
+        modelBuilder.Entity<Member>()
+            |> ignore
 
-        modelBuilder.Entity<CadetAchv>()
+        modelBuilder.Entity<CadetAchvM>()
             .HasKey(fun ca -> (ca.CAPID, ca.CadetAchvID) :> obj)
+            |> ignore
 
-        modelBuilder.Entity<CadetAchvAprs>()
+        modelBuilder.Entity<CadetAchvAprsM>()
             .HasKey(fun ca -> (ca.CAPID, ca.CadetAchvID) :> obj)
+            |> ignore
 
-        modelBuilder.Entity<CadetActivities>()
+        modelBuilder.Entity<CadetActivitiesM>()
             .HasKey(fun ca -> (ca.CAPID, ca.Completed) :> obj)
+            |> ignore
 
-        modelBuilder.Entity<CadetDutyPosition>()
+        modelBuilder.Entity<CadetDutyPositionM>()
             .HasKey(fun dp -> (dp.CAPID, dp.Duty, dp.ORGID, dp.Asst) :> obj)
+            |> ignore
 
-        modelBuilder.Entity<DutyPosition>()
+        modelBuilder.Entity<DutyPositionM>()
             .HasKey(fun dp -> (dp.CAPID, dp.Duty, dp.ORGID, dp.Asst) :> obj)
+            |> ignore
 
-        modelBuilder.Entity<MbrContact>()
+        modelBuilder.Entity<MbrContactM>()
             .HasKey(fun mc -> (mc.CAPID, mc.Type, mc.Priority) :> obj)
+            |> ignore
 
-        modelBuilder.Entity<OFlight>()
+        modelBuilder.Entity<OFlightM>()
             .HasKey(fun f -> (f.CAPID, f.FltDate) :> obj)
+            |> ignore
+
+    override this.OnConfiguring(options : DbContextOptionsBuilder) : unit =
+        options.UseFSharpTypes() |> ignore

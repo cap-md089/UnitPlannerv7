@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="EntityFrameworkCore.FSharp" Version="6.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.1">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -22,9 +23,10 @@
     <Compile Include="Models\CadetAchvAprs.fs" />
     <Compile Include="Models\CadetActivities.fs" />
     <Compile Include="Models\CadetDutyPosition.fs" />
+    <Compile Include="Models\CadetHFZInformation.fs" />
     <Compile Include="Models\CdtAchvEnum.fs" />
     <Compile Include="Models\DutyPosition.fs" />
-    <Compile Include="Models\MbrAchievement.fs" />
+    <Compile Include="Models\MbrAchievements.fs" />
     <Compile Include="Models\MbrContact.fs" />
     <Compile Include="Models\OFlight.fs" />
     <Compile Include="Models\Organization.fs" />

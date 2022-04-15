@@ -23,7 +23,7 @@ WORKDIR /src
 
 COPY Services/Capwatch/Capwatch.Grpc/UnitPlanner.Services.Capwatch.Grpc.csproj Services/Capwatch/Capwatch.Grpc/
 COPY Services/Capwatch/Capwatch.Service/UnitPlanner.Services.Capwatch.Service.fsproj Services/Capwatch/Capwatch.Service/
-RUN dotnet restore Services/Capwatch/UnitPlanner.Services.Capwatch.Service.fsproj
+RUN dotnet restore Services/Capwatch/Capwatch.Service/UnitPlanner.Services.Capwatch.Service.fsproj
 
 COPY Services/Capwatch Services/Capwatch
 WORKDIR /src/Services/Capwatch/Capwatch.Service
@@ -35,6 +35,7 @@ FROM build as dev
 
 WORKDIR /app
 ENV ASPNETCORE_ENVIRONMENT=Development
+ENV ASPNETCORE_URLS=http://0.0.0.0:5020
 ENTRYPOINT ["dotnet", "UnitPlanner.Services.Capwatch.Service.dll"]
 
 FROM build AS publish
@@ -44,4 +45,5 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
 ENV ASPNETCORE_ENVIRONMENT=Production
+ENV ASPNETCORE_URLS=http://0.0.0.0:5020
 ENTRYPOINT ["dotnet", "UnitPlanner.Services.Capwatch.Service.dll"]

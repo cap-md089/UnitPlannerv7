@@ -12,29 +12,30 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+namespace UnitPlanner.Services.Capwatch.Service.Models
 
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+open System
+open System.ComponentModel.DataAnnotations
+open System.ComponentModel.DataAnnotations.Schema
+open Microsoft.EntityFrameworkCore
 
-namespace UnitPlanner.Services.Capwatch.Models;
+[<TableAttribute("NHQ_CdtAchvEnum")>]
+type CdtAchvEnum(CadetAchvID : int, AchvName : string, CurAwdNo : int, UsrID : string, DateMod : DateTime,
+                FirstUsr : string, DateCreated : DateTime, Rank : string) =
 
-[Table("NHQ_CdtAchvEnum")]
-public class CdtAchvEnum
-{
-    [Key]
-    public int CadetAchvID { get; set; }
+    [<Key>]
+    member this.CadetAchvId = CadetAchvID
 
-    public string AchvName { get; set; } = null!;
+    member this.AchvName = AchvName
 
-    public int CurAwdNo { get; set; }
+    member this.CurAwdNo = CurAwdNo
 
-    public string UsrID { get; set; } = null!;
+    member this.UsrID = UsrID
 
-    public DateTime DateMod { get; set; }
+    member this.DateMod = DateMod
 
-    public string FirstUsr { get; set; } = null!;
+    member this.FirstUsr = FirstUsr
 
-    public DateTime DateCreated { get; set; }
+    member this.DateCreated = DateCreated
 
-    public string Rank { get; set; } = null!;
-}
+    member this.Rank = Rank

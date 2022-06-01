@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FsToolkit.ErrorHandling" Version="2.13.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.1">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.1">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.0" />
+    <PackageReference Include="Suave" Version="2.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Util.fs" />
+    <Compile Include="DbModels/Account.fs" />
+    <Compile Include="DbModels/CalendarEvents.fs" />
+    <Compile Include="DbModels/Member.fs" />
+    <Compile Include="Models/Notifications.fs" />
+    <Compile Include="Models/Account.fs" />
+    <Compile Include="Models/CalendarEvents.fs" />
+    <Compile Include="Services/AccountsService.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Main.Grpc\UnitPlanner.Apis.Main.Grpc.csproj" />
+  </ItemGroup>
+
+</Project>

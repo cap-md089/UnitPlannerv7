@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Main\UnitPlanner.Apis.Main.csproj" />
+    <ProjectReference Include="..\Main\UnitPlanner.Apis.Main.fsproj" />
   </ItemGroup>
 
 </Project>

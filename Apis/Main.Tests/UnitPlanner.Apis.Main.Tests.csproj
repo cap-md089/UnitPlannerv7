@@ -32,7 +32,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Main\UnitPlanner.Apis.Main.csproj" />
-    <ProjectReference Include="..\..\Tests\Utils\UnitPlanner.Tests.Utils.csproj" />
+    <ProjectReference Include="..\..\Tests\Utils\UnitPlanner.Tests.Utils.fsproj" />
   </ItemGroup>
 
 </Project>

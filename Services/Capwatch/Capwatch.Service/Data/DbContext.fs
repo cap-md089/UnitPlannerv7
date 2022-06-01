@@ -21,20 +21,20 @@ open EntityFrameworkCore.FSharp.Extensions
 
 open UnitPlanner.Services.Capwatch.Service.Models
 
-type CapwatchDbContext(options : DbContextOptions<CapwatchDbContext>) as this =
+type CapwatchDbContext(options : DbContextOptions<CapwatchDbContext>) =
     inherit DbContext(options)
 
-    let CadetAchvs = this.Set<CadetAchvM>()
-    let CadetAchvAprs = this.Set<CadetAchvAprsM>()
-    let CadetActivities = this.Set<CadetActivitiesM>()
-    let CadetDutyPositions = this.Set<CadetDutyPositionM>()
-    let CadetHFZInformation = this.Set<CadetHFZInformationM>()
-    let CadetAchvEnum = this.Set<CdtAchvEnum>()
-    let DutyPositions = this.Set<DutyPositionM>()
-    let MbrContact = this.Set<MbrContactM>()
-    let OFlights = this.Set<OFlightM>()
-    let Organizations = this.Set<OrganizationM>()
-    let Members = this.Set<Member>()
+    member this.CadetAchvs = this.Set<CadetAchvM>()
+    member this.CadetAchvAprs = this.Set<CadetAchvAprsM>()
+    member this.CadetActivities = this.Set<CadetActivitiesM>()
+    member this.CadetDutyPositions = this.Set<CadetDutyPositionM>()
+    member this.CadetHFZInformation = this.Set<CadetHFZInformationM>()
+    member this.CadetAchvEnum = this.Set<CdtAchvEnum>()
+    member this.DutyPositions = this.Set<DutyPositionM>()
+    member this.MbrContact = this.Set<MbrContactM>()
+    member this.OFlights = this.Set<OFlightM>()
+    member this.Organizations = this.Set<OrganizationM>()
+    member this.Members = this.Set<Member>()
 
     override this.OnModelCreating(modelBuilder : ModelBuilder) =
         modelBuilder.Entity<Member>()

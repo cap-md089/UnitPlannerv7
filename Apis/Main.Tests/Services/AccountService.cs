@@ -59,7 +59,7 @@ public class AccountService : DbBasedTest<UnitPlannerDbContext>
 
         var hostService = new TestHostConfigurationService();
         var service = new AccountsService(context, hostService);
-        
+
         var wing = service.CreateNewWing("md001", "localevmplus.org", new List<int>()).Result;
 
         Assert.Equal(1, context.Accounts.Count());

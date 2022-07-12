@@ -114,15 +114,19 @@ and [<CLIMutable>] CustomAttendanceFieldModel =
       Files: CustomAttendanceFieldFiles option }
 
 and [<CLIMutable>] FinishedAttendanceApproval<'m> =
-    { ApprovalMember: 'm
-      SignOffDate: DateTime option
+    { Id: Guid
+
+      ApprovalMember: 'm
+      SignOffDate: DateTime
 
       Status: AttendanceApprovalStatus
 
       Comment: string }
 
 and [<CLIMutable>] PendingAttendanceApproval =
-    { Level: AttendanceApprovalLevel
+    { Id: Guid
+
+      Level: AttendanceApprovalLevel
       UploadedFormId: string option }
 
 and [<CLIMutable>] AttendanceApprovalModel<'m> =
@@ -133,7 +137,10 @@ and [<CLIMutable>] AttendanceApprovalModel<'m> =
       RequirementId: Guid
       Requirement: AttendanceApprovalRequirement<'m>
 
+      ApprovalId: Guid
+      [<ForeignKey("ApprovalId")>]
       FinishedAttendanceApproval: FinishedAttendanceApproval<'m> option
+      [<ForeignKey("ApprovalId")>]
       PendingAttendanceApproval: PendingAttendanceApproval option }
 
 and [<CLIMutable>] CustomAttendanceFieldCheckboxValue =
@@ -207,13 +214,13 @@ and [<CLIMutable>] CustomAttendanceFieldValueModel =
 
 and [<CLIMutable>] AttendanceRecord<'m> =
     { AccountId: string
-      Account: AccountModel<'m, Calendar<'m>>
+      Account: AccountModel<'m, CalendarEventModel_<'m>>
 
       MemberId: Guid
       Member: 'm
 
       EventId: Guid
-      Event: CalendarEventModel<'m>
+      Event: CalendarEventModel_<'m>
 
       Comments: string
 
@@ -238,7 +245,7 @@ and [<CLIMutable>] AttendanceApprovalRequirement<'m> =
       Id: Guid
 
       ApprovalLevel: AttendanceApprovalLevel
-      CalendarEvent: CalendarEventModel<'m> }
+      CalendarEvent: CalendarEventModel_<'m> }
 
 and [<CLIMutable>] ResourceAcquisitionModel =
     { EventId: Guid

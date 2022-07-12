@@ -7,6 +7,7 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 
 COPY Common/Authentication/*.csproj Common/Authentication/
+COPY Common/Util/*.fsproj Common/Authentication/
 COPY Apis/Main.Grpc/*.csproj Apis/Main.Grpc/
 COPY Apis/Main/*.fsproj Apis/Main/
 RUN dotnet restore Apis/Main/UnitPlanner.Apis.Main.fsproj 
@@ -17,6 +18,7 @@ COPY Services/Files/Protos Services/Files/Protos
 COPY Services/Graph/Protos Services/Graph/Protos
 COPY Services/HostConfiguration/Protos Services/HostConfiguration/Protos
 COPY Common/Authentication Common/Authentication
+COPY Common/Util Common/Util
 COPY Apis/Main.Grpc Apis/Main.Grpc
 COPY Apis/Main Apis/Main
 WORKDIR /src/Apis/Main

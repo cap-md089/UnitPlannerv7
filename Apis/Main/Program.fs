@@ -1,4 +1,4 @@
-namespace UnitPlanner.Apis.Main
+module UnitPlanner.Apis.Main.Program
 
 #nowarn "20"
 
@@ -18,9 +18,8 @@ open Microsoft.Extensions.Logging
 
 open Suave
 
-module Program =
-    [<EntryPoint>]
-    let main args =
-        startWebServer defaultConfig (Successful.OK "Hello world!")
+[<EntryPoint>]
+let main args =
+    startWebServer defaultConfig (Successful.OK "Hello world!")
 
-        0
+    0

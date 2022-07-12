@@ -21,7 +21,9 @@ and CAPActivityAccount<'c> =
     { Id: string
       OverrideBaseUrl: string option
       HostId: string
-      Domains: string list }
+      Domains: string list
+      Calendars: 'c list
+      AccountSettings: AccountSettings }
 
 and CAPVolunteerUniversityAccount<'c> =
     { Id: string
@@ -35,40 +37,35 @@ and CAPNationalAccount<'c> =
       BaseUrl: string
       Domains: string list
       Calendars: 'c list
-      AccountSettings: AccountSettings
-      Organizations: int list }
+      AccountSettings: AccountSettings }
 
 and CAPRegionAccount<'c> =
     { Id: string
       BaseUrl: string
       Domains: string list
       Calendars: 'c list
-      AccountSettings: AccountSettings
-      Organizations: int list }
+      AccountSettings: AccountSettings }
 
 and CAPWingAccount<'c> =
     { Id: string
       BaseUrl: string
       Domains: string list
       Calendars: 'c list
-      AccountSettings: AccountSettings
-      Organizations: int list }
+      AccountSettings: AccountSettings }
 
 and CAPGroupAccount<'c> =
     { Id: string
       OverrideBaseUrl: string option
       Domains: string list
       Calendars: 'c list
-      AccountSettings: AccountSettings
-      Organizations: int list }
+      AccountSettings: AccountSettings }
 
 and CAPSquadronAccount<'c> =
     { Id: string
       OverrideBaseUrl: string option
       Domains: string list
       Calendars: 'c list
-      AccountSettings: AccountSettings
-      Organizations: int list }
+      AccountSettings: AccountSettings }
 
 and Account_<'c> =
     | CAPActivity of CAPActivityAccount<'c>

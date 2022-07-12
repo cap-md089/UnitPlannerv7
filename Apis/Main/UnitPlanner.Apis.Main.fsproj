@@ -24,6 +24,7 @@
     <Compile Include="DbModels/Account.fs" />
     <Compile Include="DbModels/CalendarEvents.fs" />
     <Compile Include="DbModels/Member.fs" />
+    <Compile Include="Models/NHQ/Organization.fs" />
     <Compile Include="Models/Notifications.fs" />
     <Compile Include="Models/Account.fs" />
     <Compile Include="Models/CalendarEvents.fs" />
@@ -33,6 +34,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Main.Grpc\UnitPlanner.Apis.Main.Grpc.csproj" />
+    <ProjectReference Include="..\..\Common\Util\UnitPlanner.Common.Util.fsproj" />
   </ItemGroup>
 
 </Project>

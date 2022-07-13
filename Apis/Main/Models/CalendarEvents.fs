@@ -4,7 +4,42 @@ open System
 
 open UnitPlanner.Common.Util
 
-type EventStatus =
+type ExactDateAndTime =
+    { DateTime: DateTimeOffset
+      TimeZone: TimeZoneInfo }
+
+and DayOfWeek =
+    | Sunday
+    | Monday
+    | Tuesday
+    | Wednesday
+    | Thursday
+    | Friday
+    | Saturday
+
+and MonthOfYear =
+    | January
+    | February
+    | March
+    | April
+    | May
+    | June
+    | July
+    | August
+    | September
+    | October
+    | November
+    | December
+
+and WeekSelection =
+    | First
+    | Second
+    | Third
+    | Fourth
+    | Fifth
+    | Last
+
+and EventStatus =
     | Draft
     | Tentative
     | Confirmed
@@ -56,7 +91,7 @@ and CustomAttendanceFieldDate =
       Title: string
       DisplayToMember: bool
       AllowMemberToModify: bool
-      PreFill: DateTime }
+      PreFill: ExactDateAndTime }
 
 and CustomAttendanceFieldNumber =
     { EventId: Guid
@@ -94,7 +129,7 @@ and CustomAttendanceField =
     | CustomAttendanceFieldFiles of CustomAttendanceFieldFiles
 
 and FinishedAttendanceApproval =
-    { SignOffDate: DateTime
+    { SignOffDate: ExactDateAndTime
       Status: AttendanceApprovalStatus
       Comment: string
       Level: AttendanceApprovalLevel
@@ -104,14 +139,14 @@ and PendingAttendanceApproval = { Level: AttendanceApprovalLevel }
 
 and CustomAttendanceFieldValue =
     | CustomAttendanceFieldValueCheckbox of bool
-    | CustomAttendanceFieldValueDate of DateTime
+    | CustomAttendanceFieldValueDate of ExactDateAndTime
     | CustomAttendanceFieldValueNumber of double
     | CustomAttendanceFieldValueSelect of string
     | CustomAttendanceFieldValueText of string
     | CustomAttendanceFieldValueFiles of Guid list
 
 and AttendanceRecordShift =
-    | TimeSpan of startTime: DateTime * shiftLength: TimeSpan
+    | TimeSpan of startTime: ExactDateAndTime * shiftLength: TimeSpan
     | ScheduleIndex of int
 
 and AttendanceRecordShiftSelection =
@@ -125,8 +160,8 @@ and AttendanceRecord =
       Comments: string
       Status: AttendanceStatus
       PlanToUseProvideTransportation: bool
-      Created: DateTime
-      Modified: DateTime
+      Created: ExactDateAndTime
+      Modified: ExactDateAndTime
       SummaryEmailSent: bool
       ShiftTimes: AttendanceRecordShiftSelection }
 
@@ -171,7 +206,7 @@ and PointOfContact =
 
 and DebriefItem =
     { DebriefId: Guid
-      Submitted: DateTime
+      Submitted: ExactDateAndTime
       DisplayToPublic: bool
       DebriefText: string }
 
@@ -204,25 +239,27 @@ Event permutation list:
 and RegularCalendarEvent =
     { EventId: Guid
 
-      MeetDateTime: DateTime
-      StartDateTime: DateTime
-      EndDateTime: DateTime
-      PickupDateTime: DateTime
+      MeetDateTime: ExactDateAndTime
+      StartDateTime: ExactDateAndTime
+      EndDateTime: ExactDateAndTime
+      PickupDateTime: ExactDateAndTime
+
+      SourceRecurringEvent: Guid option
 
       Details: EventDetails }
 
 and SubEventDetails =
     { EventId: Guid
       Details: EventDetails
-      StartTimeOffset: DateTimeOffset
+      StartTimeOffset: ExactDateAndTime
       Length: TimeSpan }
 
 and CompositeCalendarEvent =
     { EventId: Guid
-      MeetDateTime: DateTime
-      StartDateTime: DateTime
-      EndDateTime: DateTime
-      PickupDateTime: DateTime
+      MeetDateTime: ExactDateAndTime
+      StartDateTime: ExactDateAndTime
+      EndDateTime: ExactDateAndTime
+      PickupDateTime: ExactDateAndTime
       SubEvents: SubEventDetails list }
 
 and ModifiedEventDetails =
@@ -232,15 +269,33 @@ and ModifiedEventDetails =
 and LinkedCalendarEvent =
     { EventId: Guid
 
-      MeetDateTime: DateTime
-      StartDateTime: DateTime
-      EndDateTime: DateTime
-      PickupDateTime: DateTime
+      MeetDateTime: ExactDateAndTime
+      StartDateTime: ExactDateAndTime
+      EndDateTime: ExactDateAndTime
+      PickupDateTime: ExactDateAndTime
 
       SourceEventId: Guid
       Details: EventDetails
       ModifiedEventDetails: ModifiedEventDetails }
 
+and RecurrenceRule =
+    | Daily of repeatEvery: int
+    | Weekly of repeatEvery: int * daySelection: DayOfWeek nel
+    | MonthlyOnDay of repeatEvery: int * dayOfMonth: int
+    | MonthlyOnDayOfWeek of repeatEvery: int * WeekSelection * DayOfWeek
+    | YearlyOnDay of repeatEvery: int * MonthOfYear * dayOfMonth: int
+    | YearlyOnDayOfWeek of repeatEvery: int * WeekSelection * DayOfWeek * MonthOfYear
+
 and RecurringCalendarEvent =
     { EventId: Guid
+
+      Recurrence: RecurrenceRule
+      StartDate: DateOnly
+      EndDate: DateOnly option
+
+      MeetTime: TimeOnly
+      StartTime: TimeOnly
+      EndTime: TimeOnly
+      PickupTime: TimeOnly
+
       Details: EventDetails }

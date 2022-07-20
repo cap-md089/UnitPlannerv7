@@ -2,20 +2,27 @@ module UnitPlanner.Apis.Main.Models.Notifications
 
 open System
 
-open System.ComponentModel.DataAnnotations.Schema
+open UnitPlanner.Apis.Main.Models.CalendarEvents
+open UnitPlanner.Apis.Main.Models.Member
 
-type AdminNotification<'a> =
-    { Id: Guid
-      [<DatabaseGenerated(DatabaseGeneratedOption.Identity)>]
-      Created: DateTime
-      Read: bool
-      NotificationData: string
-      Account: 'a }
+type GlobalNotificationTarget =
+    | Everyone
+    | Account of accountId: string
 
-type MemberNotification<'m> =
+type NotificationData = EventUpdate of eventId: Guid * newData: ModifiedEventDetails
+
+type AdminNotification =
     { Id: Guid
-      [<DatabaseGenerated(DatabaseGeneratedOption.Identity)>]
-      Created: DateTime
+      AccountId: string
+      Created: DateTimeOffset
       Read: bool
-      NotificationData: string
-      Member: 'm }
+      NotificationData: NotificationData }
+
+type MemberNotification =
+    { Id: Guid
+      MemberId: MemberReference
+      Created: DateTimeOffset
+      Read: bool
+      NotificationData: NotificationData }
+
+type AccountNotification = { Id: Guid }

@@ -1,23 +1,28 @@
 module UnitPlanner.Apis.Main.Models.Account
 
-type Timezone =
-    | New_York
-    | Chicago
-    | Denver
-    | Los_Angeles
-    | Arizona
-    | Anchorage
-    | Hawaii
-    | Puerto_Rico
+open System
+
+open UnitPlanner.Apis.Main.Models.Files
+
+type AccountId = AccountId of string
+
+type AccountType =
+    | CAPActivity
+    | CAPVolunteerUniversity
+    | CAPNational
+    | CAPRegion
+    | CAPWing
+    | CAPGroup
+    | CAPSquadron
 
 type AccountSettings =
     { WebsiteName: string
       ShowUpcomingEventCount: uint
-      Timezone: Timezone
-      FaviconFileId: string option
+      Timezone: TimeZoneInfo
+      FaviconFileId: FileId option
       FlightNames: string list }
 
-and CAPActivityAccount<'c> =
+type CAPActivityAccount<'c> =
     { Id: string
       OverrideBaseUrl: string option
       HostId: string
@@ -25,49 +30,58 @@ and CAPActivityAccount<'c> =
       Calendars: 'c list
       AccountSettings: AccountSettings }
 
-and CAPVolunteerUniversityAccount<'c> =
+type CAPVolunteerUniversityAccount<'c> =
     { Id: string
       BaseUrl: string
       Domains: string list
       Calendars: 'c list
       AccountSettings: AccountSettings }
 
-and CAPNationalAccount<'c> =
+type CAPNationalAccount<'c> =
     { Id: string
       BaseUrl: string
       Domains: string list
       Calendars: 'c list
-      AccountSettings: AccountSettings }
+      AccountSettings: AccountSettings
+      OrganizationIds: int list }
 
-and CAPRegionAccount<'c> =
+type CAPRegionAccount<'c> =
     { Id: string
       BaseUrl: string
       Domains: string list
       Calendars: 'c list
-      AccountSettings: AccountSettings }
+      AccountSettings: AccountSettings
+      NationalId: string
+      OrganizationIds: int list }
 
-and CAPWingAccount<'c> =
+type CAPWingAccount<'c> =
     { Id: string
       BaseUrl: string
       Domains: string list
       Calendars: 'c list
-      AccountSettings: AccountSettings }
+      AccountSettings: AccountSettings
+      RegionId: string
+      OrganizationIds: int list }
 
-and CAPGroupAccount<'c> =
+type CAPGroupAccount<'c> =
     { Id: string
       OverrideBaseUrl: string option
       Domains: string list
       Calendars: 'c list
-      AccountSettings: AccountSettings }
+      AccountSettings: AccountSettings
+      WingId: string
+      OrganizationIds: int list }
 
-and CAPSquadronAccount<'c> =
+type CAPSquadronAccount<'c> =
     { Id: string
       OverrideBaseUrl: string option
       Domains: string list
       Calendars: 'c list
-      AccountSettings: AccountSettings }
+      AccountSettings: AccountSettings
+      GroupId: string
+      OrganizationIds: int list }
 
-and Account_<'c> =
+type AccountC<'c> =
     | CAPActivity of CAPActivityAccount<'c>
     | CAPVolunteerUniversity of CAPVolunteerUniversityAccount<'c>
     | CAPNational of CAPNationalAccount<'c>

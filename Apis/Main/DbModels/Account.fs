@@ -9,16 +9,6 @@ open Microsoft.EntityFrameworkCore
 
 // open UnitPlanner.Apis.Main.DbModels.Notifications
 
-type Timezone =
-    | New_York = 0
-    | Chicago = 1
-    | Denver = 2
-    | Los_Angeles = 3
-    | Arizona = 4
-    | Anchorage = 5
-    | Hawaii = 6
-    | Puerto_Rico = 7
-
 [<CLIMutable>]
 type AccountOrganizationMapping<'m, 'c> =
     { AccountId: string
@@ -28,8 +18,8 @@ type AccountOrganizationMapping<'m, 'c> =
 and [<CLIMutable; Owned>] AccountSettings =
     { WebsiteName: string
       ShowUpcomingEventCount: uint
-      Timezone: Timezone
-      FaviconFileId: string option
+      Timezone: string
+      FaviconFileId: Guid option
       FlightNames: string }
 
 and [<CLIMutable>] ExtraAccountMembership<'m, 'c> =
@@ -40,6 +30,7 @@ and [<CLIMutable>] ExtraAccountMembership<'m, 'c> =
 
 and [<CLIMutable>] AccountDomain<'m, 'c> =
     { Domain: string
+      AccountId: string
       Account: AccountModel<'m, 'c> }
 
 and [<CLIMutable>] CAPActivityAccount<'m, 'c> =
@@ -80,6 +71,7 @@ and [<CLIMutable>] CAPRegionAccount<'m, 'c> =
       AccountSettings: AccountSettings
       Organizations: ICollection<AccountOrganizationMapping<'m, 'c>>
       ActivityAccounts: ICollection<CAPActivityAccount<'m, 'c>>
+      NationalId: string
       National: CAPNationalAccount<'m, 'c>
       Wings: ICollection<CAPWingAccount<'m, 'c>> }
 
@@ -92,6 +84,7 @@ and [<CLIMutable>] CAPWingAccount<'m, 'c> =
       AccountSettings: AccountSettings
       Organizations: ICollection<AccountOrganizationMapping<'m, 'c>>
       ActivityAccounts: ICollection<CAPActivityAccount<'m, 'c>>
+      RegionId: string
       Region: CAPRegionAccount<'m, 'c>
       Groups: ICollection<CAPGroupAccount<'m, 'c>> }
 
@@ -104,6 +97,7 @@ and [<CLIMutable>] CAPGroupAccount<'m, 'c> =
       AccountSettings: AccountSettings
       Organizations: ICollection<AccountOrganizationMapping<'m, 'c>>
       ActivityAccounts: ICollection<CAPActivityAccount<'m, 'c>>
+      WingId: string
       Wing: CAPWingAccount<'m, 'c>
       Squadrons: ICollection<CAPSquadronAccount<'m, 'c>> }
 
@@ -115,6 +109,7 @@ and [<CLIMutable>] CAPSquadronAccount<'m, 'c> =
       Calendars: ICollection<'c>
       AccountSettings: AccountSettings
       Organizations: ICollection<AccountOrganizationMapping<'m, 'c>>
+      GroupId: string
       Group: CAPGroupAccount<'m, 'c> }
 
 and [<CLIMutable>] AccountModel<'m, 'c> =

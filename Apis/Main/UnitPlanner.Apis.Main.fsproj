@@ -25,9 +25,16 @@
     <Compile Include="DbModels/CalendarEvents.fs" />
     <Compile Include="DbModels/Member.fs" />
     <Compile Include="Models/NHQ/Organization.fs" />
-    <Compile Include="Models/Notifications.fs" />
+    <Compile Include="Models/Files.fs" />
     <Compile Include="Models/Account.fs" />
+    <Compile Include="Models/Member.fs" />
     <Compile Include="Models/CalendarEvents.fs" />
+    <Compile Include="Models/Permissions.fs" />
+    <Compile Include="Models/Notifications.fs" />
+    <Compile Include="Models/Teams.fs" />
+    <Compile Include="Models/Tasks.fs" />
+    <Compile Include="Models/UserAccounts.fs" />
+    <Compile Include="Models/CadetPromotions.fs" />
     <Compile Include="Services/AccountsService.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>

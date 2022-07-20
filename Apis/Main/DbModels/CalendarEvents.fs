@@ -8,7 +8,43 @@ open Microsoft.EntityFrameworkCore
 
 open UnitPlanner.Apis.Main.DbModels.Account
 
-type EventStatus =
+[<CLIMutable; Owned>]
+type ExactDateAndTime =
+    { DateTime: DateTimeOffset
+      TimeZone: string }
+
+and DayOfWeek =
+    | Sunday = 0
+    | Monday = 1
+    | Tuesday = 2
+    | Wednesday = 3
+    | Thursday = 4
+    | Friday = 5
+    | Saturday = 6
+
+and MonthOfYear =
+    | January = 0
+    | February = 1
+    | March = 2
+    | April = 3
+    | May = 4
+    | June = 5
+    | July = 6
+    | August = 7
+    | September = 8
+    | October = 9
+    | November = 10
+    | December = 11
+
+and WeekSelection =
+    | First = 0
+    | Second = 1
+    | Third = 2
+    | Fourth = 3
+    | Fifth = 4
+    | Last = 5
+
+and EventStatus =
     | Draft = 0
     | Tentative = 1
     | Confirmed = 2
@@ -48,8 +84,7 @@ and SelectionMethod =
     | Checkbox = 2
 
 and [<CLIMutable>] CustomAttendanceFieldCheckbox =
-    { Id: Guid
-      AccountId: string
+    { AccountId: string
       EventId: Guid
       Title: string
       DisplayToMember: bool
@@ -57,17 +92,15 @@ and [<CLIMutable>] CustomAttendanceFieldCheckbox =
       PreFill: bool }
 
 and [<CLIMutable>] CustomAttendanceFieldDate =
-    { Id: Guid
-      AccountId: string
+    { AccountId: string
       EventId: Guid
       Title: string
       DisplayToMember: bool
       AllowMemberToModify: bool
-      PreFill: DateTime }
+      PreFill: ExactDateAndTime }
 
 and [<CLIMutable>] CustomAttendanceFieldNumber =
-    { Id: Guid
-      AccountId: string
+    { AccountId: string
       EventId: Guid
       Title: string
       DisplayToMember: bool
@@ -75,8 +108,7 @@ and [<CLIMutable>] CustomAttendanceFieldNumber =
       PreFill: double }
 
 and [<CLIMutable>] CustomAttendanceFieldSelect =
-    { Id: Guid
-      AccountId: string
+    { AccountId: string
       EventId: Guid
       Title: string
       DisplayToMember: bool
@@ -86,8 +118,7 @@ and [<CLIMutable>] CustomAttendanceFieldSelect =
       AllowedValues: string }
 
 and [<CLIMutable>] CustomAttendanceFieldText =
-    { Id: Guid
-      AccountId: string
+    { AccountId: string
       EventId: Guid
       Title: string
       DisplayToMember: bool
@@ -95,15 +126,14 @@ and [<CLIMutable>] CustomAttendanceFieldText =
       PreFill: string }
 
 and [<CLIMutable>] CustomAttendanceFieldFiles =
-    { Id: Guid
-      AccountId: string
+    { AccountId: string
       EventId: Guid
       Title: string
       DisplayToMember: bool
       AllowMemberToModify: bool }
 
 and [<CLIMutable>] CustomAttendanceFieldModel =
-    { Id: Guid
+    { Title: string
       EventId: Guid
 
       Checkbox: CustomAttendanceFieldCheckbox option
@@ -114,33 +144,39 @@ and [<CLIMutable>] CustomAttendanceFieldModel =
       Files: CustomAttendanceFieldFiles option }
 
 and [<CLIMutable>] FinishedAttendanceApproval<'m> =
-    { Id: Guid
+    { EventId: Guid
+      MemberId: Guid
+      Level: AttendanceApprovalLevel
 
+      ApproverId: Guid
       ApprovalMember: 'm
-      SignOffDate: DateTime
+
+      SignOffDate: ExactDateAndTime
 
       Status: AttendanceApprovalStatus
+
+      SignedFormId: Guid
 
       Comment: string }
 
 and [<CLIMutable>] PendingAttendanceApproval =
-    { Id: Guid
-
+    { EventId: Guid
+      MemberId: Guid
       Level: AttendanceApprovalLevel
-      UploadedFormId: string option }
+
+      UploadedFormId: Guid option }
 
 and [<CLIMutable>] AttendanceApprovalModel<'m> =
     { AttendanceRecordMemberId: Guid
       AttendanceRecordEventId: Guid
+      ApprovalLevel: AttendanceApprovalLevel
       AttendanceRecord: AttendanceRecord<'m>
+
 
       RequirementId: Guid
       Requirement: AttendanceApprovalRequirement<'m>
 
-      ApprovalId: Guid
-      [<ForeignKey("ApprovalId")>]
       FinishedAttendanceApproval: FinishedAttendanceApproval<'m> option
-      [<ForeignKey("ApprovalId")>]
       PendingAttendanceApproval: PendingAttendanceApproval option }
 
 and [<CLIMutable>] CustomAttendanceFieldCheckboxValue =
@@ -159,7 +195,7 @@ and [<CLIMutable>] CustomAttendanceFieldDateValue =
       FieldId: Guid
       Field: CustomAttendanceFieldDate
 
-      Value: DateTime }
+      Value: ExactDateAndTime }
 
 and [<CLIMutable>] CustomAttendanceFieldNumberValue =
     { MemberId: Guid
@@ -212,6 +248,12 @@ and [<CLIMutable>] CustomAttendanceFieldValueModel =
       Text: CustomAttendanceFieldTextValue option
       Files: CustomAttendanceFieldFilesValue option }
 
+and [<CLIMutable; Owned>] AttendanceRecordShift =
+    { ScheduleIndex: int option
+
+      StartTime: ExactDateAndTime
+      ShiftLength: TimeSpan }
+
 and [<CLIMutable>] AttendanceRecord<'m> =
     { AccountId: string
       Account: AccountModel<'m, CalendarEventModel_<'m>>
@@ -237,8 +279,9 @@ and [<CLIMutable>] AttendanceRecord<'m> =
 
       SummaryEmailSent: bool
 
+      (* ShiftTimes: ICollection<AttendanceRecordShift> *)
       (* JSON string; check domain model for actual type *)
-      ShiftTimes: string option }
+      ShiftTimes: string }
 
 and [<CLIMutable>] AttendanceApprovalRequirement<'m> =
     { [<Key>]
@@ -252,11 +295,9 @@ and [<CLIMutable>] ResourceAcquisitionModel =
       Id: Guid
 
       [<ForeignKey("Id")>]
-      EventResource: EventResource option
+      EventResource: string option
       [<ForeignKey("Id")>]
       UnitItem: UnitItemResource option }
-
-and [<CLIMutable>] EventResource = { Id: Guid; Name: string }
 
 and [<CLIMutable>] UnitItemResource =
     { Id: Guid
@@ -311,8 +352,10 @@ and [<CLIMutable>] PointOfContactModel_<'m> =
 
 and [<CLIMutable>] DebriefItem_<'m> =
     { DebriefItemId: Guid
+      MemberId: Guid
       Member: 'm
-      Submitted: DateTime
+      Submitted: ExactDateAndTime
+      SourceEventId: Guid
       SourceEvent: CalendarEventModel_<'m>
       DisplayToPublic: bool
       DebriefText: string }

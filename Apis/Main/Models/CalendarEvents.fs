@@ -4,11 +4,20 @@ open System
 
 open UnitPlanner.Common.Util
 
+open UnitPlanner.Apis.Main.Models.Account
+open UnitPlanner.Apis.Main.Models.Member
+open UnitPlanner.Apis.Main.Models.Files
+
+type CalendarId = CalendarId of Guid
+type EventId = EventId of Guid
+type DebriefId = DebriefId of Guid
+type ResourceId = ResourceId of Guid
+
 type ExactDateAndTime =
     { DateTime: DateTimeOffset
       TimeZone: TimeZoneInfo }
 
-and DayOfWeek =
+type DayOfWeek =
     | Sunday
     | Monday
     | Tuesday
@@ -17,7 +26,7 @@ and DayOfWeek =
     | Friday
     | Saturday
 
-and MonthOfYear =
+type MonthOfYear =
     | January
     | February
     | March
@@ -31,7 +40,7 @@ and MonthOfYear =
     | November
     | December
 
-and WeekSelection =
+type WeekSelection =
     | First
     | Second
     | Third
@@ -39,7 +48,7 @@ and WeekSelection =
     | Fifth
     | Last
 
-and EventStatus =
+type EventStatus =
     | Draft
     | Tentative
     | Confirmed
@@ -47,80 +56,80 @@ and EventStatus =
     | Cancelled
     | InformationOnly
 
-and AttendanceViewOptions =
+type AttendanceViewOptions =
     | PrivateToEventAdmins
     | PrivateToAccount
     | PrivateToMembers
 
-and AttendanceStatus =
+type AttendanceStatus =
     | CommittedAttended
     | NoShow
     | RescindedCommitment
     | NoPlans
     | Processing
 
-and AttendanceApprovalStatus =
+type AttendanceApprovalStatus =
     | Approved
     | Denied
 
-and AttendanceApprovalLevel =
+type AttendanceApprovalLevel =
     | Squadron
     | Group
     | Wing
     | EventOrganizer
 
-and SelectionMethod =
+type SelectionMethod =
     | Radio
     | Select
     | Checkbox
 
-and ItemResourceType =
+type ItemResourceType =
     | Room
     | Vehicle
     | Other
 
-and CustomAttendanceFieldCheckbox =
-    { EventId: Guid
+type CustomAttendanceFieldCheckbox =
+    { EventId: EventId
       Title: string
       DisplayToMember: bool
       AllowMemberToModify: bool
       PreFill: bool }
 
-and CustomAttendanceFieldDate =
-    { EventId: Guid
+type CustomAttendanceFieldDate =
+    { EventId: EventId
       Title: string
       DisplayToMember: bool
       AllowMemberToModify: bool
       PreFill: ExactDateAndTime }
 
-and CustomAttendanceFieldNumber =
-    { EventId: Guid
+type CustomAttendanceFieldNumber =
+    { EventId: EventId
       Title: string
       DisplayToMember: bool
       AllowMemberToModify: bool
       PreFill: double }
 
-and CustomAttendanceFieldSelect =
-    { EventId: Guid
+type CustomAttendanceFieldSelect =
+    { EventId: EventId
       Title: string
       DisplayToMember: bool
       AllowMemberToModify: bool
       SelectionMethod: SelectionMethod
       AllowedValues: string list }
 
-and CustomAttendanceFieldText =
-    { EventId: Guid
+type CustomAttendanceFieldText =
+    { EventId: EventId
       Title: string
       DisplayToMember: bool
       AllowMemberToModify: bool
       PreFill: string }
 
-and CustomAttendanceFieldFiles =
+type CustomAttendanceFieldFiles =
     { Title: string
       DisplayToMember: bool
       AllowMemberToModify: bool }
 
-and CustomAttendanceField =
+type CustomAttendanceField =
     | CustomAttendanceFieldCheckbox of CustomAttendanceFieldCheckbox
     | CustomAttendanceFieldDate of CustomAttendanceFieldDate
     | CustomAttendanceFieldNumber of CustomAttendanceFieldNumber
@@ -128,34 +137,41 @@ and CustomAttendanceField =
     | CustomAttendanceFieldText of CustomAttendanceFieldText
     | CustomAttendanceFieldFiles of CustomAttendanceFieldFiles
 
-and FinishedAttendanceApproval =
+type FinishedAttendanceApproval =
     { SignOffDate: ExactDateAndTime
       Status: AttendanceApprovalStatus
       Comment: string
       Level: AttendanceApprovalLevel
-      ApproverId: Guid }
+      ApproverId: MemberReference
+      SignedFormId: FileId }
 
-and PendingAttendanceApproval = { Level: AttendanceApprovalLevel }
+type PendingAttendanceApproval =
+    { Level: AttendanceApprovalLevel
+      UploadedFormId: FileId option }
 
-and CustomAttendanceFieldValue =
+type CustomAttendanceFieldValueType =
     | CustomAttendanceFieldValueCheckbox of bool
     | CustomAttendanceFieldValueDate of ExactDateAndTime
     | CustomAttendanceFieldValueNumber of double
     | CustomAttendanceFieldValueSelect of string
     | CustomAttendanceFieldValueText of string
-    | CustomAttendanceFieldValueFiles of Guid list
+    | CustomAttendanceFieldValueFiles of FileId list
 
-and AttendanceRecordShift =
+type CustomAttendanceFieldValue =
+    { Title: string
+      Value: CustomAttendanceFieldValueType }
+
+type AttendanceRecordShift =
     | TimeSpan of startTime: ExactDateAndTime * shiftLength: TimeSpan
     | ScheduleIndex of int
 
-and AttendanceRecordShiftSelection =
+type AttendanceRecordShiftSelection =
     | FullTime
     | PartTime of AttendanceRecordShift nel
 
-and AttendanceRecord =
-    { EventId: Guid
-      MemberId: Guid
+type AttendanceRecord =
+    { EventId: EventId
+      MemberId: MemberReference
 
       Comments: string
       Status: AttendanceStatus
@@ -165,20 +181,21 @@ and AttendanceRecord =
       SummaryEmailSent: bool
       ShiftTimes: AttendanceRecordShiftSelection }
 
-and UnitItemResource =
-    { Name: string
+type UnitItemResource =
+    { Id: Guid
+      Name: string
       ItemResourceType: ItemResourceType }
 
-and EventResourceAcquisition =
+type EventResourceAcquisition =
     | EventResource of string
     | UnitResource of UnitItemResource
 
-and Calendar =
-    { Id: Guid
+type Calendar =
+    { Id: CalendarId
       Name: string
       Color: string }
 
-and InternalPointOfContact =
+type InternalPointOfContact =
     { Email: string
       Phone: string
       Position: string
@@ -187,10 +204,10 @@ and InternalPointOfContact =
       ReceiveSignUpUpdates: bool
       DisplayPublicly: bool
 
-      MemberId: Guid
+      MemberId: MemberReference
       MemberName: string }
 
-and ExternalPointOfContact =
+type ExternalPointOfContact =
     { Email: string
       Phone: string
       Position: string
@@ -200,17 +217,19 @@ and ExternalPointOfContact =
       DisplayPublicly: bool
       Name: string }
 
-and PointOfContact =
+type PointOfContact =
     | Internal of InternalPointOfContact
     | External of ExternalPointOfContact
 
-and DebriefItem =
-    { DebriefId: Guid
+type DebriefItem =
+    { DebriefId: DebriefId
+      MemberId: MemberReference
+      SourceEvent: EventId
       Submitted: ExactDateAndTime
       DisplayToPublic: bool
       DebriefText: string }
 
-and EventDetails = { Name: string; Subtitle: string }
+type EventDetails = { Name: string; Subtitle: string }
 
 (*
 
@@ -236,49 +255,49 @@ Event permutation list:
 
 *)
 
-and RegularCalendarEvent =
-    { EventId: Guid
+type RegularCalendarEvent =
+    { EventId: EventId
 
       MeetDateTime: ExactDateAndTime
       StartDateTime: ExactDateAndTime
       EndDateTime: ExactDateAndTime
       PickupDateTime: ExactDateAndTime
 
-      SourceRecurringEvent: Guid option
+      SourceRecurringEvent: EventId option
 
       Details: EventDetails }
 
-and SubEventDetails =
-    { EventId: Guid
+type SubEventDetails =
+    { EventId: EventId
       Details: EventDetails
       StartTimeOffset: ExactDateAndTime
       Length: TimeSpan }
 
-and CompositeCalendarEvent =
-    { EventId: Guid
+type CompositeCalendarEvent =
+    { EventId: EventId
       MeetDateTime: ExactDateAndTime
       StartDateTime: ExactDateAndTime
       EndDateTime: ExactDateAndTime
       PickupDateTime: ExactDateAndTime
       SubEvents: SubEventDetails list }
 
-and ModifiedEventDetails =
+type ModifiedEventDetails =
     { Name: string option
       Subtitle: string option }
 
-and LinkedCalendarEvent =
-    { EventId: Guid
+type LinkedCalendarEvent =
+    { EventId: EventId
 
       MeetDateTime: ExactDateAndTime
       StartDateTime: ExactDateAndTime
       EndDateTime: ExactDateAndTime
       PickupDateTime: ExactDateAndTime
 
-      SourceEventId: Guid
+      SourceEventId: EventId
       Details: EventDetails
       ModifiedEventDetails: ModifiedEventDetails }
 
-and RecurrenceRule =
+type RecurrenceRule =
     | Daily of repeatEvery: int
     | Weekly of repeatEvery: int * daySelection: DayOfWeek nel
     | MonthlyOnDay of repeatEvery: int * dayOfMonth: int
@@ -286,8 +305,8 @@ and RecurrenceRule =
     | YearlyOnDay of repeatEvery: int * MonthOfYear * dayOfMonth: int
     | YearlyOnDayOfWeek of repeatEvery: int * WeekSelection * DayOfWeek * MonthOfYear
 
-and RecurringCalendarEvent =
-    { EventId: Guid
+type RecurringCalendarEvent =
+    { EventId: EventId
 
       Recurrence: RecurrenceRule
       StartDate: DateOnly
@@ -299,3 +318,5 @@ and RecurringCalendarEvent =
       PickupTime: TimeOnly
 
       Details: EventDetails }
+
+type Account = AccountC<Calendar>
